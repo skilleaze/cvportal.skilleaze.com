@@ -17,6 +17,7 @@
 <script src="./cv-builder/muneez.js"></script>
 <script src="./cv-builder/portal-config.js"></script>
 <script src="./cv-builder/portal-store.js"></script>
+<script src="./cv-builder/cv-import.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
 <script src="https://unpkg.com/docx@8.5.0/build/index.umd.js"></script>
@@ -61,7 +62,7 @@ textarea{resize:vertical}
 <p style="margin:0;font-size:18px;line-height:1.6;max-width:520px;text-wrap:pretty">Pick a design, fill in a few simple steps, download. That’s it.</p>
 <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:6px">
 <button onClick="{{ newCv }}" style="display:inline-flex;align-items:center;gap:8px;white-space:nowrap;background:#042D7C;color:#FFFFFF;border:none;border-radius:999px;padding:14px 24px;font:inherit;font-weight:900;font-size:15px;cursor:pointer" style-hover="background:#053BA0">Create a new CV</button>
-<button onClick="{{ openImport }}" style="display:inline-flex;align-items:center;gap:8px;white-space:nowrap;background:#FFFFFF;color:#042D7C;border:1px solid #D9DCE3;border-radius:999px;padding:14px 24px;font:inherit;font-weight:900;font-size:15px;cursor:pointer" style-hover="border-color:#042D7C">Import CV or LinkedIn</button>
+<button onClick="{{ openImport }}" style="display:inline-flex;align-items:center;gap:8px;white-space:nowrap;background:#FFFFFF;color:#042D7C;border:1px solid #D9DCE3;border-radius:999px;padding:14px 24px;font:inherit;font-weight:900;font-size:15px;cursor:pointer" style-hover="border-color:#042D7C">Upload existing CV</button>
 </div>
 <div style="font-size:14px;color:#5B6470">Internal tool for the Skilleaze team. Every CV saves to the portal with its own code, so anyone on the team can find it from the Dashboard. PDF and Word downloads are free.</div>
 </div>
@@ -98,6 +99,7 @@ textarea{resize:vertical}
 <section style="flex:1 1 380px;max-width:520px;min-width:0;display:flex;flex-direction:column;gap:14px">
 <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
 <input value="{{ cvLabel }}" onChange="{{ setLabel }}" aria-label="CV name" style="flex:1;min-width:160px;border:none;background:transparent;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:28px;color:#042D7C;outline:none;padding:2px 0"><span style="font-size:12px;font-weight:900;letter-spacing:.06em;color:#053BA0;background:#E9EEF8;border-radius:999px;padding:6px 10px;white-space:nowrap">{{ syncLabel }}</span>
+<button onClick="{{ openImportHere }}" style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap;background:#FFFFFF;color:#042D7C;border:1px solid #D9DCE3;border-radius:999px;padding:8px 14px;font:inherit;font-weight:900;font-size:13px;cursor:pointer" style-hover="border-color:#042D7C">Upload existing CV</button>
 </div>
 
 <sc-if value="{{ guided }}"><div style="display:flex;flex-direction:column;gap:8px"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px"><div style="font-size:14px;font-weight:700">Step {{ stepNo }} of 6 · <span style="color:#042D7C">{{ stepLabel }}</span></div><div style="display:flex;gap:14px;align-items:center"><button onClick="{{ toggleTips }}" style="background:none;border:none;padding:0;color:#5B6470;font:inherit;font-size:13px;cursor:pointer;text-decoration:underline">{{ tipsLabel }}</button><button onClick="{{ setFree }}" style="background:none;border:none;padding:0;color:#5B6470;font:inherit;font-size:13px;cursor:pointer;text-decoration:underline">Show all sections</button></div></div><div style="height:4px;background:#E3E4E8;border-radius:999px;overflow:hidden"><div style="{{ progress }}"></div></div><sc-if value="{{ tipsOn }}"><div style="display:flex;gap:10px;align-items:flex-start;background:#FBF6E6;border-radius:12px;padding:10px 12px;font-size:13px;line-height:1.5;color:#5A4A1A"><span style="flex-shrink:0;font-weight:900;color:#8A6D1F">Tip</span><span>{{ stepTip }}</span></div></sc-if></div></sc-if>
@@ -370,12 +372,12 @@ textarea{resize:vertical}
 <sc-if value="{{ importOpen }}">
 <div style="position:fixed;inset:0;z-index:90;background:rgba(10,20,45,.55);display:flex;align-items:center;justify-content:center;padding:16px" onClick="{{ closeImport }}">
 <div onClick="{{ stop }}" style="background:#FFFFFF;border-radius:24px;width:min(560px,100%);padding:26px;box-sizing:border-box;display:flex;flex-direction:column;gap:14px;animation:skb-in .3s ease">
-<h2 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:32px;color:#042D7C">Import your details</h2>
+<h2 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:32px;color:#042D7C">Upload an existing CV</h2><div style="font-size:14px;color:#5B6470;line-height:1.5;margin-top:-6px">{{ importIntoNote }}</div>
 <div style="display:flex;background:#E3E4E8;border-radius:999px;padding:3px;align-self:flex-start">
 <sc-for list="{{ impTabs }}" as="t" hint-placeholder-count="3"><button onClick="{{ t.go }}" style="{{ t.style }}">{{ t.label }}</button></sc-for>
 </div>
 <sc-if value="{{ impFile }}">
-<label style="border:2px dashed #C9CED8;border-radius:18px;padding:28px;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;text-align:center"><strong style="color:#042D7C;font-size:16px">Choose a PDF or Word file</strong><span style="font-size:13px;color:#5B6470">We read the text and fill the editor. Nothing is uploaded except to our AI reader.</span><input type="file" accept=".pdf,.docx" onChange="{{ onImportFile }}" style="display:none"></label>
+<label style="border:2px dashed #C9CED8;border-radius:18px;padding:28px;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;text-align:center"><strong style="color:#042D7C;font-size:16px">Choose the CV or draft (PDF, Word or text file)</strong><span style="font-size:13px;color:#5B6470">We read the file and fill in name, contact details, summary, experience, education, skills and languages. Check every field afterwards.</span><input type="file" accept=".pdf,.docx,.txt,.rtf" onChange="{{ onImportFile }}" style="display:none"></label>
 </sc-if>
 <sc-if value="{{ impLinkedin }}">
 <ol style="margin:0;padding-left:20px;font-size:14px;line-height:1.7"><li>Open your LinkedIn profile on a computer.</li><li>Click <strong>Resources</strong> (or <strong>More</strong>) → <strong>Save to PDF</strong>.</li><li>Upload that PDF here.</li></ol>
@@ -427,7 +429,8 @@ class Component extends DCLogic {
     this.authed=false;const gate=setInterval(async()=>{if(!window.SKP)return;clearInterval(gate);const me=await SKP.me();if(!me){location.href='./Portal.dc.html';return;}const q=new URLSearchParams(location.search);const code=q.get('code');const ro=me.role==='admin';if(ro&&!code){location.href='./Portal.dc.html';return;}this.setState({me,ro});if(ro){const st=document.createElement('style');st.textContent='main input,main textarea,main select,main [contenteditable]{pointer-events:none!important;background:#F4F5F7!important}';document.head.appendChild(st);}
       if(code){try{const rec=await SKP.getCV(code);if(!rec||!rec.doc){this.flash('CV '+code+' not found.');}else{const doc=Object.assign({},rec.doc,{code:rec.code});this.setState(x=>{const cvs=x.cvs.filter(c=>c.code!==rec.code&&c.id!==doc.id);return {cvs:[doc,...cvs],cur:doc.id,view:'edit',synced:rec.code};});}}catch(e){this.flash(e.message);}}
       else if(q.get('new')&&!ro){this.create();}
-      if(code||q.get('new'))history.replaceState(null,'',location.pathname);this.authed=true;},60);
+      else if(q.get('import')&&!ro){this.setState({importOpen:true,importInto:null,impTab:'file'});}
+      if(code||q.get('new')||q.get('import'))history.replaceState(null,'',location.pathname);this.authed=true;},60);
     const h=location.hash;if(h.startsWith('#cv=')){try{this.setState({view:'share',share:JSON.parse(b64d(h.slice(4)))});}catch(e){}}
     this._last={cvs:this.state.cvs,cur:this.state.cur,paid:this.state.paid};this.ro=new ResizeObserver(en=>{const w=Math.round(en[0].contentRect.width);if(Math.abs(w-(this._rw||0))<24)return;this._rw=w;this.lastKey='';this.paint();});
     this.wait=setInterval(()=>{if(window.SKCV){clearInterval(this.wait);this.lastKey='';this.paint();}},120);
@@ -591,12 +594,23 @@ class Component extends DCLogic {
     const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=(D.name||'CV').replace(/\s+/g,'_')+(kind==='cover'?'_Cover_Letter':'_CV')+'.docx';document.body.appendChild(a);a.click();setTimeout(()=>a.remove(),500);}
   async extract(file){const buf=await file.arrayBuffer();
     if(/\.docx$/i.test(file.name)){const r=await window.mammoth.extractRawText({arrayBuffer:buf});return r.value;}
+    if(/\.(txt|rtf)$/i.test(file.name)){let t=new TextDecoder().decode(buf);if(/\.rtf$/i.test(file.name))t=t.replace(/\\par[d]?/g,'\n').replace(/\{\*?\\[^{}]+\}|[{}]|\\[a-z]+-?\d* ?/gi,'');return t;}
+    if(/\.doc$/i.test(file.name))throw new Error('doc');
     const L=window.pdfjsLib;L.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';const pdf=await L.getDocument({data:buf}).promise;let t='';
     for(let i=1;i<=pdf.numPages;i++){const pg=await pdf.getPage(i);const c=await pg.getTextContent();t+=c.items.map(x=>x.str+(x.hasEOL?'\n':' ')).join('')+'\n';}return t;}
-  async importText(text){this.setState({importBusy:'Reading your details…'});
-    try{const out=await this.ai(`Extract this CV or LinkedIn profile into JSON with exactly these keys: name,title,sub,location,phone,email,website,linkedin,summary,skills (array of {cat,list} where list is comma-separated),exp (array of {t: job title, c: "Company · City, Country", d: "Mon YYYY – Mon YYYY", b: achievement bullets joined with \\n}),edu (array of {deg,school,yrs}),langs (comma-separated string),extra (array of {title,items} for certifications, projects, awards; items joined with \\n). Use only information present in the text. Do not invent anything. Use "" for unknown values. Return JSON only.\n\nTEXT:\n${text.slice(0,14000)}`);
-      const j=this.json(out);this.setState({importOpen:false,importBusy:'',pasteText:''});this.create(j,(j.name||'Imported')+' CV');this.flash('Imported. Check every detail before downloading.');}
-    catch(e){this.setState({importBusy:''});this.flash('Could not read that file. Try pasting the text instead.');}}
+  async importText(text){this.setState({importBusy:'Reading the CV…'});
+    let j=null,via='ai';
+    try{const t=new Promise((_,rj)=>setTimeout(()=>rj(new Error('timeout')),25000));const out=await Promise.race([this.ai(`Extract this CV or LinkedIn profile into JSON with exactly these keys: name,title,sub,location,phone,email,website,linkedin,summary,skills (array of {cat,list} where list is comma-separated),exp (array of {t: job title, c: "Company · City, Country", d: "Mon YYYY – Mon YYYY", b: achievement bullets joined with \\n}),edu (array of {deg,school,yrs}),langs (comma-separated string),extra (array of {title,items} for certifications, projects, awards; items joined with \\n). Use only information present in the text. Do not invent anything. Use "" for unknown values. Return JSON only.\n\nTEXT:\n${text.slice(0,14000)}`),t]);j=this.json(out);}catch(e){j=null;}
+    const loc=window.SKIMPORT?window.SKIMPORT.parse(text):null;
+    if(!j||(loc&&window.SKIMPORT.score(j)<window.SKIMPORT.score(loc))){j=loc;via='local';}
+    if(!j||window.SKIMPORT&&window.SKIMPORT.score(j)<2){this.setState({importBusy:''});this.flash('Could not find CV details in that file. Try the Paste text tab.');return;}
+    ['skills','exp','edu','extra'].forEach(k=>{if(!Array.isArray(j[k]))j[k]=[];});
+    const into=this.state.importInto&&this.cvObj();
+    this.setState({importOpen:false,importBusy:'',pasteText:'',importInto:null});
+    if(into){const keep=into.data||{};const merged=Object.assign({},keep);Object.keys(j).forEach(k=>{const v=j[k];if(Array.isArray(v)?v.length:v)merged[k]=v;});if(keep.photo)merged.photo=keep.photo;
+      this.setState(s=>({cvs:s.cvs.map(c=>c.id===into.id?Object.assign({},c,{data:merged,updated:Date.now(),label:(c.label==='My CV'&&j.name)?j.name+' CV':c.label}):c)}));}
+    else this.create(j,(j.name||'Imported')+' CV');
+    this.flash(via==='local'?'CV loaded. Check every section; layouts from some files need small fixes.':'CV loaded. Check every detail before downloading.');}
   renderVals(){
     this.sched();const s=this.state,cv=this.cvObj(),v=s.view,d=cv?cv.data:blank();
     const pill=on=>`background:${on?'#042D7C':'transparent'};color:${on?'#FFFFFF':'#2C3E50'};border:none;border-radius:999px;padding:8px 14px;font:inherit;font-weight:700;font-size:14px;cursor:pointer;white-space:nowrap`;
@@ -628,7 +642,7 @@ class Component extends DCLogic {
       goHome:e=>{e&&e.preventDefault&&e.preventDefault();if(!this.state.cvs.length){location.href='./Portal.dc.html';return;}if(location.hash)history.replaceState(null,'',location.pathname);this.setState({view:'home'});},
       goEditCur:need(()=>this.setState({view:'edit'})),goAts:need(()=>this.setState({view:'ats'})),goCover:need(()=>this.setState({view:'cover'})),
       newCv:()=>{if(location.hash)history.replaceState(null,'',location.pathname);this.create();},
-      openImport:()=>this.setState({importOpen:true}),closeImport:()=>this.setState({importOpen:false}),stop:e=>e.stopPropagation(),
+      openImport:()=>this.setState({importOpen:true,importInto:null,impTab:'file'}),openImportHere:()=>this.setState({importOpen:true,importInto:true,impTab:'file'}),importIntoNote:s.importInto?'The details will replace the matching fields in this CV. Your design, colour and photo stay as they are.':'A new CV is created from the file, with its own code, and saved to the portal.',closeImport:()=>this.setState({importOpen:false}),stop:e=>e.stopPropagation(),
       cvCountLabel:s.cvs.length?`${s.cvs.length} saved in this browser`:'Nothing saved yet',
       cvList:s.cvs.map(c=>({label:c.label,code:window.SKCV?window.SKCV.code(c.tpl||0):'',sub:'Edited '+new Date(c.updated).toLocaleDateString('en-GB',{day:'numeric',month:'short'})+(c.data.title?' · '+c.data.title:''),
         open:()=>this.setState({cur:c.id,view:'edit'}),dup:()=>{const n=JSON.parse(JSON.stringify(c));n.id=uid();n.label=c.label+' (copy)';n.updated=Date.now();this.setState(x=>({cvs:[n,...x.cvs]}));},

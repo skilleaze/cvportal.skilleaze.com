@@ -1,7 +1,7 @@
 -- Skilleaze Internal CV Portal · Supabase schema
 -- Run once in Supabase → SQL Editor. Tables are locked (RLS on, no policies);
 -- the website only talks to them through the functions below.
-create extension if not exists pgcrypto;
+create extension if not exists pgcrypto with schema extensions;
 
 create table if not exists portal_users(
   username text primary key, name text not null, role text not null default 'user' check (role in ('admin','user')),
@@ -24,7 +24,7 @@ create or replace function portal_pub(u portal_users) returns json language sql 
     'created_at',u.created_at,'last_login',u.last_login,'login_count',u.login_count) $$;
 
 create or replace function portal_auth(p_token text, p_admin boolean default false) returns portal_users
-language plpgsql security definer set search_path=public as $$
+language plpgsql security definer set search_path=public, extensions as $$
 declare u portal_users; begin
   select pu.* into u from portal_sessions s join portal_users pu on pu.username=s.username
    where s.token=p_token and pu.active and s.created_at > now() - interval '30 days';
@@ -33,7 +33,7 @@ declare u portal_users; begin
   return u; end $$;
 
 create or replace function portal_login(p_username text, p_password text) returns json
-language plpgsql security definer set search_path=public as $$
+language plpgsql security definer set search_path=public, extensions as $$
 declare u portal_users; t text; begin
   select * into u from portal_users where username=lower(trim(p_username));
   if u.username is null or u.pass <> crypt(p_password,u.pass) then raise exception 'Username or password is incorrect.'; end if;
@@ -44,20 +44,20 @@ declare u portal_users; t text; begin
   return json_build_object('token',t,'user',portal_pub(u)); end $$;
 
 create or replace function portal_me(p_token text) returns json
-language plpgsql security definer set search_path=public as $$
+language plpgsql security definer set search_path=public, extensions as $$
 begin return portal_pub(portal_auth(p_token)); exception when others then return null; end $$;
 
 create or replace function portal_logout(p_token text) returns void
-language sql security definer set search_path=public as $$ delete from portal_sessions where token=p_token $$;
+language sql security definer set search_path=public, extensions as $$ delete from portal_sessions where token=p_token $$;
 
 create or replace function portal_users_list(p_token text) returns json
-language plpgsql security definer set search_path=public as $$
+language plpgsql security definer set search_path=public, extensions as $$
 begin perform portal_auth(p_token,true);
   return coalesce((select json_agg((portal_pub(u)::jsonb || jsonb_build_object('cv_count',(select count(*) from portal_cvs c where c.created_by=u.username))) order by u.created_at)
     from portal_users u),'[]'::json); end $$;
 
 create or replace function portal_user_create(p_token text,p_username text,p_name text,p_password text,p_role text default 'user') returns boolean
-language plpgsql security definer set search_path=public as $$
+language plpgsql security definer set search_path=public, extensions as $$
 declare a portal_users; un text:=lower(trim(p_username)); begin
   a:=portal_auth(p_token,true);
   if un !~ '^[a-z0-9._-]{3,32}$' then raise exception 'Username: 3–32 letters, numbers, dot, dash or underscore.'; end if;
@@ -68,7 +68,7 @@ declare a portal_users; un text:=lower(trim(p_username)); begin
   return true; end $$;
 
 create or replace function portal_user_update(p_token text,p_username text,p_active boolean,p_password text) returns boolean
-language plpgsql security definer set search_path=public as $$
+language plpgsql security definer set search_path=public, extensions as $$
 begin perform portal_auth(p_token,true);
   if p_active is not null then
     if p_username='skilleazeadmin' then raise exception 'The main admin cannot be disabled.'; end if;
@@ -81,13 +81,13 @@ begin perform portal_auth(p_token,true);
   return true; end $$;
 
 create or replace function portal_user_delete(p_token text,p_username text) returns boolean
-language plpgsql security definer set search_path=public as $$
+language plpgsql security definer set search_path=public, extensions as $$
 begin perform portal_auth(p_token,true);
   if p_username='skilleazeadmin' then raise exception 'The main admin cannot be deleted.'; end if;
   delete from portal_users where username=p_username; return true; end $$;
 
 create or replace function portal_cv_save(p_token text,p_code text,p_kind text,p_customer text,p_phone text,p_email text,p_label text,p_doc jsonb) returns boolean
-language plpgsql security definer set search_path=public as $$
+language plpgsql security definer set search_path=public, extensions as $$
 declare u portal_users; begin u:=portal_auth(p_token);
   if u.role='admin' then raise exception 'Admin accounts manage the portal and cannot create or edit CVs.'; end if;
   insert into portal_cvs(code,kind,customer,phone,email,label,doc,created_by,updated_by)
@@ -97,13 +97,13 @@ declare u portal_users; begin u:=portal_auth(p_token);
   return true; end $$;
 
 create or replace function portal_cv_get(p_token text,p_code text) returns json
-language plpgsql security definer set search_path=public as $$
+language plpgsql security definer set search_path=public, extensions as $$
 begin perform portal_auth(p_token);
   return (select row_to_json(c) from portal_cvs c where lower(c.code)=lower(trim(p_code))); end $$;
 
 drop function if exists portal_cv_search(text,text,text);
 create or replace function portal_cv_search(p_token text,p_q text,p_kind text default null,p_by text default null) returns json
-language plpgsql security definer set search_path=public as $$
+language plpgsql security definer set search_path=public, extensions as $$
 declare n text:=regexp_replace(lower(coalesce(p_q,'')),'[\s\-+()]','','g'); begin perform portal_auth(p_token);
   return coalesce((select json_agg(x) from (
     select code,kind,customer,phone,email,label,created_by,updated_by,created_at,updated_at from portal_cvs c
@@ -114,11 +114,11 @@ declare n text:=regexp_replace(lower(coalesce(p_q,'')),'[\s\-+()]','','g'); begi
      order by updated_at desc limit 100) x),'[]'::json); end $$;
 
 create or replace function portal_cv_delete(p_token text,p_code text) returns boolean
-language plpgsql security definer set search_path=public as $$
+language plpgsql security definer set search_path=public, extensions as $$
 begin perform portal_auth(p_token,true); delete from portal_cvs where code=p_code; return true; end $$;
 
 create or replace function portal_stats(p_token text) returns json
-language plpgsql security definer set search_path=public as $$
+language plpgsql security definer set search_path=public, extensions as $$
 begin perform portal_auth(p_token);
   return json_build_object('users',(select count(*) from portal_users),'active_users',(select count(*) from portal_users where active),
    'experts',(select count(*) from portal_users where role='user'),'active_experts',(select count(*) from portal_users where role='user' and active),
@@ -134,5 +134,5 @@ grant execute on function portal_login, portal_me, portal_logout, portal_users_l
 
 -- The main admin account. Change this password after first sign-in (Dashboard → Users → Reset password).
 insert into portal_users(username,name,role,pass)
-values('skilleazeadmin','Skilleaze Admin','admin',crypt('Skz!Adm-4Rq9#Vt72Lp',gen_salt('bf')))
+values('skilleazeadmin','Skilleaze Admin','admin',extensions.crypt('Skz!Adm-4Rq9#Vt72Lp',extensions.gen_salt('bf')))
 on conflict(username) do nothing;
