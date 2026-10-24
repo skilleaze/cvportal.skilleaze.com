@@ -542,7 +542,7 @@ class Component extends DCLogic {
     const r=await fetch(C.supabaseUrl.replace(/\/$/,'')+'/functions/v1/ai',{method:'POST',headers:{'content-type':'application/json','apikey':C.supabaseAnonKey,'Authorization':'Bearer '+C.supabaseAnonKey},body:JSON.stringify({prompt,token:tk})});
     const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||'AI unavailable');return j.text;}
   json(t){const m=String(t).match(/\{[\s\S]*\}/);return JSON.parse(m?m[0]:t);}
-  async run(tag,fn){if(this.state.busy)return;this.setState({busy:tag});try{await fn();}catch(e){this.flash('AI is unavailable right now. Please try again.');}this.setState({busy:''});}
+  async run(tag,fn){if(this.state.busy)return;this.setState({busy:tag});try{await fn();}catch(e){const m=String((e&&e.message)||'');this.flash(/failed to fetch|networkerror|load failed/i.test(m)?'AI blocked: check ALLOWED_ORIGINS matches this web address exactly.':/not found|404/i.test(m)?'AI function "ai" not found in Supabase.':'AI error: '+(m||'unknown').slice(0,160));}this.setState({busy:''});}
   ats(cv){const D=this.toD(cv.data);const bul=D.exp.flatMap(e=>e.b);const words=(D.summary.match(/\S+/g)||[]).length;
     const text=[D.title,D.sub,D.summary,...D.skills.flat(),...D.exp.flatMap(e=>[e.t,e.c,...e.b]),...D.edu.flat(),D.langs,...D.extra.flatMap(x=>[x.title,...x.items])].join(' ').toLowerCase();
     const metric=bul.length?bul.filter(b=>/\d/.test(b)).length/bul.length:0;const verb=bul.length?bul.filter(b=>VERBS.test(b)).length/bul.length:0;
