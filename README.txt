@@ -1,3 +1,6 @@
-1. Supabase → SQL Editor → paste supabase-upgrade-v2.sql → Run (safe to run again).
-2. Copy everything else into your portal repo, replacing existing files. Keep your own cv-builder/portal-config.js.
-3. GitHub Desktop → Commit to main → Push origin.
+1. Copy everything into your portal repo (keep your own cv-builder/portal-config.js).
+2. GitHub Desktop → Commit to main → Push origin.
+3. Re-deploy the AI function (Terminal, inside the repo folder):
+   cd cv-builder
+   supabase functions deploy ai --no-verify-jwt
+   (optional) choose the model: supabase secrets set ANTHROPIC_MODEL=claude-sonnet-4-5
