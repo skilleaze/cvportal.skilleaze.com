@@ -15,6 +15,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
 <script src="./cv-builder/portal-config.js"></script>
 <script src="./cv-builder/portal-store.js"></script>
+<script src="./cv-builder/sk-ui.js"></script>
 <style>
 body{margin:0;background:#F4F6FA;font-family:Lato,sans-serif;color:#2C3E50}
 a{color:#042D7C}a:hover{color:#053BA0}
@@ -82,12 +83,12 @@ input,select,button{font-family:inherit}
 <div style="font-size:15px;color:#E3E4E8;max-width:560px;line-height:1.5">{{ heroSub }}</div>
 </div>
 <sc-if value="{{ canCreate }}"><div style="display:flex;gap:10px;flex-wrap:wrap">
-<a href="./Skilleaze%20CV%20Builder.dc.html?new=1" style="display:inline-flex;align-items:center;gap:10px;background:#FFFFFF;color:#042D7C;border-radius:999px;padding:13px 20px;font-weight:900;font-size:14px;text-decoration:none;white-space:nowrap" style-hover="background:#E9EEF8;color:#042D7C">+ New ATS CV</a>
-<a href="./Skilleaze%20Europass%20CV%20Builder.dc.html?new=1" style="display:inline-flex;align-items:center;gap:10px;background:rgba(255,255,255,.1);color:#FFFFFF;border:1px solid rgba(255,255,255,.4);border-radius:999px;padding:12px 20px;font-weight:900;font-size:14px;text-decoration:none;white-space:nowrap" style-hover="background:rgba(255,255,255,.18);color:#FFFFFF">+ New Europass CV</a>
-<a href="./Skilleaze%20CV%20Builder.dc.html?import=1" style="display:inline-flex;align-items:center;gap:10px;background:transparent;color:#FFFFFF;border:1px dashed rgba(255,255,255,.5);border-radius:999px;padding:12px 20px;font-weight:900;font-size:14px;text-decoration:none;white-space:nowrap" style-hover="background:rgba(255,255,255,.1);color:#FFFFFF">Upload existing CV</a>
+<a href="{{ urlAts }}?new=1" style="display:inline-flex;align-items:center;gap:10px;background:#FFFFFF;color:#042D7C;border-radius:999px;padding:13px 20px;font-weight:900;font-size:14px;text-decoration:none;white-space:nowrap" style-hover="background:#E9EEF8;color:#042D7C">+ New ATS CV</a>
+<a href="{{ urlEp }}?new=1" style="display:inline-flex;align-items:center;gap:10px;background:rgba(255,255,255,.1);color:#FFFFFF;border:1px solid rgba(255,255,255,.4);border-radius:999px;padding:12px 20px;font-weight:900;font-size:14px;text-decoration:none;white-space:nowrap" style-hover="background:rgba(255,255,255,.18);color:#FFFFFF">+ New Europass CV</a>
+<a href="{{ urlAts }}?import=1" style="display:inline-flex;align-items:center;gap:10px;background:transparent;color:#FFFFFF;border:1px dashed rgba(255,255,255,.5);border-radius:999px;padding:12px 20px;font-weight:900;font-size:14px;text-decoration:none;white-space:nowrap" style-hover="background:rgba(255,255,255,.1);color:#FFFFFF">Upload existing CV</a>
 </div></sc-if>
 </section></sc-if>
-<sc-if value="{{ notOverview }}"><section style="display:flex;justify-content:space-between;align-items:flex-end;gap:14px;flex-wrap:wrap"><div><div style="font-size:12px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#053BA0">{{ tabKicker }}</div><h1 style="margin:4px 0 0;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:clamp(32px,4vw,44px);line-height:1.05;color:#042D7C">{{ tabTitle }}</h1></div><sc-if value="{{ canCreate }}"><a href="./Skilleaze%20CV%20Builder.dc.html?new=1" style="background:#042D7C;color:#FFFFFF;border-radius:999px;padding:12px 18px;font-weight:900;font-size:14px;text-decoration:none;white-space:nowrap" style-hover="background:#053BA0;color:#FFFFFF">+ New CV</a></sc-if></section></sc-if>
+<sc-if value="{{ notOverview }}"><section style="display:flex;justify-content:space-between;align-items:flex-end;gap:14px;flex-wrap:wrap"><div><div style="font-size:12px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#053BA0">{{ tabKicker }}</div><h1 style="margin:4px 0 0;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:clamp(32px,4vw,44px);line-height:1.05;color:#042D7C">{{ tabTitle }}</h1></div><sc-if value="{{ canCreate }}"><a href="{{ urlAts }}?new=1" style="background:#042D7C;color:#FFFFFF;border-radius:999px;padding:12px 18px;font-weight:900;font-size:14px;text-decoration:none;white-space:nowrap" style-hover="background:#053BA0;color:#FFFFFF">+ New CV</a></sc-if></section></sc-if>
 
 <section style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:#FFFFFF;border:1px solid #E3E4E8;border-radius:20px;padding:10px 12px">
 <span style="font-size:12px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:#5B6470;padding:0 6px">Period</span>
@@ -226,9 +227,9 @@ input,select,button{font-family:inherit}
 <sc-for list="{{ feed }}" as="a" hint-placeholder-count="6">
 <div style="display:flex;gap:14px;align-items:center;padding:12px;border-bottom:1px solid #F1F3F6;flex-wrap:wrap">
 <div style="{{ a.dotStyle }}">{{ a.icon }}</div>
-<div style="flex:1 1 240px;min-width:0;display:flex;flex-direction:column;gap:2px"><div style="font-size:14px"><strong style="color:#042D7C">{{ a.who }}</strong> {{ a.what }} <strong>{{ a.customer }}</strong></div><div style="font-size:12px;color:#8A919C">{{ a.no }} · {{ a.code }}{{ a.sec }}</div></div>
+<div style="flex:1 1 240px;min-width:0;display:flex;flex-direction:column;gap:2px"><div style="font-size:14px"><strong style="color:#042D7C">{{ a.who }}</strong> {{ a.what }} <strong>{{ a.customer }}</strong></div><sc-if value="{{ a.meta }}"><div style="font-size:12px;color:#8A919C">{{ a.meta }}</div></sc-if></div>
 <div style="font-size:12px;color:#5B6470;white-space:nowrap">{{ a.at }}</div>
-<button onClick="{{ a.open }}" style="background:#FFFFFF;color:#042D7C;border:1px solid #D9DCE3;border-radius:999px;padding:7px 12px;font-weight:900;font-size:12px;cursor:pointer" style-hover="border-color:#042D7C">CV</button>
+<sc-if value="{{ a.live }}"><button onClick="{{ a.open }}" style="background:#FFFFFF;color:#042D7C;border:1px solid #D9DCE3;border-radius:999px;padding:7px 12px;font-weight:900;font-size:12px;cursor:pointer" style-hover="border-color:#042D7C">CV</button></sc-if>
 </div>
 </sc-for>
 </section>
@@ -245,7 +246,7 @@ input,select,button{font-family:inherit}
 <div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><span style="font-size:12px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#C9D3E8">{{ dr.kicker }}</span><button onClick="{{ closeDrawer }}" aria-label="Close" style="background:rgba(255,255,255,.12);border:0;color:#FFFFFF;width:38px;height:38px;border-radius:50%;font-size:18px;cursor:pointer" style-hover="background:rgba(255,255,255,.22)">✕</button></div>
 <div style="font-family:'Cormorant Garamond',serif;font-weight:700;font-size:36px;line-height:1.05;word-break:break-word">{{ dr.title }}</div>
 <div style="font-size:14px;color:#E3E4E8">{{ dr.sub }}</div>
-<sc-if value="{{ dr.href }}"><a href="{{ dr.href }}" style="align-self:flex-start;background:#FFFFFF;color:#042D7C;border-radius:999px;padding:11px 20px;font-weight:900;font-size:14px;text-decoration:none" style-hover="background:#E9EEF8;color:#042D7C">{{ dr.hrefLabel }}</a></sc-if>
+<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center"><sc-if value="{{ dr.href }}"><a href="{{ dr.href }}" style="align-self:flex-start;background:#FFFFFF;color:#042D7C;border-radius:999px;padding:11px 20px;font-weight:900;font-size:14px;text-decoration:none" style-hover="background:#E9EEF8;color:#042D7C">{{ dr.hrefLabel }}</a></sc-if><sc-if value="{{ dr.canDel }}"><button onClick="{{ dr.del }}" style="background:transparent;color:#FFFFFF;border:1px solid rgba(255,255,255,.5);border-radius:999px;padding:10px 18px;font:inherit;font-weight:900;font-size:14px;cursor:pointer" style-hover="background:#B3261E;border-color:#B3261E">{{ dr.delLabel }}</button></sc-if></div>
 </div>
 <div style="padding:20px 22px 40px;display:flex;flex-direction:column;gap:18px">
 <sc-if value="{{ dr.loading }}"><div style="color:#5B6470;font-size:14px">Loading…</div></sc-if>
@@ -360,9 +361,9 @@ class Component extends DCLogic {
     const CLEAN=/skilleaze\.com$|vercel\.app$/i.test(location.hostname);const href=r=>(r.kind==='europass'?(CLEAN?'./europass-cv-builder':'./Skilleaze%20Europass%20CV%20Builder.dc.html'):(CLEAN?'./ats-cv-builder':'./Skilleaze%20CV%20Builder.dc.html'))+'?code='+encodeURIComponent(r.code)+(admin?'&view=1':'');
     const card=r=>({no:this.no(r.serial),code:r.code,customer:r.customer||'(no name yet)',phone:r.phone||'No phone',kindLabel:r.kind==='europass'?'EUROPASS':'ATS',kindStyle:kindStyle(r.kind),
       createdBy:nm(r.created_by),created:this.fmt(r.created_at),time:this.dur(r.time_spent)+' worked',dl:(r.downloads||0)+' download'+(r.downloads===1?'':'s'),href:href(r),info:()=>this.openCv(r)});
-    const ACT={created:['✦','created CV for','#042D7C'],edited:['✎','edited CV for','#053BA0'],download_pdf:['↓','downloaded PDF of','#1E7A4C'],download_docx:['↓','downloaded Word of','#1E7A4C'],viewed:['◉','viewed CV of','#7A5B12'],imported:['⇪','imported CV for','#053BA0']};
+    const ACT={created:['✦','created CV for','#042D7C'],edited:['✎','edited CV for','#053BA0'],download_pdf:['↓','downloaded PDF of','#1E7A4C'],download_docx:['↓','downloaded Word of','#1E7A4C'],viewed:['◉','viewed CV of','#7A5B12'],imported:['⇪','imported CV for','#053BA0'],deleted:['✕','deleted CV for','#B3261E'],user_created:['+','added CV expert','#042D7C'],user_deleted:['✕','removed CV expert','#B3261E'],user_disabled:['⏸','disabled CV expert','#7A5B12'],user_enabled:['▶','enabled CV expert','#1E7A4C']};
     const actRow=a=>{const m=ACT[a.action]||['•',a.action,'#5B6470'];return {icon:m[0],dotStyle:`width:32px;height:32px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;color:#FFFFFF;background:${m[2]}`,
-      who:nm(a.username),what:m[1],customer:a.customer||a.code,no:this.no(a.serial),code:a.code,sec:a.seconds>=60?' · '+this.dur(a.seconds):'',at:this.fmt(a.at),
+      who:nm(a.username),what:m[1],customer:a.customer||a.detail||a.code,no:this.no(a.serial),code:a.code,sec:a.seconds>=60?' · '+this.dur(a.seconds):'',live:!!a.code&&a.action!=='deleted'&&a.serial!=null,meta:!a.code?'Team change':a.action==='deleted'?'CV code '+a.code+' · removed from the portal':[a.serial!=null?this.no(a.serial):'',a.code].filter(Boolean).join(' · ')+(a.seconds>=60?' · '+this.dur(a.seconds):''),at:this.fmt(a.at),
       open:()=>{const r=s.results.find(x=>x.code===a.code)||{code:a.code,customer:a.customer,serial:a.serial,kind:/^EUP/.test(a.code)?'europass':'ats'};this.openCv(r);}};};
     // chart
     const daily=R.daily||[];const mx=Math.max(1,...daily.map(d=>d.n));const step=Math.max(1,Math.ceil(daily.length/8));
@@ -382,7 +383,7 @@ class Component extends DCLogic {
     let dr=null;if(s.dr){const d=s.dr;
       if(d.type==='cv'){const r=d.r;dr={kicker:this.no(r.serial)+' · '+(r.kind==='europass'?'Europass CV':'ATS CV'),title:r.customer||'(no name yet)',sub:[r.phone,r.email].filter(Boolean).join(' · ')||'No contact details yet',href:href(r),hrefLabel:admin?'View CV':'Open in builder',
         facts:[['CV code',r.code],['CV number',this.no(r.serial)],['Created',this.fmt(r.created_at)],['Created by',nm(r.created_by)],['Last edited',this.fmt(r.updated_at)],['Edited by',nm(r.updated_by)],['Time spent',this.dur(r.time_spent)],['Saves',String(r.edit_count||0)],['Downloads',String(r.downloads||0)],['Last download',this.fmt(r.last_download)],['Label',r.label||'—']].map(([k,v])=>({k,v})),
-        isExpert:false,hasCvs:false,cvs:[],hasAct:(d.act||[]).length>0,act:(d.act||[]).map(actRow),loading:d.loading};}
+        isExpert:false,hasCvs:false,cvs:[],canDel:admin,delLabel:s.delBusy?'Deleting…':'Delete CV',del:async()=>{if(s.delBusy)return;if(!confirm('Delete '+(r.customer||r.code)+' ('+this.no(r.serial)+')? This cannot be undone. The deletion is recorded in the activity log.'))return;this.setState({delBusy:true});try{await SKP.deleteCV(r.code,(r.customer||'')+' · '+this.no(r.serial));this.setState({dr:null,delBusy:false});this.flash('CV '+this.no(r.serial)+' deleted');this.refresh();}catch(e){this.setState({delBusy:false});this.flash(e.message);}},hasAct:(d.act||[]).length>0,act:(d.act||[]).map(actRow),loading:d.loading};}
       else if(d.type==='cust'){const c=d.c;const L=d.cvs||[];dr={kicker:'Customer',title:c.name,sub:[c.phone!=='—'?c.phone:'',c.email].filter(Boolean).join(' · '),href:'',hrefLabel:'',
         facts:[['CVs',String(L.length)],['ATS',String(L.filter(r=>r.kind!=='europass').length)],['Europass',String(L.filter(r=>r.kind==='europass').length)],['First CV',this.fmt(L.map(r=>r.created_at).sort()[0])],['Last update',this.fmt(L.map(r=>r.updated_at).sort().slice(-1)[0])],['Experts',[...new Set(L.map(r=>nm(r.created_by)))].join(', ')||'—'],['Total time',this.dur(L.reduce((a,r)=>a+(r.time_spent||0),0))]].map(([k,v])=>({k,v})),
         isExpert:false,hasCvs:L.length>0,cvsTitle:'Their CVs',cvs:L.map(card),hasAct:false,act:[],loading:d.loading};}
@@ -396,7 +397,7 @@ class Component extends DCLogic {
     const avg=T.cvs?this.dur(T.seconds/T.cvs):'—';
     const tab=s.tab;
     return {
-      needsUpgrade:!!s.upg&&admin,showLogin:s.ready&&!me,showApp:s.ready&&!!me,preview:window.SKP?!SKP.remote:false,
+      urlAts:(/skilleaze\.com$|vercel\.app$/i.test(location.hostname)?'/ats-cv-builder':'./Skilleaze%20CV%20Builder.dc.html'),urlEp:(/skilleaze\.com$|vercel\.app$/i.test(location.hostname)?'/europass-cv-builder':'./Skilleaze%20Europass%20CV%20Builder.dc.html'),needsUpgrade:!!s.upg&&admin,showLogin:s.ready&&!me,showApp:s.ready&&!!me,preview:window.SKP?!SKP.remote:false,
       loginErr:s.loginErr,loginBtn:s.busy?'Signing in…':'Sign in',
       doLogin:async e=>{e.preventDefault();const f=e.target;this.setState({busy:true,loginErr:''});try{const me=await SKP.login(f.un.value,f.pw.value);this.setState({me,busy:false});this.refresh();}catch(err){this.setState({busy:false,loginErr:err.message});}},
       doLogout:async()=>{await SKP.logout();this.setState({me:null,users:[],results:[],report:null,feed:[],dr:null});},

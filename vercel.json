@@ -13,18 +13,28 @@
   ],
   "redirects": [
     {
-      "source": "/Portal.dc.html",
-      "destination": "/",
-      "permanent": true
-    },
-    {
       "source": "/Portal.dc",
       "destination": "/",
       "permanent": true
     },
     {
+      "source": "/Portal.dc.html",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/Skilleaze%20CV%20Builder.dc",
+      "destination": "/ats-cv-builder",
+      "permanent": true
+    },
+    {
       "source": "/Skilleaze%20CV%20Builder.dc.html",
       "destination": "/ats-cv-builder",
+      "permanent": true
+    },
+    {
+      "source": "/Skilleaze%20Europass%20CV%20Builder.dc",
+      "destination": "/europass-cv-builder",
       "permanent": true
     },
     {
