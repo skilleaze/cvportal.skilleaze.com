@@ -16,8 +16,10 @@ var H=[
  ['awards',/^(?:awards?|achievements?|honou?rs|accomplishments)\b/i],
  ['ignore',/^(?:interests|hobbies|references?|declaration|personal\s+(?:details|information|data)|contact(?:\s+details)?)\b/i]
 ];
-function clean(l){return l.replace(/\s+/g,' ').trim();}
-function heading(l){var t=clean(l).replace(/[:：]\s*$/,'');if(t.length>42||/[.@]/.test(t.slice(-1)))return null;
+function unspace(l){return l.replace(/(?:\b[A-Za-z&]\s){2,}[A-Za-z&]\b/g,function(m){return m.replace(/\s/g,'');});}
+function clean(l){return unspace(l.replace(/\s+/g,' ').trim());}
+var SQ={professionalsummary:'summary',careersummary:'summary',summary:'summary',profile:'summary',professionalprofile:'summary',careerobjective:'summary',objective:'summary',aboutme:'summary',coreskills:'skills',keyskills:'skills',technicalskills:'skills',corecompetencies:'skills',skills:'skills',areasofexpertise:'skills',expertise:'skills',skillsandtools:'skills',professionalexperience:'exp',workexperience:'exp',employmenthistory:'exp',workhistory:'exp',experience:'exp',careerhistory:'exp',education:'edu',academicqualifications:'edu',qualifications:'edu',educationandcertifications:'edu',languages:'langs'};
+function heading(l){var t=clean(l).replace(/[:：]\s*$/,'');var sq=t.toLowerCase().replace(/[^a-z]/g,'');if(t.length<=48&&SQ[sq])return SQ[sq];if(t.length>42||/[.@]/.test(t.slice(-1)))return null;
  for(var i=0;i<H.length;i++)if(H[i][1].test(t))return H[i][0];return null;}
 function nameLike(l){return /^[A-Za-z][A-Za-z.'’\- ]{2,40}$/.test(l)&&l.split(' ').length>=2&&l.split(' ').length<=5&&!heading(l);}
 function parse(text){
@@ -42,12 +44,14 @@ function parse(text){
  var restTop=top.filter(function(l){return vis.indexOf(l)<0&&l!==out.title&&!nameLike(l)&&!/[@]|linkedin|www\.|\+?\d{6,}/i.test(l.replace(/\s/g,''))&&l.length>60;});
  out.summary=(secs.summary||restTop).join(' ').replace(BUL,'');
  if(secs.skills){var cats=[],plain=[];secs.skills.forEach(function(l){l=l.replace(BUL,'');var m=l.match(/^([^:]{2,30}):\s*(.+)$/);
+   if(!m&&cats.length){var lc=cats[cats.length-1];lc.list=(lc.list+', '+l.split(/\s*[,;|•·]\s*/).filter(Boolean).join(', ')).replace(/,\s*,/g,',');return;}
    if(m)cats.push({cat:clean(m[1]),list:m[2].split(/\s*[,;|•·]\s*/).filter(Boolean).join(', ')});else plain=plain.concat(l.split(/\s*[,;|•·]\s*|\s{2,}/));});
   plain=plain.map(clean).filter(function(x){return x&&x.length<60;});
   if(plain.length)cats.unshift({cat:'Core skills',list:plain.join(', ')});out.skills=cats;}
  if(secs.langs)out.langs=secs.langs.map(function(l){return l.replace(BUL,'');}).join(', ').replace(/\s*,\s*,/g,',');
- if(secs.exp){var jobs=[],j=null,lastB=false;
-  secs.exp.forEach(function(l){var isB=BUL.test(l)||(l.length>90&&j&&j.hdr.length);
+ if(secs.exp){var EJ=[];secs.exp.forEach(function(l){var p=EJ[EJ.length-1];if(p&&!BUL.test(l)&&!RANGE.test(l)&&(/^[a-z0-9(]/.test(l)&&!/^\d{4}/.test(l))&&p.length>40&&!/[.!]$/.test(p)){EJ[EJ.length-1]=p+' '+l;}else EJ.push(l);});secs.exp=EJ;
+  var jobs=[],j=null,lastB=false;
+  secs.exp.forEach(function(l){var isB=BUL.test(l)||(j&&j.hdr.length&&(l.length>90||/[.!]$/.test(l)&&l.length>40));
    if(isB){if(!j){j={hdr:[],b:[]};jobs.push(j);}j.b.push(l.replace(BUL,''));lastB=true;return;}
    if(!j||lastB||j.hdr.length>=3||(RANGE.test(l)&&j.hdr.some(function(x){return RANGE.test(x);}))){j={hdr:[],b:[]};jobs.push(j);}
    j.hdr.push(l);lastB=false;});
