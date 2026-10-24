@@ -21,7 +21,9 @@ function heading(l){var t=clean(l).replace(/[:：]\s*$/,'');if(t.length>42||/[.@
  for(var i=0;i<H.length;i++)if(H[i][1].test(t))return H[i][0];return null;}
 function nameLike(l){return /^[A-Za-z][A-Za-z.'’\- ]{2,40}$/.test(l)&&l.split(' ').length>=2&&l.split(' ').length<=5&&!heading(l);}
 function parse(text){
- var raw=String(text||'').replace(/\r/g,'').replace(/\t/g,' ').split('\n').map(clean).filter(Boolean);
+ var HW='PROFESSIONAL SUMMARY|CAREER SUMMARY|SUMMARY|PROFILE|CAREER OBJECTIVE|OBJECTIVE|ABOUT ME|CORE SKILLS|KEY SKILLS|TECHNICAL SKILLS|CORE COMPETENCIES|SKILLS|AREAS OF EXPERTISE|EXPERTISE|PROFESSIONAL EXPERIENCE|WORK EXPERIENCE|EMPLOYMENT HISTORY|WORK HISTORY|EXPERIENCE|EDUCATION|ACADEMIC QUALIFICATIONS|QUALIFICATIONS|CERTIFICATIONS|CERTIFICATES|LICENSES|PROJECTS|KEY PROJECTS|AWARDS|ACHIEVEMENTS|KEY ACHIEVEMENTS|LANGUAGES|INTERESTS|HOBBIES|REFERENCES|DECLARATION|PERSONAL DETAILS';
+ var src=String(text||'').replace(/\r/g,'').replace(/\t/g,' ').replace(new RegExp('(^|[^A-Za-z])('+HW+')(?=\\s*[:：]?\\s+[A-Z0-9•●▪\\-])','g'),'$1\n$2\n').replace(/\s+([•●▪■➢➤►✓✔])\s*/g,'\n$1 ').replace(/(Visa|Availability|Nationality|Notice period)\s*:/g,'\n$1:');
+ var raw=src.split('\n').map(clean).filter(Boolean);
  var out={name:'',title:'',sub:'',location:'',phone:'',email:'',website:'',linkedin:'',summary:'',skills:[],exp:[],edu:[],langs:'',extra:[]};
  var all=raw.join('\n');
  var em=all.match(/[\w.+-]+@[\w-]+\.[\w.-]+/);if(em)out.email=em[0];
@@ -35,7 +37,9 @@ function parse(text){
   if(out.name&&!out.title&&!/[@\d]|linkedin|www\./i.test(top[i])&&top[i].length<80){out.title=top[i];continue;}}
  top.forEach(function(l){l.split(/\s*[|•·●]\s*/).forEach(function(p){p=clean(p);
   if(!out.location&&p&&!/[@\d]|linkedin|www\.|http/i.test(p)&&/,/.test(p)&&p.length<50&&p!==out.title)out.location=p;});});
- var restTop=top.filter(function(l){return l!==out.title&&!nameLike(l)&&!/[@]|linkedin|www\.|\+?\d{6,}/i.test(l.replace(/\s/g,''))&&l.length>60;});
+ var vis=raw.filter(function(l){return /^(Visa|Availability|Nationality|Notice period)\s*:/i.test(l);});if(vis.length)out.extraLine=vis.join(' · ').replace(/\s*\|\s*/g,' · ').replace(/(\s*·\s*)+/g,' · ').replace(/^\s*·\s*|\s*·\s*$/g,'');
+ if(secs.summary)secs.summary=secs.summary.filter(function(l){return vis.indexOf(l)<0;});
+ var restTop=top.filter(function(l){return vis.indexOf(l)<0&&l!==out.title&&!nameLike(l)&&!/[@]|linkedin|www\.|\+?\d{6,}/i.test(l.replace(/\s/g,''))&&l.length>60;});
  out.summary=(secs.summary||restTop).join(' ').replace(BUL,'');
  if(secs.skills){var cats=[],plain=[];secs.skills.forEach(function(l){l=l.replace(BUL,'');var m=l.match(/^([^:]{2,30}):\s*(.+)$/);
    if(m)cats.push({cat:clean(m[1]),list:m[2].split(/\s*[,;|•·]\s*/).filter(Boolean).join(', ')});else plain=plain.concat(l.split(/\s*[,;|•·]\s*|\s{2,}/));});
