@@ -20,6 +20,12 @@ async function rpc(fn,args){
   return j;
 }
 const tok=()=>{const s=sess();return s&&s.token};
+const MISS=e=>/could not find the function|PGRST202/i.test(String(e&&e.message||e)+' '+String(e&&e.code||''));
+const flag=()=>{if(window.SKP)window.SKP.needsUpgrade=true;};
+const day=x=>String(x||'').slice(0,10);
+async function searchRaw(q,kind,by,from,to){
+  try{return await rpc('portal_cv_search',{p_token:tok(),p_q:q||'',p_kind:kind||null,p_by:by||null,p_from:from||null,p_to:to||null});}
+  catch(e){if(!MISS(e))throw e;flag();const l=await rpc('portal_cv_search',{p_token:tok(),p_q:q||'',p_kind:kind||null,p_by:by||null});return (l||[]).filter(c=>(!from||day(c.created_at)>=from)&&(!to||day(c.created_at)<=to));}}
 const R={
   async login(u,p){const j=await rpc('portal_login',{p_username:u,p_password:p});if(!j)throw new Error('Username or password is incorrect.');setSess({token:j.token,user:j.user});return j.user;},
   async me(){const t=tok();if(!t)return null;try{const u=await rpc('portal_me',{p_token:t});if(!u){setSess(null);return null;}setSess({token:t,user:u});return u;}catch(e){const s=sess();return s&&s.user;}},
@@ -28,12 +34,18 @@ const R={
   createUser:o=>rpc('portal_user_create',{p_token:tok(),p_username:o.username,p_name:o.name,p_password:o.password,p_role:'user'}),
   updateUser:(u,o)=>rpc('portal_user_update',{p_token:tok(),p_username:u,p_active:o.active==null?null:o.active,p_password:o.password||null}),
   deleteUser:u=>rpc('portal_user_delete',{p_token:tok(),p_username:u}),
-  saveCV:r=>rpc('portal_cv_save',{p_token:tok(),p_code:r.code,p_kind:r.kind,p_customer:r.customer||'',p_phone:r.phone||'',p_email:r.email||'',p_label:r.label||'',p_doc:r.doc,p_seconds:r.seconds||0}),
-  logCV:(c,a,d)=>rpc('portal_cv_log',{p_token:tok(),p_code:c,p_action:a,p_detail:d||''}),
-  activity:o=>rpc('portal_activity_list',{p_token:tok(),p_code:(o&&o.code)||null,p_user:(o&&o.user)||null,p_from:(o&&o.from)||null,p_to:(o&&o.to)||null}),
-  report:(f,t)=>rpc('portal_report',{p_token:tok(),p_from:f||null,p_to:t||null}),
+  async saveCV(r){const base={p_token:tok(),p_code:r.code,p_kind:r.kind,p_customer:r.customer||'',p_phone:r.phone||'',p_email:r.email||'',p_label:r.label||'',p_doc:r.doc};
+    try{return await rpc('portal_cv_save',Object.assign({p_seconds:r.seconds||0},base));}catch(e){if(!MISS(e))throw e;flag();return await rpc('portal_cv_save',base);}},
+  async logCV(c,a,d){try{return await rpc('portal_cv_log',{p_token:tok(),p_code:c,p_action:a,p_detail:d||''});}catch(e){if(MISS(e)){flag();return false;}throw e;}},
+  async activity(o){o=o||{};try{return await rpc('portal_activity_list',{p_token:tok(),p_code:o.code||null,p_user:o.user||null,p_from:o.from||null,p_to:o.to||null});}catch(e){if(MISS(e)){flag();return [];}throw e;}},
+  async report(f,t){try{return await rpc('portal_report',{p_token:tok(),p_from:f||null,p_to:t||null});}catch(e){if(!MISS(e))throw e;flag();
+    const me=(sess()||{}).user||{};const cs=await searchRaw('',null,me.role==='admin'?null:me.username,f,t);let users=[];if(me.role==='admin')try{users=await rpc('portal_users_list',{p_token:tok()})||[];}catch(_){}
+    const to=t||new Date().toISOString().slice(0,10);const from=f||(cs.length?cs.map(c=>day(c.created_at)).sort()[0]:to);const daily=[];let x=new Date(from+'T00:00:00Z');const en=new Date(to+'T00:00:00Z');if((en-x)/864e5>89)x=new Date(en-89*864e5);
+    for(;x<=en;x=new Date(+x+864e5)){const k=x.toISOString().slice(0,10);daily.push({d:k,n:cs.filter(c=>day(c.created_at)===k).length});}
+    return {totals:{cvs:cs.length,ats:cs.filter(c=>c.kind==='ats').length,europass:cs.filter(c=>c.kind==='europass').length,customers:new Set(cs.map(c=>String(c.phone||'').replace(/\D/g,'')||norm(c.customer)).filter(Boolean)).size,seconds:0,downloads:0},daily,
+      experts:users.filter(u=>u.role!=='admin').map(u=>({username:u.username,name:u.name,active:u.active,last_login:u.last_login,login_count:u.login_count,created_at:u.created_at,cvs:cs.filter(c=>c.created_by===u.username).length,seconds:0,downloads:0,cvs_all:u.cv_count||0}))};}},
   getCV:c=>rpc('portal_cv_get',{p_token:tok(),p_code:c}),
-  searchCVs:(q,kind,by,from,to)=>rpc('portal_cv_search',{p_token:tok(),p_q:q||'',p_kind:kind||null,p_by:by||null,p_from:from||null,p_to:to||null}),
+  searchCVs:(q,kind,by,from,to)=>searchRaw(q,kind,by,from,to),
   deleteCV:c=>rpc('portal_cv_delete',{p_token:tok(),p_code:c}),
   stats:()=>rpc('portal_stats',{p_token:tok()})
 };
