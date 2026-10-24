@@ -72,6 +72,7 @@ input,select,button{font-family:inherit}
 
 <main style="max-width:1320px;width:100%;margin:0 auto;padding:28px 20px 96px;box-sizing:border-box;display:flex;flex-direction:column;gap:22px">
 
+<sc-if value="{{ needsUpgrade }}"><div style="font-size:13px;color:#7A5B12;background:#FBF4E2;border:1px solid #F0E2BC;border-radius:14px;padding:12px 16px;line-height:1.5"><strong>Database update needed.</strong> Run <code>supabase-upgrade-v2.sql</code> once in Supabase → SQL Editor to switch on CV numbers, time tracking, downloads and the activity log. Everything else works already.</div></sc-if>
 <sc-if value="{{ preview }}"><div style="font-size:13px;color:#7A5B12;background:#FBF4E2;border:1px solid #F0E2BC;border-radius:14px;padding:12px 16px;line-height:1.5"><strong>Preview mode.</strong> Data is saved in this browser only. Connect Supabase (see SETUP.md) so the whole team shares it.</div></sc-if>
 
 <sc-if value="{{ tabOverview }}"><section style="background:#042D7C;color:#FFFFFF;border-radius:28px;padding:clamp(22px,3.5vw,36px);display:flex;justify-content:space-between;align-items:flex-end;gap:22px;flex-wrap:wrap;animation:skp-in .35s ease">
@@ -81,12 +82,12 @@ input,select,button{font-family:inherit}
 <div style="font-size:15px;color:#E3E4E8;max-width:560px;line-height:1.5">{{ heroSub }}</div>
 </div>
 <sc-if value="{{ canCreate }}"><div style="display:flex;gap:10px;flex-wrap:wrap">
-<a href="./ats-cv-builder?new=1" style="display:inline-flex;align-items:center;gap:10px;background:#FFFFFF;color:#042D7C;border-radius:999px;padding:13px 20px;font-weight:900;font-size:14px;text-decoration:none;white-space:nowrap" style-hover="background:#E9EEF8;color:#042D7C">+ New ATS CV</a>
-<a href="./europass-cv-builder?new=1" style="display:inline-flex;align-items:center;gap:10px;background:rgba(255,255,255,.1);color:#FFFFFF;border:1px solid rgba(255,255,255,.4);border-radius:999px;padding:12px 20px;font-weight:900;font-size:14px;text-decoration:none;white-space:nowrap" style-hover="background:rgba(255,255,255,.18);color:#FFFFFF">+ New Europass CV</a>
-<a href="./ats-cv-builder?import=1" style="display:inline-flex;align-items:center;gap:10px;background:transparent;color:#FFFFFF;border:1px dashed rgba(255,255,255,.5);border-radius:999px;padding:12px 20px;font-weight:900;font-size:14px;text-decoration:none;white-space:nowrap" style-hover="background:rgba(255,255,255,.1);color:#FFFFFF">Upload existing CV</a>
+<a href="./Skilleaze%20CV%20Builder.dc.html?new=1" style="display:inline-flex;align-items:center;gap:10px;background:#FFFFFF;color:#042D7C;border-radius:999px;padding:13px 20px;font-weight:900;font-size:14px;text-decoration:none;white-space:nowrap" style-hover="background:#E9EEF8;color:#042D7C">+ New ATS CV</a>
+<a href="./Skilleaze%20Europass%20CV%20Builder.dc.html?new=1" style="display:inline-flex;align-items:center;gap:10px;background:rgba(255,255,255,.1);color:#FFFFFF;border:1px solid rgba(255,255,255,.4);border-radius:999px;padding:12px 20px;font-weight:900;font-size:14px;text-decoration:none;white-space:nowrap" style-hover="background:rgba(255,255,255,.18);color:#FFFFFF">+ New Europass CV</a>
+<a href="./Skilleaze%20CV%20Builder.dc.html?import=1" style="display:inline-flex;align-items:center;gap:10px;background:transparent;color:#FFFFFF;border:1px dashed rgba(255,255,255,.5);border-radius:999px;padding:12px 20px;font-weight:900;font-size:14px;text-decoration:none;white-space:nowrap" style-hover="background:rgba(255,255,255,.1);color:#FFFFFF">Upload existing CV</a>
 </div></sc-if>
 </section></sc-if>
-<sc-if value="{{ notOverview }}"><section style="display:flex;justify-content:space-between;align-items:flex-end;gap:14px;flex-wrap:wrap"><div><div style="font-size:12px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#053BA0">{{ tabKicker }}</div><h1 style="margin:4px 0 0;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:clamp(32px,4vw,44px);line-height:1.05;color:#042D7C">{{ tabTitle }}</h1></div><sc-if value="{{ canCreate }}"><a href="./ats-cv-builder?new=1" style="background:#042D7C;color:#FFFFFF;border-radius:999px;padding:12px 18px;font-weight:900;font-size:14px;text-decoration:none;white-space:nowrap" style-hover="background:#053BA0;color:#FFFFFF">+ New CV</a></sc-if></section></sc-if>
+<sc-if value="{{ notOverview }}"><section style="display:flex;justify-content:space-between;align-items:flex-end;gap:14px;flex-wrap:wrap"><div><div style="font-size:12px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#053BA0">{{ tabKicker }}</div><h1 style="margin:4px 0 0;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:clamp(32px,4vw,44px);line-height:1.05;color:#042D7C">{{ tabTitle }}</h1></div><sc-if value="{{ canCreate }}"><a href="./Skilleaze%20CV%20Builder.dc.html?new=1" style="background:#042D7C;color:#FFFFFF;border-radius:999px;padding:12px 18px;font-weight:900;font-size:14px;text-decoration:none;white-space:nowrap" style-hover="background:#053BA0;color:#FFFFFF">+ New CV</a></sc-if></section></sc-if>
 
 <section style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:#FFFFFF;border:1px solid #E3E4E8;border-radius:20px;padding:10px 12px">
 <span style="font-size:12px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:#5B6470;padding:0 6px">Period</span>
@@ -203,14 +204,8 @@ input,select,button{font-family:inherit}
 
 <sc-if value="{{ tabExperts }}">
 <section style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,290px),1fr));gap:14px;align-items:start">
-<form onSubmit="{{ addUser }}" style="background:#042D7C;color:#FFFFFF;border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:11px">
-<div style="font-family:'Cormorant Garamond',serif;font-weight:700;font-size:26px">Add a CV expert</div>
-<input value="{{ nu.name }}" onInput="{{ nuSet.name }}" required placeholder="Full name" aria-label="Full name" style="border:0;border-radius:12px;padding:12px 14px;font-size:15px;color:#2C3E50">
-<input value="{{ nu.username }}" onInput="{{ nuSet.username }}" required autocapitalize="none" placeholder="Username, e.g. sara.k" aria-label="Username" style="border:0;border-radius:12px;padding:12px 14px;font-size:15px;color:#2C3E50">
-<div style="display:flex;gap:8px"><input value="{{ nu.password }}" onInput="{{ nuSet.password }}" required minlength="8" placeholder="Password" aria-label="Password" style="flex:1;min-width:0;border:0;border-radius:12px;padding:12px 14px;font-size:15px;color:#2C3E50;font-family:ui-monospace,Menlo,monospace"><button type="button" onClick="{{ genPw }}" style="background:#053BA0;color:#FFFFFF;border:1px solid rgba(255,255,255,.35);border-radius:12px;padding:0 14px;font-weight:700;font-size:13px;cursor:pointer" style-hover="background:#0A4BC4">Generate</button></div>
-<sc-if value="{{ nuMsg }}"><div style="{{ nuMsgStyle }}">{{ nuMsg }}</div></sc-if>
-<button type="submit" style="background:#FFFFFF;color:#042D7C;border:0;border-radius:999px;padding:13px 18px;font-weight:900;font-size:14px;cursor:pointer" style-hover="background:#E9EEF8">Create expert account</button>
-</form>
+<button onClick="{{ openAdd }}" style="all:unset;cursor:pointer;box-sizing:border-box;min-height:190px;border:1.5px dashed #B9C3D6;border-radius:22px;padding:20px;display:flex;flex-direction:column;justify-content:center;gap:8px;color:#042D7C;background:#FFFFFF" style-hover="border-color:#042D7C;background:#F8FAFF"><span style="width:44px;height:44px;border-radius:50%;background:#042D7C;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:400">+</span><span style="font-weight:900;font-size:17px">Add CV expert</span><span style="font-size:13px;color:#5B6470">Create a login for a new team member</span></button>
+<sc-if value="{{ noExperts }}"><div style="min-height:190px;box-sizing:border-box;border-radius:22px;padding:20px;display:flex;flex-direction:column;justify-content:center;gap:6px;background:#FFFFFF;border:1px solid #E3E4E8"><strong style="color:#042D7C;font-size:16px">No experts yet</strong><span style="font-size:13px;color:#5B6470;line-height:1.5">Add your first CV expert. They sign in here with the username and password you set.</span></div></sc-if>
 <sc-for list="{{ experts }}" as="u" hint-placeholder-count="3">
 <button onClick="{{ u.open }}" style="all:unset;cursor:pointer;background:#FFFFFF;border:1px solid #E3E4E8;border-radius:22px;padding:18px;display:flex;flex-direction:column;gap:14px" style-hover="border-color:#C9D3E8;box-shadow:0 12px 32px rgba(4,45,124,.08)">
 <div style="display:flex;gap:12px;align-items:center;min-width:0"><div style="width:46px;height:46px;border-radius:50%;background:#042D7C;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:17px;flex-shrink:0">{{ u.initial }}</div><div style="min-width:0;display:flex;flex-direction:column;gap:3px"><span style="font-weight:900;font-size:17px;color:#2C3E50">{{ u.name }}</span><span style="font-size:12px;color:#5B6470">@{{ u.username }}</span></div><span style="{{ u.badgeStyle }}">{{ u.badge }}</span></div>
@@ -288,13 +283,50 @@ input,select,button{font-family:inherit}
 </aside>
 </sc-if>
 
+<sc-if value="{{ addOpen }}">
+<div onClick="{{ closeAdd }}" style="position:fixed;inset:0;background:rgba(10,20,48,.42);backdrop-filter:blur(3px);z-index:50"></div>
+<div role="dialog" aria-modal="true" aria-label="Add CV expert" style="position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:51;width:min(480px,calc(100vw - 28px));max-height:calc(100vh - 28px);overflow-y:auto;box-sizing:border-box;background:#FFFFFF;border-radius:24px;box-shadow:0 30px 80px rgba(4,45,124,.25);animation:skp-in .25s ease">
+<div style="padding:22px 24px 18px;border-bottom:1px solid #EEF0F3;display:flex;justify-content:space-between;align-items:flex-start;gap:12px">
+<div><div style="font-size:12px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#053BA0">Team access</div><div style="font-family:'Cormorant Garamond',serif;font-weight:700;font-size:30px;line-height:1.1;color:#042D7C;margin-top:4px">{{ addTitle }}</div></div>
+<button onClick="{{ closeAdd }}" aria-label="Close" style="background:#F1F3F6;border:0;width:36px;height:36px;border-radius:50%;font-size:16px;color:#2C3E50;cursor:pointer;flex-shrink:0" style-hover="background:#E3E4E8">✕</button>
+</div>
+<sc-if value="{{ addForm }}">
+<form onSubmit="{{ addUser }}" style="padding:20px 24px 24px;display:flex;flex-direction:column;gap:16px">
+<label style="display:flex;flex-direction:column;gap:7px;font-size:13px;font-weight:700;color:#2C3E50">Full name<input value="{{ nu.name }}" onInput="{{ nuSet.name }}" required placeholder="e.g. Sara Khan" style="border:1px solid #D5D9E0;border-radius:12px;padding:12px 14px;font-size:15px;font-weight:400;color:#2C3E50;background:#F8F9FA"></label>
+<label style="display:flex;flex-direction:column;gap:7px;font-size:13px;font-weight:700;color:#2C3E50">Username<input value="{{ nu.username }}" onInput="{{ nuSet.username }}" required autocapitalize="none" spellcheck="false" placeholder="e.g. sara.khan" style="border:1px solid #D5D9E0;border-radius:12px;padding:12px 14px;font-size:15px;font-weight:400;color:#2C3E50;background:#F8F9FA"><span style="font-size:12px;font-weight:400;color:#8A919C">Lowercase letters, numbers, dot, dash or underscore. Used to sign in.</span></label>
+<label style="display:flex;flex-direction:column;gap:7px;font-size:13px;font-weight:700;color:#2C3E50"><span style="display:flex;justify-content:space-between;align-items:center">Password<button type="button" onClick="{{ genPw }}" style="background:transparent;border:0;color:#053BA0;font-weight:900;font-size:12px;cursor:pointer;padding:0">Generate strong password</button></span><input value="{{ nu.password }}" onInput="{{ nuSet.password }}" required minlength="8" spellcheck="false" autocomplete="new-password" placeholder="At least 8 characters" style="border:1px solid #D5D9E0;border-radius:12px;padding:12px 14px;font-size:15px;font-weight:400;color:#2C3E50;background:#F8F9FA;font-family:ui-monospace,Menlo,monospace"></label>
+<sc-if value="{{ nuErr }}"><div style="font-size:13px;color:#8A2D2D;background:#FBECEC;border-radius:12px;padding:10px 14px">{{ nuErr }}</div></sc-if>
+<div style="display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;margin-top:4px">
+<button type="button" onClick="{{ closeAdd }}" style="background:#FFFFFF;color:#2C3E50;border:1px solid #D9DCE3;border-radius:999px;padding:12px 20px;font-weight:900;font-size:14px;cursor:pointer" style-hover="border-color:#2C3E50">Cancel</button>
+<button type="submit" style="background:#042D7C;color:#FFFFFF;border:0;border-radius:999px;padding:12px 22px;font-weight:900;font-size:14px;cursor:pointer" style-hover="background:#053BA0">{{ addBtn }}</button>
+</div>
+</form>
+</sc-if>
+<sc-if value="{{ addDone }}">
+<div style="padding:20px 24px 24px;display:flex;flex-direction:column;gap:14px">
+<div style="font-size:14px;color:#1E5A32;background:#E6F4EA;border-radius:12px;padding:10px 14px">Account created. Share these details privately.</div>
+<div style="background:#F8F9FA;border:1px solid #E3E4E8;border-radius:16px;padding:16px;display:grid;grid-template-columns:auto 1fr;gap:8px 14px;font-size:14px">
+<span style="color:#8A919C">Name</span><strong>{{ done.name }}</strong>
+<span style="color:#8A919C">Username</span><strong style="font-family:ui-monospace,Menlo,monospace">{{ done.username }}</strong>
+<span style="color:#8A919C">Password</span><strong style="font-family:ui-monospace,Menlo,monospace;word-break:break-all">{{ done.password }}</strong>
+<span style="color:#8A919C">Sign in at</span><strong style="word-break:break-all">{{ done.url }}</strong>
+</div>
+<div style="display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap">
+<button onClick="{{ copyDone }}" style="background:#FFFFFF;color:#042D7C;border:1px solid #042D7C;border-radius:999px;padding:12px 20px;font-weight:900;font-size:14px;cursor:pointer" style-hover="background:#E9EEF8">{{ copyLbl }}</button>
+<button onClick="{{ closeAdd }}" style="background:#042D7C;color:#FFFFFF;border:0;border-radius:999px;padding:12px 22px;font-weight:900;font-size:14px;cursor:pointer" style-hover="background:#053BA0">Done</button>
+</div>
+</div>
+</sc-if>
+</div>
+</sc-if>
+
 <sc-if value="{{ toast }}"><div style="position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:60;background:#2C3E50;color:#FFFFFF;border-radius:999px;padding:12px 20px;font-size:14px;font-weight:700;box-shadow:0 12px 30px rgba(0,0,0,.18);max-width:calc(100vw - 40px)">{{ toast }}</div></sc-if>
 </x-dc>
 <script type="text/x-dc" data-dc-script>
 class Component extends DCLogic {
-  state={ready:false,me:null,loginErr:'',busy:false,tab:'overview',rk:'30d',from:'',to:'',q:'',kind:null,by:'',results:[],report:null,users:[],feed:[],nu:{name:'',username:'',password:''},nuMsg:'',nuOk:false,toast:'',dr:null};
+  state={ready:false,me:null,loginErr:'',busy:false,tab:'overview',rk:'30d',from:'',to:'',q:'',kind:null,by:'',results:[],report:null,users:[],feed:[],nu:{name:'',username:'',password:''},nuMsg:'',nuOk:false,add:null,copied:false,toast:'',dr:null};
   componentDidMount(){this.setRange('30d',true);this.wait=setInterval(()=>{if(window.SKP){clearInterval(this.wait);this.boot();}},60);
-    this._key=e=>{if(e.key==='Escape'&&this.state.dr)this.setState({dr:null});};document.addEventListener('keydown',this._key);}
+    this._key=e=>{if(e.key==='Escape'){if(this.state.add)this.setState({add:null});else if(this.state.dr)this.setState({dr:null});}};document.addEventListener('keydown',this._key);}
   componentWillUnmount(){clearInterval(this.wait);clearTimeout(this._q);clearTimeout(this._t);document.removeEventListener('keydown',this._key);}
   async boot(){const me=await SKP.me();this.setState({ready:true,me});if(me)this.refresh();}
   flash(t){clearTimeout(this._t);this.setState({toast:t});this._t=setTimeout(()=>this.setState({toast:''}),2800);}
@@ -305,12 +337,13 @@ class Component extends DCLogic {
     else if(k==='month'){f=y(new Date(t.getFullYear(),t.getMonth(),1));}else if(k==='all'){f='';to='';}
     this.setState({rk:k,from:f,to});if(!quiet)setTimeout(()=>this.refresh(),0);}
   async refresh(){const s=this.state;if(!s.me)return;const admin=s.me.role==='admin';
-    try{const [report,results]=await Promise.all([SKP.report(s.from||null,s.to||null),SKP.searchCVs(s.q,s.kind,s.by,s.from||null,s.to||null)]);
-      this.setState({report,results:results||[]});
-      if(admin){const [users,feed]=await Promise.all([SKP.listUsers(),SKP.activity({from:s.from||null,to:s.to||null})]);this.setState({users:users||[],feed:feed||[]});}
-    }catch(e){this.flash(e.message);if(/sign in/i.test(e.message))this.setState({me:null});}}
+    SKP.needsUpgrade=false;const jobs=[SKP.report(s.from||null,s.to||null),SKP.searchCVs(s.q,s.kind,s.by,s.from||null,s.to||null)].concat(admin?[SKP.listUsers(),SKP.activity({from:s.from||null,to:s.to||null})]:[]);
+    const r=await Promise.allSettled(jobs);const v=(i,d)=>r[i]&&r[i].status==='fulfilled'?(r[i].value||d):d;
+    const err=r.find(x=>x.status==='rejected');if(err){const m=String(err.reason&&err.reason.message||err.reason);if(/sign in/i.test(m)){this.setState({me:null});return;}this.flash(m);}
+    this.setState({report:v(0,null),results:v(1,[]),users:admin?v(2,[]):[],feed:admin?v(3,[]):[],upg:!!SKP.needsUpgrade});}
   search(){clearTimeout(this._q);this._q=setTimeout(async()=>{const s=this.state;try{this.setState({results:(await SKP.searchCVs(s.q,s.kind,s.by,s.from||null,s.to||null))||[]});}catch(e){this.flash(e.message);}},220);}
   pw(){const A='ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789',S='!@#$%&*?';const r=crypto.getRandomValues(new Uint8Array(12));let p=Array.from(r,b=>A[b%A.length]).join('');const i=r[0]%10+1;return p.slice(0,i)+S[r[1]%S.length]+p.slice(i,11)+(r[2]%10);}
+  slug(v){return String(v||'').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'.').replace(/^\.+|\.+$/g,'').slice(0,32);}
   dur(s){s=+s||0;if(s<60)return s?'<1m':'0m';const h=Math.floor(s/3600),m=Math.round((s%3600)/60);return h?h+'h '+m+'m':m+'m';}
   no(n){return n?'No. '+String(n).padStart(5,'0'):'No. —';}
   fmt(d,withTime){if(!d)return '—';return new Date(d).toLocaleString('en-GB',withTime===false?{day:'numeric',month:'short',year:'numeric'}:{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});}
@@ -324,7 +357,7 @@ class Component extends DCLogic {
     const pill=(on,dark)=>`border:0;border-radius:999px;padding:9px 16px;font-weight:900;font-size:13px;cursor:pointer;white-space:nowrap;flex-shrink:0;background:${on?'#042D7C':'transparent'};color:${on?'#FFFFFF':'#2C3E50'}`;
     const chip=on=>`white-space:nowrap;border:1px solid ${on?'#042D7C':'#E3E4E8'};border-radius:999px;padding:7px 13px;font-weight:900;font-size:12px;cursor:pointer;background:${on?'#042D7C':'#FFFFFF'};color:${on?'#FFFFFF':'#2C3E50'}`;
     const kindStyle=k=>'font-size:11px;font-weight:900;letter-spacing:.06em;border-radius:999px;padding:4px 10px;'+(k==='europass'?'background:#FFF4D6;color:#7A5B12':'background:#042D7C;color:#FFFFFF');
-    const href=r=>(r.kind==='europass'?'./europass-cv-builder':'./ats-cv-builder')+'?code='+encodeURIComponent(r.code)+(admin?'&view=1':'');
+    const CLEAN=/skilleaze\.com$|vercel\.app$/i.test(location.hostname);const href=r=>(r.kind==='europass'?(CLEAN?'./europass-cv-builder':'./Skilleaze%20Europass%20CV%20Builder.dc.html'):(CLEAN?'./ats-cv-builder':'./Skilleaze%20CV%20Builder.dc.html'))+'?code='+encodeURIComponent(r.code)+(admin?'&view=1':'');
     const card=r=>({no:this.no(r.serial),code:r.code,customer:r.customer||'(no name yet)',phone:r.phone||'No phone',kindLabel:r.kind==='europass'?'EUROPASS':'ATS',kindStyle:kindStyle(r.kind),
       createdBy:nm(r.created_by),created:this.fmt(r.created_at),time:this.dur(r.time_spent)+' worked',dl:(r.downloads||0)+' download'+(r.downloads===1?'':'s'),href:href(r),info:()=>this.openCv(r)});
     const ACT={created:['✦','created CV for','#042D7C'],edited:['✎','edited CV for','#053BA0'],download_pdf:['↓','downloaded PDF of','#1E7A4C'],download_docx:['↓','downloaded Word of','#1E7A4C'],viewed:['◉','viewed CV of','#7A5B12'],imported:['⇪','imported CV for','#053BA0']};
@@ -358,12 +391,12 @@ class Component extends DCLogic {
         isExpert:true,toggleLabel:u.active===false?'Enable account':'Disable account',
         reset:async()=>{const p=prompt('New password for '+u.name+' (min 8 characters):',this.pw());if(!p)return;try{await SKP.updateUser(u.username,{password:p});this.flash('Password updated. Share it with '+u.name+'.');}catch(e){this.flash(e.message);}},
         toggle:async()=>{try{await SKP.updateUser(u.username,{active:u.active===false});this.setState({dr:null});this.refresh();}catch(e){this.flash(e.message);}},
-        del:async()=>{if(!confirm('Delete '+u.name+'? Their CVs stay in the portal.'))return;try{await SKP.deleteUser(u.username);this.setState({dr:null});this.refresh();}catch(e){this.flash(e.message);}},
+        del:async()=>{if(!confirm('Permanently delete '+u.name+' (@'+u.username+')?\n\nTheir login is removed and the username becomes free again. CVs they made stay in the portal.'))return;try{await SKP.deleteUser(u.username);this.setState({dr:null});this.flash(u.name+' deleted');this.refresh();}catch(e){this.flash(e.message);}},
         hasCvs:L.length>0,cvsTitle:'CVs by '+String(u.name).split(' ')[0],cvs:L.map(card),hasAct:(d.act||[]).length>0,act:(d.act||[]).map(actRow),loading:d.loading};}}
     const avg=T.cvs?this.dur(T.seconds/T.cvs):'—';
     const tab=s.tab;
     return {
-      showLogin:s.ready&&!me,showApp:s.ready&&!!me,preview:window.SKP?!SKP.remote:false,
+      needsUpgrade:!!s.upg&&admin,showLogin:s.ready&&!me,showApp:s.ready&&!!me,preview:window.SKP?!SKP.remote:false,
       loginErr:s.loginErr,loginBtn:s.busy?'Signing in…':'Sign in',
       doLogin:async e=>{e.preventDefault();const f=e.target;this.setState({busy:true,loginErr:''});try{const me=await SKP.login(f.un.value,f.pw.value);this.setState({me,busy:false});this.refresh();}catch(err){this.setState({busy:false,loginErr:err.message});}},
       doLogout:async()=>{await SKP.logout();this.setState({me:null,users:[],results:[],report:null,feed:[],dr:null});},
@@ -403,11 +436,15 @@ class Component extends DCLogic {
       experts:exps.map(e=>{const u=Object.assign({},uById[e.username]||{},e);return {name:u.name,username:u.username,initial:String(u.name||u.username).charAt(0).toUpperCase(),cvs:u.cvs||0,time:this.dur(u.seconds),dl:u.downloads||0,
         badge:u.active===false?'Disabled':'Active',badgeStyle:'margin-left:auto;font-size:11px;font-weight:900;border-radius:999px;padding:4px 10px;'+(u.active===false?'background:#FBECEC;color:#8A2D2D':'background:#E6F4EA;color:#1E5A32'),
         last:(u.cvs_all||0)+' CVs all time · '+(u.last_login?'last sign-in '+this.fmt(u.last_login):'never signed in'),open:expOpen(e)};}),
-      feed:(s.feed||[]).map(actRow),noActivity:(s.feed||[]).length===0,
-      nu:s.nu,nuSet:Object.fromEntries(['name','username','password'].map(k=>[k,e=>{const v=e.target.value;this.setState(x=>({nu:Object.assign({},x.nu,{[k]:v}),nuMsg:''}));}])),
+      feed:(s.feed||[]).map(actRow),noActivity:(s.feed||[]).length===0,noExperts:exps.length===0,
+      nu:s.nu,nuSet:Object.fromEntries(['name','username','password'].map(k=>[k,e=>{const v=e.target.value;this.setState(x=>{const nu=Object.assign({},x.nu,{[k]:v});if(k==='name'&&(!x.nu.username||x.nu.username===this.slug(x.nu.name)))nu.username=this.slug(v);if(k==='username')nu.username=v.toLowerCase().replace(/[^a-z0-9._-]/g,'');return {nu,nuMsg:''};});}])),
       genPw:()=>this.setState(x=>({nu:Object.assign({},x.nu,{password:this.pw()})})),
-      nuMsg:s.nuMsg,nuMsgStyle:'font-size:13px;border-radius:10px;padding:9px 12px;'+(s.nuOk?'background:#E6F4EA;color:#1E5A32':'background:#FBECEC;color:#8A2D2D'),
-      addUser:async e=>{e.preventDefault();const n=s.nu;try{await SKP.createUser(Object.assign({},n,{role:'user'}));this.setState({nu:{name:'',username:'',password:''},nuOk:true,nuMsg:'Created @'+n.username.trim().toLowerCase()+'. Password: '+n.password+' (share it privately).'});this.refresh();}catch(err){this.setState({nuOk:false,nuMsg:err.message});}},
+      nuErr:s.nuMsg,addOpen:!!s.add,addForm:s.add==='form',addDone:s.add==='done',addTitle:s.add==='done'?'Expert added':'Add CV expert',addBtn:s.busy?'Creating…':'Create account',done:s.done||{},copyLbl:s.copied?'Copied ✓':'Copy login details',
+      openAdd:()=>this.setState({add:'form',nu:{name:'',username:'',password:this.pw()},nuMsg:'',copied:false}),closeAdd:()=>this.setState({add:null,busy:false}),
+      copyDone:async()=>{const d=s.done||{};try{await navigator.clipboard.writeText('Skilleaze CV Portal\nSign in: '+d.url+'\nUsername: '+d.username+'\nPassword: '+d.password);this.setState({copied:true});}catch(e){this.flash('Copy failed. Select the text instead.');}},
+      addUser:async e=>{e.preventDefault();const n=s.nu;const un=String(n.username||'').trim().toLowerCase();this.setState({busy:true,nuMsg:''});
+        try{await SKP.createUser({name:String(n.name).trim(),username:un,password:n.password,role:'user'});this.setState({busy:false,add:'done',done:{name:String(n.name).trim(),username:un,password:n.password,url:location.origin+location.pathname.replace(/[^/]*$/,'')}});this.refresh();}
+        catch(err){this.setState({busy:false,nuMsg:err.message});}},
       drawerOpen:!!dr,dr:dr||{facts:[],cvs:[],act:[]},closeDrawer:()=>this.setState({dr:null}),
       toast:s.toast
     };}

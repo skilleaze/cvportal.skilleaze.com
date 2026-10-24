@@ -185,7 +185,7 @@ declare u portal_users; f date; t date:=coalesce(p_to,current_date); begin u:=po
       'customers',count(distinct coalesce(nullif(regexp_replace(phone,'[^0-9]','','g'),''),lower(nullif(customer,'')))),
       'seconds',coalesce(sum(time_spent),0),'downloads',coalesce(sum(downloads),0)) from portal_cvs where created_at::date between f and t
       and (u.role='admin' or created_by=u.username)),
-   'daily',coalesce((select json_agg(json_build_object('d',d::date,'n',(select count(*) from portal_cvs c where c.created_at::date=d::date and (u.role='admin' or c.created_by=u.username)))) order by d)
+   'daily',coalesce((select json_agg(json_build_object('d',d::date,'n',(select count(*) from portal_cvs c where c.created_at::date=d::date and (u.role='admin' or c.created_by=u.username))) order by d)
       from generate_series(greatest(f,t-89),t,interval '1 day') d),'[]'::json),
    'experts',case when u.role='admin' then coalesce((select json_agg(x order by x.cvs desc) from (
       select pu.username,pu.name,pu.active,pu.last_login,pu.login_count,
@@ -194,6 +194,31 @@ declare u portal_users; f date; t date:=coalesce(p_to,current_date); begin u:=po
        (select count(*) from portal_activity a where a.username=pu.username and a.action like 'download_%' and a.at::date between f and t) downloads,
        (select count(*) from portal_cvs c where c.created_by=pu.username) cvs_all
       from portal_users pu where pu.role='user') x),'[]'::json) else '[]'::json end); end $$;
+
+
+-- Expert accounts: clear messages + real delete
+create or replace function portal_user_create(p_token text,p_username text,p_name text,p_password text,p_role text default 'user') returns boolean
+language plpgsql security definer set search_path=public, extensions as $$
+declare a portal_users; un text:=lower(trim(p_username)); ex portal_users; begin
+  a:=portal_auth(p_token,true);
+  if un !~ '^[a-z0-9._-]{3,32}$' then raise exception 'Username: 3–32 lowercase letters, numbers, dot, dash or underscore.'; end if;
+  if length(coalesce(p_password,''))<8 then raise exception 'Password must be at least 8 characters.'; end if;
+  select * into ex from portal_users where username=un;
+  if ex.username is not null then
+    if ex.active then raise exception 'That username is already used by %.', ex.name;
+    else raise exception 'That username belongs to a disabled account (%). Enable or delete it first.', ex.name; end if; end if;
+  insert into portal_users(username,name,role,pass,created_by)
+   values(un,coalesce(nullif(trim(p_name),''),un),'user',crypt(p_password,gen_salt('bf')),a.username);
+  return true; end $$;
+create or replace function portal_user_delete(p_token text,p_username text) returns boolean
+language plpgsql security definer set search_path=public, extensions as $$
+declare n int; begin perform portal_auth(p_token,true);
+  if lower(p_username)='skilleazeadmin' then raise exception 'The main admin cannot be deleted.'; end if;
+  delete from portal_sessions where username=lower(p_username);
+  delete from portal_users where username=lower(p_username);
+  get diagnostics n = row_count;
+  if n=0 then raise exception 'User not found. Refresh the page.'; end if;
+  return true; end $$;
 
 revoke all on portal_users, portal_sessions, portal_cvs from anon, authenticated;
 grant execute on function portal_login, portal_me, portal_logout, portal_users_list, portal_user_create, portal_user_update,
