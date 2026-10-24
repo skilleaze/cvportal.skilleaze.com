@@ -1,0 +1,19 @@
+<!DOCTYPE html><html><body style="font:11px monospace;width:1100px;margin:0"><pre id="o">loading</pre>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="cv-builder/cv-import.js"></script>
+<script>
+(async()=>{const o=document.getElementById('o');try{
+const buf=await (await fetch('../uploads/Muneez Ahmed CV - Allegiance Real Estate.pdf')).arrayBuffer();
+const L=window.pdfjsLib;L.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+const pdf=await L.getDocument({data:buf}).promise;let raw='';let t='';
+for(let i=1;i<=pdf.numPages;i++){const pg=await pdf.getPage(i);const vw=pg.getViewport({scale:1}).width;const c=await pg.getTextContent();
+const it=c.items.filter(x=>x.str&&x.str.trim()).map(x=>({s:x.str,x:x.transform[4],y:x.transform[5],h:Math.abs(x.transform[3])||x.height||10,w:x.width,eol:x.hasEOL}));
+raw+='PAGE'+i+' items '+it.length+'\n'+it.slice(0,60).map(x=>Math.round(x.x)+','+Math.round(x.y)+' h'+x.h.toFixed(1)+' ['+x.s+']').join('\n')+'\n';
+const two=it.filter(x=>x.x>vw*0.45).length>it.length*0.25&&it.filter(x=>x.x<vw*0.3).length>it.length*0.25&&it.every(x=>!(x.x<vw*0.4&&x.x+x.w>vw*0.55));
+const cols=two?[it.filter(x=>x.x<vw*0.42),it.filter(x=>x.x>=vw*0.42)]:[it];
+for(const col of cols){col.sort((a,b)=>b.y-a.y||a.x-b.x);const lines=[];for(const x of col){const ln=lines[lines.length-1];if(ln&&Math.abs(ln.y-x.y)<Math.max(2,x.h*0.45)){ln.p.push(x);}else lines.push({y:x.y,h:x.h,p:[x]});}
+let py=null;for(const ln of lines){ln.p.sort((a,b)=>a.x-b.x);let s='';let ex=null;for(const p of ln.p){if(ex!==null&&p.x-ex>1.5&&!/\s$/.test(s)&&!/^\s/.test(p.s))s+=' ';s+=p.s;ex=p.x+p.w;}if(py!==null&&py-ln.y>ln.h*1.9)t+='\n';t+=s.trim()+'\n';py=ln.y;}t+='\n';}}
+window.TXT=t;const r=SKIMPORT.parse(t);
+o.textContent='TEXT:\n'+t.slice(0,3500)+'\n\nPARSED:\n'+JSON.stringify({sum:(r.summary||'').slice(0,150),skills:r.skills,exp:(r.exp||[]).map(e=>({t:e.t,c:e.c,d:e.d,b:(e.b||'').slice(0,60)})),edu:r.edu,langs:r.langs},null,0)+'\n\nRAW:\n'+raw.slice(0,2500);
+}catch(e){o.textContent='ERR '+e.message}})();
+</script></body></html>
