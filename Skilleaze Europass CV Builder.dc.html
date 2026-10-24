@@ -55,19 +55,19 @@ textarea{resize:vertical}
 </header>
 
 <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
-<main style="max-width:1200px;width:100%;margin:0 auto;padding:56px 20px 96px;box-sizing:border-box;display:flex;flex-direction:column;gap:56px;animation:skb-in .4s ease">
+<main style="max-width:1200px;width:100%;margin:0 auto;padding:36px 20px 80px;box-sizing:border-box;display:flex;flex-direction:column;gap:44px;animation:skb-in .4s ease">
 <section style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:40px;align-items:center">
 <div style="display:flex;flex-direction:column;gap:18px">
-<div style="font-size:13px;font-weight:900;letter-spacing:.14em;color:#053BA0">Skilleaze Internal CV Portal · 7 EUROPASS TEMPLATES · CEFR LANGUAGE GRID</div>
-<h1 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:clamp(40px,5.4vw,64px);line-height:1.02;color:#042D7C;text-wrap:balance">Build your Europass CV for jobs in Europe.</h1>
-<p style="margin:0;font-size:18px;line-height:1.6;max-width:520px;text-wrap:pretty">Pick a design, fill in a few simple steps, download. That’s it.</p>
+<div style="font-size:13px;font-weight:900;letter-spacing:.14em;color:#053BA0">Europass CV</div>
+<h1 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:clamp(32px,4vw,44px);line-height:1.08;color:#042D7C;text-wrap:balance">Create a Europass CV</h1>
+<p style="margin:0;font-size:18px;line-height:1.6;max-width:520px;text-wrap:pretty">Start fresh, upload an existing CV, or open a saved one.</p>
 <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:6px">
 <button onClick="{{ newCv }}" style="display:inline-flex;align-items:center;gap:8px;white-space:nowrap;background:#042D7C;color:#FFFFFF;border:none;border-radius:999px;padding:14px 24px;font:inherit;font-weight:900;font-size:15px;cursor:pointer" style-hover="background:#053BA0">Create a new CV</button>
 <button onClick="{{ openImport }}" style="display:inline-flex;align-items:center;gap:8px;white-space:nowrap;background:#FFFFFF;color:#042D7C;border:1px solid #D9DCE3;border-radius:999px;padding:14px 24px;font:inherit;font-weight:900;font-size:15px;cursor:pointer" style-hover="border-color:#042D7C">Upload existing CV</button>
 </div>
-<div style="font-size:14px;color:#5B6470">Internal tool for the Skilleaze team. Every CV saves to the portal with its own code, so anyone on the team can find it from the Dashboard. PDF and Word downloads are free.</div>
+<div style="font-size:14px;color:#5B6470">Autosaves to the portal · Free PDF and Word</div>
 </div>
-<div style="display:flex;flex-direction:column;gap:12px"><div data-skb="hero" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;align-items:start"></div><div style="font-size:13px;color:#5B6470">Official Europass layout with the Europass logo, CEFR language grid and optional photo. Pick any of 7, change colour any time.</div></div>
+<div style="display:flex;flex-direction:column;gap:12px"><div data-skb="hero" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;align-items:start"></div><div style="font-size:13px;color:#5B6470">7 Europass templates · CEFR language grid</div></div>
 </section>
 
 <section style="display:flex;flex-direction:column;gap:18px">
@@ -227,6 +227,16 @@ textarea{resize:vertical}
 </section>
 
 <section style="flex:999 1 440px;min-width:0;position:sticky;top:76px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:#FFFFFF;border:1px solid #E3E4E8;border-radius:20px;padding:10px 12px">
+<button onClick="{{ fixAll }}" style="display:inline-flex;align-items:center;gap:8px;background:#042D7C;color:#FFFFFF;border:none;border-radius:999px;padding:9px 16px;font:inherit;font-weight:900;font-size:13px;cursor:pointer;white-space:nowrap" style-hover="background:#053BA0">{{ fixLbl }}</button>
+<span style="width:1px;height:22px;background:#E3E4E8"></span>
+<span style="font-size:12px;font-weight:900;letter-spacing:.08em;color:#5B6470">FIT TO</span>
+<select value="{{ fitN }}" onChange="{{ setFitN }}" aria-label="Target pages" style="border:1px solid #D9DCE3;border-radius:999px;padding:7px 10px;font:inherit;font-size:13px;font-weight:700;color:#2C3E50;background:#FFFFFF"><option value="1">1 page</option><option value="2">2 pages</option><option value="3">3 pages</option><option value="4">4 pages</option><option value="5">5 pages</option></select>
+<button onClick="{{ fitPages }}" style="background:#FFFFFF;color:#042D7C;border:1px solid #042D7C;border-radius:999px;padding:8px 14px;font:inherit;font-weight:900;font-size:13px;cursor:pointer;white-space:nowrap" style-hover="background:#E9EEF8">{{ fitLbl }}</button>
+<sc-if value="{{ canUndo }}"><button onClick="{{ undoAi }}" style="background:none;border:none;color:#5B6470;font:inherit;font-weight:700;font-size:13px;cursor:pointer;text-decoration:underline;margin-left:auto">Undo</button></sc-if>
+</div>
+<sc-if value="{{ fixNotes }}"><div style="background:#FBF6E6;border-radius:12px;padding:10px 14px;font-size:13px;line-height:1.6;color:#5A4A1A;white-space:pre-line"><strong style="display:block;color:#8A6D1F">Needs real details from the customer</strong><span>{{ fixNotes }}</span></div></sc-if>
+
 <div style="background:#FFFFFF;border:1px solid #E3E4E8;border-radius:20px;padding:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
 <button onClick="{{ openPicker }}" style="display:inline-flex;align-items:center;gap:8px;background:#F1F3F6;color:#042D7C;border:none;border-radius:999px;padding:9px 16px;font:inherit;font-weight:900;font-size:13px;cursor:pointer" style-hover="background:#E3E4E8">{{ tplCode }}<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="m6 9 6 6 6-6"></path></svg></button>
 <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
@@ -254,6 +264,7 @@ textarea{resize:vertical}
 <div style="background:#E9ECF1;border-radius:20px;padding:16px;max-height:calc(100vh - 170px);overflow:auto">
 <div data-skb="prev" style="display:flex;flex-direction:column;align-items:center;gap:16px"></div>
 </div>
+
 <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:13px"><button onClick="{{ goAts }}" style="{{ scorePill }}">ATS score {{ atsScore }}</button><button onClick="{{ share }}" style="background:none;border:none;color:#2C3E50;font:inherit;font-weight:700;font-size:13px;cursor:pointer;text-decoration:underline">Share link</button><select value="{{ curFont }}" onChange="{{ pickFont }}" aria-label="Font" style="border:1px solid #D9DCE3;border-radius:999px;padding:6px 10px;font:inherit;font-size:13px;color:#2C3E50;background:#FFFFFF"><option value="Lato">Lato</option><option value="Open Sans">Open Sans</option><option value="Arial">Arial</option><option value="Georgia">Georgia</option></select><span style="margin-left:auto;display:flex;align-items:center;gap:4px;background:#F1F3F6;border-radius:999px;padding:2px"><button onClick="{{ zoomOut }}" aria-label="Zoom out" style="all:unset;cursor:pointer;width:26px;height:26px;display:flex;align-items:center;justify-content:center;border-radius:50%;font-weight:900;color:#042D7C" style-hover="background:#E3E4E8">−</button><span style="min-width:40px;text-align:center;font-weight:700;color:#2C3E50">{{ zoomLabel }}</span><button onClick="{{ zoomIn }}" aria-label="Zoom in" style="all:unset;cursor:pointer;width:26px;height:26px;display:flex;align-items:center;justify-content:center;border-radius:50%;font-weight:900;color:#042D7C" style-hover="background:#E3E4E8">+</button></span><span style="color:#5B6470">{{ pageInfo }}</span></div>
 <div style="font-size:12px;color:#5B6470">Click any text, heading or the photo on the CV to edit it directly. Hover any entry to move, copy or delete it; jobs also get AI improve.</div>
 </section>
@@ -264,7 +275,7 @@ textarea{resize:vertical}
 <main style="max-width:1200px;width:100%;margin:0 auto;padding:32px 20px 96px;box-sizing:border-box;display:flex;flex-direction:column;gap:20px;animation:skb-in .4s ease">
 <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap">
 <div><div style="font-size:13px;font-weight:900;letter-spacing:.14em;color:#053BA0">ATS CHECK · {{ cvLabel }}</div><h1 style="margin:6px 0 0;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:clamp(32px,4vw,46px);color:#042D7C">How your CV scores</h1></div>
-<button onClick="{{ goEditCur }}" style="background:#042D7C;color:#FFFFFF;border:none;border-radius:999px;padding:11px 20px;font:inherit;font-weight:900;font-size:14px;cursor:pointer" style-hover="background:#053BA0">Back to editor</button>
+<div style="display:flex;gap:8px;flex-wrap:wrap"><button onClick="{{ fixAll }}" style="background:#FFFFFF;color:#042D7C;border:1px solid #042D7C;border-radius:999px;padding:12px 20px;font:inherit;font-weight:900;font-size:14px;cursor:pointer" style-hover="background:#E9EEF8">{{ fixLbl }}</button><button onClick="{{ goEditCur }}" style="background:#042D7C;color:#FFFFFF;border:none;border-radius:999px;padding:11px 20px;font:inherit;font-weight:900;font-size:14px;cursor:pointer" style-hover="background:#053BA0">Back to editor</button></div>
 </div>
 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:20px;align-items:start">
 <div style="display:flex;flex-direction:column;gap:16px">
@@ -423,7 +434,7 @@ const esc=t=>String(t??'').replace(/&/g,'&amp;').replace(/</g,'&lt;');
 class Component extends DCLogic {
   constructor(p){super(p);
     let st={cvs:[],cur:null,paid:{}};try{st=Object.assign(st,JSON.parse(localStorage.getItem(KEY)||'{}'));}catch(e){}
-    this.state={qs:{role:'',yrs:'',notes:''},quickHidden:false,skSug:[],plain:false,prevSum:null,zoom:1,setup:false,tips:true,view:'home',cvs:st.cvs,cur:st.cur,paid:st.paid,step:0,mode:'guided',pickerOpen:false,filter:'all',pay:null,importOpen:false,impTab:'file',pasteText:'',importBusy:'',toast:'',busy:'',jd:'',tailorTips:'',share:null,pages:0};
+    this.state={qs:{role:'',yrs:'',notes:''},quickHidden:false,skSug:[],plain:false,prevSum:null,zoom:1,setup:false,tips:true,view:'home',cvs:st.cvs,cur:st.cur,paid:st.paid,step:0,mode:'guided',pickerOpen:false,filter:'all',pay:null,importOpen:false,impTab:'file',pasteText:'',importBusy:'',toast:'',busy:'',jd:'',tailorTips:'',share:null,pages:0,fitN:2,undo:null,fixNotes:''};
     this.els={};['prev','pick','cover','share'].forEach(k=>{this[k+'Ref']=el=>{this.els[k]=el;if(el)this.sched();};});
   }
   componentDidMount(){
@@ -547,6 +558,48 @@ class Component extends DCLogic {
     const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||'AI unavailable');return j.text;}
   json(t){const m=String(t).match(/\{[\s\S]*\}/);return JSON.parse(m?m[0]:t);}
   async run(tag,fn){if(this.state.busy)return;this.setState({busy:tag});try{await fn();}catch(e){const m=String((e&&e.message)||'');this.flash(/failed to fetch|networkerror|load failed/i.test(m)?'AI blocked: check ALLOWED_ORIGINS matches this web address exactly.':/not found|404/i.test(m)?'AI function "ai" not found in Supabase.':'AI error: '+(m||'unknown').slice(0,160));}this.setState({busy:''});}
+
+  pagesOf(cv,d,m){try{const r=this.render1(Object.assign({},cv,{data:d,margin:m}),false);return (r&&r.pages&&r.pages.length)||1;}catch(e){return 1;}}
+  strip(d){const o=JSON.parse(JSON.stringify(d||{}));delete o.photo;delete o.heads;return o;}
+  aiJSON(prompt,ms){const t=new Promise((_,rj)=>setTimeout(()=>rj(new Error('timeout')),ms||45000));return Promise.race([this.ai(prompt),t]).then(o=>this.json(o));}
+  cleanData(d){const CL=/\b(hard[- ]?working|team player|go[- ]getter|think outside the box|detail[- ]oriented|self[- ]motivated|dynamic individual|results[- ]driven|highly motivated|passionate)\b,?\s*/gi;
+    const fix=t=>String(t||'').replace(CL,'').replace(/^\s*(i was |i am |i )/i,'').replace(/^responsible for (managing|handling|leading)\s+/i,(m,v)=>v[0].toUpperCase()+v.slice(1,-3)+'ed ').replace(/^responsible for\s+/i,'Managed ').replace(/\s{2,}/g,' ').replace(/\s+([,.;])/g,'$1').trim().replace(/^./,c=>c.toUpperCase());
+    d.summary=fix(d.summary);
+    (d.exp||[]).forEach(e=>{e.b=String(e.b||'').split('\n').map(x=>fix(x.replace(/^[\s•\-–*]+/,''))).filter(Boolean).map(x=>x.length>230?x.slice(0,x.lastIndexOf(' ',220))+'.':x).join('\n');e.d=String(e.d||'').replace(/\s*[-–—]+\s*/g,' – ').replace(/present/i,'Present');});
+    (d.skills||[]).forEach(s=>{const seen=new Set();s.list=String(s.list||'').split(/\s*[,;|]\s*/).map(x=>x.trim()).filter(x=>x&&!seen.has(x.toLowerCase())&&seen.add(x.toLowerCase())).join(', ');});
+    if(!d.title&&d.exp&&d.exp[0]&&d.exp[0].t)d.title=d.exp[0].t;
+    if(d.email)d.email=d.email.trim().toLowerCase();return d;}
+  trimTo(cv,d0,n){const capB=(d,caps)=>{(d.exp||[]).forEach((e,i)=>{const c=caps[Math.min(i,caps.length-1)];e.b=String(e.b||'').split('\n').filter(Boolean).slice(0,c).join('\n');});return d;};
+    const capS=(d,w)=>{const s=String(d.summary||'');const ws=s.split(/\s+/);if(ws.length<=w)return d;const cut=ws.slice(0,w).join(' ');const k=cut.lastIndexOf('.');d.summary=k>cut.length*.5?cut.slice(0,k+1):cut+'.';return d;};
+    const capX=(d,k)=>{(d.extra||[]).forEach(x=>{x.items=String(x.items||'').split('\n').filter(Boolean).slice(0,k).join('\n');});(d.skills||[]).forEach(s=>{s.list=String(s.list||'').split(/,\s*/).slice(0,k+5).join(', ');});return d;};
+    const L=[[d=>d,'default'],[d=>d,'compact'],[d=>capB(d,[6,5,4]),'compact'],[d=>capB(d,[5,4,3]),'compact'],[d=>capS(capB(d,[5,3,2]),75),'compact'],[d=>capX(capS(capB(d,[4,3,2]),65),4),'compact'],[d=>capX(capS(capB(d,[4,3,1]),55),3),'compact'],[d=>capX(capS(capB(d,[3,2,1,0]),50),3),'compact'],[d=>capX(capS(capB(d,[3,2,0]),45),2),'compact']];
+    for(const [f,m] of L){const d=f(JSON.parse(JSON.stringify(d0)));const p=this.pagesOf(cv,d,m);if(p<=n)return {d,m,p,ok:true};}
+    const last=L[L.length-1];const d=last[0](JSON.parse(JSON.stringify(d0)));return {d,m:'compact',p:this.pagesOf(cv,d,'compact'),ok:false};}
+  keepFacts(orig,j){const o=JSON.parse(JSON.stringify(orig));if(!j||typeof j!=='object')return o;
+    ['summary','sub'].forEach(k=>{if(typeof j[k]==='string'&&j[k].trim())o[k]=j[k].trim();});if(!o.title&&typeof j.title==='string')o.title=j.title.trim();
+    if(Array.isArray(j.exp))(o.exp||[]).forEach((e,i)=>{const x=j.exp[i];if(x&&x.b){const b=Array.isArray(x.b)?x.b.join('\n'):String(x.b);if(b.trim())e.b=b;}});
+    if(Array.isArray(j.skills)&&j.skills.length){const sk=j.skills.map(s=>({cat:String(s.cat||'Skills'),list:Array.isArray(s.list)?s.list.join(', '):String(s.list||'')})).filter(s=>s.list);if(sk.length)o.skills=sk;}
+    if(Array.isArray(j.extra))(o.extra||[]).forEach((x,i)=>{const y=j.extra[i];if(y&&y.items){const it=Array.isArray(y.items)?y.items.join('\n'):String(y.items);if(it.trim())x.items=it;}});return o;}
+  applyData(cv,d,m,tag){const prev={data:cv.data,margin:cv.margin};const photo=(cv.data||{}).photo,heads=(cv.data||{}).heads;const nd=Object.assign({},d);if(photo)nd.photo=photo;if(heads)nd.heads=heads;
+    this.lastKey='';this.save(c=>{c.data=nd;if(m)c.margin=m;});this.setState({undo:Object.assign(prev,{id:cv.id,tag})});}
+  async fitPages(){const cv=this.cvObj();if(!cv||this.state.ro||this.state.busy)return;let n=Math.max(1,Math.min(6,parseInt(this.state.fitN,10)||1));
+    this.setState({busy:'fit',fixNotes:''});try{
+    const orig=this.cleanData(this.strip(cv.data));const now=this.pagesOf(cv,orig,cv.margin||'default');
+    if(now<=n){const roomy=this.pagesOf(cv,orig,'roomy')<=n?'roomy':(this.pagesOf(cv,orig,'default')<=n?'default':'compact');this.applyData(cv,orig,roomy,'fit');this.flash(now<n?'Content fills '+now+' page'+(now>1?'s':'')+'. Spacing relaxed; nothing invented.':'Already fits '+n+' page'+(n>1?'s':'')+'.');this.setState({busy:''});return;}
+    let base=orig;try{const words=n*420;const j=await this.aiJSON('You are a senior CV editor. Condense this CV JSON so the whole CV fits on '+n+' A4 page'+(n>1?'s':'')+' (about '+words+' words in total). Rules: keep every employer, job title, date, location, degree and contact detail exactly as given; never invent numbers, skills, tools or achievements; keep the strongest, most specific bullets; latest role keeps the most bullets, older roles fewer; merge overlapping bullets; each bullet one line where possible (max 24 words) starting with an action verb; summary 40-70 words; skills grouped into 2-4 categories using only skills present. Return the same JSON keys and structure (exp[i].b is bullets joined with \\n). JSON only.\n\nCV:\n'+JSON.stringify(orig));base=this.cleanData(this.keepFacts(orig,j));}catch(e){}
+    const r=this.trimTo(cv,base,n);this.applyData(cv,r.d,r.m,'fit');
+    this.flash(r.ok?'Fitted to '+r.p+' page'+(r.p>1?'s':'')+'. Review the bullets, then Undo if needed.':'Now '+r.p+' pages. Remove a role or section to reach '+n+'.');
+    }catch(e){this.flash('Could not fit: '+e.message);}this.setState({busy:''});}
+  async fixAll(){const cv=this.cvObj();if(!cv||this.state.ro||this.state.busy)return;const before=this.ats(cv).score;this.setState({busy:'fix',fixNotes:''});
+    try{const orig=this.strip(cv.data);let d=JSON.parse(JSON.stringify(orig));let via='AI';
+    try{const jd=(this.state.jd||'').trim();const j=await this.aiJSON('You are an expert ATS CV writer and recruiter. Improve this CV JSON so it scores as high as possible in applicant tracking systems while staying 100% truthful. Rules: never change or invent employers, job titles, dates, locations, degrees, certifications, numbers or contact details; never add skills or tools that are not already in the CV'+(jd?' (you may reorder and reword to match the job description terms when the CV already shows that skill)':'')+'; summary MUST be 50-90 words in 3 sentences, no "I", lead with the target title and years of experience if stated; every bullet starts with a strong action verb (past tense, present tense only for the current role), one clear result, max 24 words, keep any numbers already present; latest role 4-6 bullets if the source supports it; remove clichés (hardworking, team player, results-driven, responsible for, detail-oriented); skills in 2-4 labelled categories, comma-separated; if title is empty use the latest job title. Return the same JSON keys and structure (exp[i].b is bullets joined with \\n). JSON only.'+(jd?'\n\nJOB DESCRIPTION:\n'+jd.slice(0,5000):'')+'\n\nCV:\n'+JSON.stringify(orig));d=this.keepFacts(orig,j);}catch(e){via='local';}
+    d=this.cleanData(d);const wc=t=>(String(t||'').match(/\S+/g)||[]).length;if(wc(d.summary)<40){const o=this.cleanData(JSON.parse(JSON.stringify(orig)));if(wc(o.summary)>wc(d.summary))d.summary=o.summary.split(/\s+/).slice(0,100).join(' ');}
+    const pb=this.pagesOf(cv,orig,cv.margin||'default');const goal=Math.min(2,Math.max(1,pb));let m=cv.margin;if(this.pagesOf(cv,d,m||'default')>goal){const r=this.trimTo(cv,d,goal);d=r.d;m=r.m;}
+    this.applyData(cv,d,m,'fix');const tmp=Object.assign({},cv,{data:d,margin:m});const A=this.ats(tmp);
+    const left=(A.checks||[]).filter(c=>!c.ok&&!/length/i.test(c.label||'')).map(c=>c.label+': '+(c.tip||'')).slice(0,6);
+    this.setState({fixNotes:left.length?left.join('\n'):''});this.flash('ATS score '+before+' → '+A.score+(via==='local'?' (AI offline: basic fixes only)':'')+'. Undo is available.');
+    }catch(e){this.flash('Could not fix: '+e.message);}this.setState({busy:''});}
+  undoAi(){const u=this.state.undo;if(!u)return;this.lastKey='';this.setState(x=>({cvs:x.cvs.map(c=>c.id===u.id?Object.assign({},c,{data:u.data,margin:u.margin,updated:Date.now()}):c),undo:null,fixNotes:''}));this.flash('Undone.');}
   ats(cv){const D=this.toD(cv.data);const bul=D.exp.flatMap(e=>e.b);const words=(D.summary.match(/\S+/g)||[]).length;
     const text=[D.title,D.sub,D.summary,...D.skills.flat(),...D.exp.flatMap(e=>[e.t,e.c,...e.b]),...D.edu.flat(),D.langs,...D.extra.flatMap(x=>[x.title,...x.items])].join(' ').toLowerCase();
     const metric=bul.length?bul.filter(b=>/\d/.test(b)).length/bul.length:0;const verb=bul.length?bul.filter(b=>VERBS.test(b)).length/bul.length:0;
@@ -716,6 +769,7 @@ class Component extends DCLogic {
       curColor,pickCustom:e=>{const val=e.target.value;this.save(c=>{c.color=val;});},
       curFont:cv?(cv.font||(window.SKCV?window.SKCV.DES[cv.tpl||0].f:'Lato')):'Lato',pickFont:e=>{const val=e.target.value;this.save(c=>{c.font=val;});},
       atsScore:A.score,scorePill:`background:${bad?'#F7E9E9':mid?'#FBF4E2':'#E6F2EC'};color:${bad?'#8A2D2D':mid?'#8A6D1F':'#1F6B45'};border:none;border-radius:999px;padding:9px 14px;font:inherit;font-weight:900;font-size:13px;cursor:pointer;white-space:nowrap`,
+      fixLbl:s.busy==='fix'?'Fixing…':'Fix all for ATS',fitLbl:s.busy==='fit'?'Fitting…':'Fit',fitN:String(s.fitN||2),setFitN:e=>this.setState({fitN:e.target.value}),fitPages:()=>this.fitPages(),fixAll:()=>this.fixAll(),undoAi:()=>this.undoAi(),canUndo:!!(s.undo&&cv&&s.undo.id===cv.id),fixNotes:s.fixNotes||'',
       pageInfo:s.pages?`${s.pages} page${s.pages>1?'s':''}`:'',
       share:()=>{const c={data:Object.assign({},d,{photo:''}),tpl:cv.tpl,color:cv.color,font:cv.font,margin:cv.margin,paper:cv.paper,order:cv.order,hide:cv.hide,photoMode:cv.photoMode,photoShape:cv.photoShape};const url=location.origin+location.pathname+'#cv='+b64e(JSON.stringify(c));
         (navigator.clipboard?navigator.clipboard.writeText(url):Promise.reject()).then(()=>this.flash('Share link copied. Anyone with it can view this CV.'),()=>{prompt('Copy your share link:',url);});},
