@@ -28,9 +28,12 @@ const R={
   createUser:o=>rpc('portal_user_create',{p_token:tok(),p_username:o.username,p_name:o.name,p_password:o.password,p_role:'user'}),
   updateUser:(u,o)=>rpc('portal_user_update',{p_token:tok(),p_username:u,p_active:o.active==null?null:o.active,p_password:o.password||null}),
   deleteUser:u=>rpc('portal_user_delete',{p_token:tok(),p_username:u}),
-  saveCV:r=>rpc('portal_cv_save',{p_token:tok(),p_code:r.code,p_kind:r.kind,p_customer:r.customer||'',p_phone:r.phone||'',p_email:r.email||'',p_label:r.label||'',p_doc:r.doc}),
+  saveCV:r=>rpc('portal_cv_save',{p_token:tok(),p_code:r.code,p_kind:r.kind,p_customer:r.customer||'',p_phone:r.phone||'',p_email:r.email||'',p_label:r.label||'',p_doc:r.doc,p_seconds:r.seconds||0}),
+  logCV:(c,a,d)=>rpc('portal_cv_log',{p_token:tok(),p_code:c,p_action:a,p_detail:d||''}),
+  activity:o=>rpc('portal_activity_list',{p_token:tok(),p_code:(o&&o.code)||null,p_user:(o&&o.user)||null,p_from:(o&&o.from)||null,p_to:(o&&o.to)||null}),
+  report:(f,t)=>rpc('portal_report',{p_token:tok(),p_from:f||null,p_to:t||null}),
   getCV:c=>rpc('portal_cv_get',{p_token:tok(),p_code:c}),
-  searchCVs:(q,kind,by)=>rpc('portal_cv_search',{p_token:tok(),p_q:q||'',p_kind:kind||null,p_by:by||null}),
+  searchCVs:(q,kind,by,from,to)=>rpc('portal_cv_search',{p_token:tok(),p_q:q||'',p_kind:kind||null,p_by:by||null,p_from:from||null,p_to:to||null}),
   deleteCV:c=>rpc('portal_cv_delete',{p_token:tok(),p_code:c}),
   stats:()=>rpc('portal_stats',{p_token:tok()})
 };
@@ -42,7 +45,7 @@ async function seed(){const d=db();if(!d.users.some(u=>u.username==='skilleazead
 const curUser=d=>{const s=sess();if(!s)return null;const un=d.sessions[s.token];const u=d.users.find(x=>x.username===un&&x.active);return u||null;};
 const pub=u=>u&&({username:u.username,name:u.name,role:u.role,active:u.active,created_by:u.created_by,created_at:u.created_at,last_login:u.last_login,login_count:u.login_count});
 const need=(d,admin)=>{const u=curUser(d);if(!u)throw new Error('Please sign in again.');if(admin&&u.role!=='admin')throw new Error('Admins only.');return u;};
-const meta=c=>({code:c.code,kind:c.kind,customer:c.customer,phone:c.phone,email:c.email,label:c.label,created_by:c.created_by,updated_by:c.updated_by,created_at:c.created_at,updated_at:c.updated_at});
+const meta=c=>({serial:c.serial,time_spent:c.time_spent||0,edit_count:c.edit_count||0,downloads:c.downloads||0,last_download:c.last_download||null,code:c.code,kind:c.kind,customer:c.customer,phone:c.phone,email:c.email,label:c.label,created_by:c.created_by,updated_by:c.updated_by,created_at:c.created_at,updated_at:c.updated_at});
 const L={
   async login(u,p){const d=await seed();const h=await sha(p);const x=d.users.find(z=>z.username.toLowerCase()===String(u).trim().toLowerCase());
     if(!x||x.pass!==h)throw new Error('Username or password is incorrect.');if(!x.active)throw new Error('This account is disabled. Ask the admin.');
@@ -59,13 +62,25 @@ const L={
     if(o.active!=null){if(un==='skilleazeadmin')throw new Error('The main admin cannot be disabled.');u.active=!!o.active;}
     if(o.password){if(o.password.length<8)throw new Error('Password must be at least 8 characters.');u.pass=await sha(o.password);}put(d);return true;},
   async deleteUser(un){const d=db();need(d,true);if(un==='skilleazeadmin')throw new Error('The main admin cannot be deleted.');d.users=d.users.filter(u=>u.username!==un);put(d);return true;},
-  async saveCV(r){const d=db();const u=need(d);if(u.role==='admin')throw new Error('Admin accounts manage the portal and cannot create or edit CVs.');const now=new Date().toISOString();let c=d.cvs.find(x=>x.code===r.code);
-    if(!c){c={code:r.code,created_by:u.username,created_at:now};d.cvs.push(c);}Object.assign(c,{kind:r.kind,customer:r.customer||'',phone:r.phone||'',email:r.email||'',label:r.label||'',doc:r.doc,updated_by:u.username,updated_at:now});
-    try{put(d);}catch(e){throw new Error('Browser storage is full. Connect the shared database (see SETUP.md).');}return true;},
-  async getCV(code){const d=db();need(d);const c=d.cvs.find(x=>x.code.toLowerCase()===String(code).trim().toLowerCase());return c?Object.assign(meta(c),{doc:c.doc}):null;},
-  async searchCVs(q,kind,by){const d=db();need(d);const n=norm(q);
-    return d.cvs.filter(c=>(!kind||c.kind===kind)&&(!by||c.created_by===by)&&(!n||norm(c.customer).includes(n)||norm(c.phone).includes(n)||norm(c.code).includes(n)||norm(c.email).includes(n)))
-      .sort((a,b)=>b.updated_at.localeCompare(a.updated_at)).slice(0,100).map(meta);},
+  async saveCV(r){const d=db();const u=need(d);if(u.role==='admin')throw new Error('Admin accounts manage the portal and cannot create or edit CVs.');const now=new Date().toISOString();const sec=Math.max(0,Math.min(r.seconds||0,3600));let c=d.cvs.find(x=>x.code===r.code);d.act=d.act||[];
+    if(!c){d.seq=(d.seq||d.cvs.length)+1;c={code:r.code,serial:d.seq,created_by:u.username,created_at:now,time_spent:0,edit_count:0,downloads:0};d.cvs.push(c);d.act.push({id:Date.now(),code:r.code,username:u.username,action:'created',seconds:sec,at:now});}
+    else{const last=[...d.act].reverse().find(a=>a.code===r.code&&a.username===u.username&&(a.action==='created'||a.action==='edited'));if(last&&Date.now()-new Date(last.at)<20*60e3)last.seconds+=sec;else d.act.push({id:Date.now(),code:r.code,username:u.username,action:'edited',seconds:sec,at:now});}
+    if(!c.serial){d.seq=(d.seq||0)+1;c.serial=d.seq;}c.time_spent=(c.time_spent||0)+sec;c.edit_count=(c.edit_count||0)+1;
+    Object.assign(c,{kind:r.kind,customer:r.customer||'',phone:r.phone||'',email:r.email||'',label:r.label||'',doc:r.doc,updated_by:u.username,updated_at:now});
+    try{put(d);}catch(e){throw new Error('Browser storage is full. Connect the shared database (see SETUP.md).');}return {serial:c.serial,code:c.code};},
+  async logCV(code,action,detail){const d=db();const u=need(d);d.act=d.act||[];d.act.push({id:Date.now(),code,username:u.username,action,seconds:0,detail:detail||'',at:new Date().toISOString()});const c=d.cvs.find(x=>x.code===code);if(c&&/^download_/.test(action)){c.downloads=(c.downloads||0)+1;c.last_download=new Date().toISOString();}put(d);return true;},
+  async activity(o){o=o||{};const d=db();const u=need(d);if(!o.code&&u.role!=='admin')throw new Error('Admins only.');const day=x=>String(x||'').slice(0,10);
+    return (d.act||[]).filter(a=>(!o.code||a.code===o.code)&&(!o.user||a.username===o.user)&&(!o.from||day(a.at)>=o.from)&&(!o.to||day(a.at)<=o.to)).slice(-300).reverse().map(a=>{const c=d.cvs.find(x=>x.code===a.code)||{};return Object.assign({},a,{customer:c.customer||'',serial:c.serial||null});});},
+  async report(from,to){const d=db();const u=need(d);const day=x=>String(x||'').slice(0,10);const today=new Date().toISOString().slice(0,10);const t=to||today;
+    const mine=c=>u.role==='admin'||c.created_by===u.username;const f=from||(d.cvs.length?d.cvs.map(c=>day(c.created_at)).sort()[0]:today);
+    const inR=c=>day(c.created_at)>=f&&day(c.created_at)<=t;const cs=d.cvs.filter(c=>inR(c)&&mine(c));const act=(d.act||[]).filter(a=>day(a.at)>=f&&day(a.at)<=t);
+    const daily=[];let st=new Date(f+'T00:00:00Z');const en=new Date(t+'T00:00:00Z');if((en-st)/864e5>89)st=new Date(en-89*864e5);for(let x=new Date(st);x<=en;x=new Date(+x+864e5)){const k=x.toISOString().slice(0,10);daily.push({d:k,n:d.cvs.filter(c=>mine(c)&&day(c.created_at)===k).length});}
+    return {totals:{cvs:cs.length,ats:cs.filter(c=>c.kind==='ats').length,europass:cs.filter(c=>c.kind==='europass').length,customers:new Set(cs.map(c=>norm(c.phone).replace(/\D/g,'')||norm(c.customer)).filter(Boolean)).size,seconds:cs.reduce((a,c)=>a+(c.time_spent||0),0),downloads:cs.reduce((a,c)=>a+(c.downloads||0),0)},daily,
+      experts:u.role!=='admin'?[]:d.users.filter(x=>x.role==='user').map(x=>({username:x.username,name:x.name,active:x.active,last_login:x.last_login,login_count:x.login_count,cvs:d.cvs.filter(c=>c.created_by===x.username&&inR(c)).length,seconds:act.filter(a=>a.username===x.username).reduce((a,b)=>a+(b.seconds||0),0),downloads:act.filter(a=>a.username===x.username&&/^download_/.test(a.action)).length,cvs_all:d.cvs.filter(c=>c.created_by===x.username).length})).sort((a,b)=>b.cvs-a.cvs)};},
+  async getCV(code){const d=db();need(d);const k=String(code).trim().toLowerCase(),nn=k.replace(/\D/g,'');const c=d.cvs.find(x=>x.code.toLowerCase()===k||(nn&&String(x.serial)===String(+nn)&&/^#?\d+$/.test(k)));return c?Object.assign(meta(c),{doc:c.doc}):null;},
+  async searchCVs(q,kind,by,from,to){const d=db();need(d);const n=norm(q).replace('#','');const nd=n.replace(/\D/g,'');const day=x=>String(x||'').slice(0,10);
+    return d.cvs.filter(c=>(!kind||c.kind===kind)&&(!by||c.created_by===by)&&(!from||day(c.created_at)>=from)&&(!to||day(c.created_at)<=to)&&(!n||norm(c.customer).includes(n)||norm(c.phone).includes(n)||norm(c.code).includes(n)||norm(c.email).includes(n)||(nd&&String(c.serial)===String(+nd))))
+      .sort((a,b)=>b.updated_at.localeCompare(a.updated_at)).slice(0,300).map(meta);},
   async deleteCV(code){const d=db();need(d,true);d.cvs=d.cvs.filter(c=>c.code!==code);put(d);return true;},
   async stats(){const d=db();need(d);const t=new Date().toISOString().slice(0,10);
     const ex=d.users.filter(u=>u.role!=='admin');return {experts:ex.length,active_experts:ex.filter(u=>u.active).length,logins:ex.reduce((a,u)=>a+(u.login_count||0),0),users:d.users.length,active_users:d.users.filter(u=>u.active).length,cvs:d.cvs.length,ats:d.cvs.filter(c=>c.kind==='ats').length,europass:d.cvs.filter(c=>c.kind==='europass').length,customers:new Set(d.cvs.map(c=>norm(c.phone)||norm(c.customer)).filter(Boolean)).size,cvs_week:d.cvs.filter(c=>Date.now()-new Date(c.created_at)<7*864e5).length,cvs_today:d.cvs.filter(c=>(c.created_at||'').slice(0,10)===t).length};}
