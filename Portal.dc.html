@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<base href="./Portal.dc.html">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <script src="./support.js"></script>
@@ -15,149 +16,226 @@
 <script src="./cv-builder/portal-config.js"></script>
 <script src="./cv-builder/portal-store.js"></script>
 <style>
-body{margin:0;background:#F8F9FA;font-family:Lato,sans-serif;color:#2C3E50}
+body{margin:0;background:#F4F6FA;font-family:Lato,sans-serif;color:#2C3E50}
 a{color:#042D7C}a:hover{color:#053BA0}
 input,select,button{font-family:inherit}
 :focus-visible{outline:2px solid #053BA0;outline-offset:2px}
-@keyframes skp-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes skp-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes skp-dr{from{transform:translateX(40px);opacity:0}to{transform:none;opacity:1}}
+::-webkit-scrollbar{height:8px;width:8px}::-webkit-scrollbar-thumb{background:#D5DAE3;border-radius:8px}
 </style>
 <style id="skp-touch">html{-webkit-text-size-adjust:100%;text-size-adjust:100%}body{overflow-x:hidden;-webkit-tap-highlight-color:rgba(4,45,124,.12)}img,svg,video,canvas{max-width:100%}
-@media (pointer:coarse),(max-width:820px){input,select,textarea{font-size:16px!important}button,a[href],[role=button],select{touch-action:manipulation}button:not(:empty),[role=button]:not(:empty){min-height:40px}button:empty{min-width:34px;min-height:34px}input[type=checkbox],input[type=radio]{width:22px;height:22px}}
+@media (pointer:coarse),(max-width:820px){input,select,textarea{font-size:16px!important}button,a[href],[role=button],select{touch-action:manipulation}input[type=checkbox],input[type=radio]{width:22px;height:22px}}
 @supports(padding:max(0px)){body{padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right);padding-bottom:env(safe-area-inset-bottom)}}</style>
 </helmet>
 
 <sc-if value="{{ showLogin }}">
-<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box">
-<form onSubmit="{{ doLogin }}" style="width:100%;max-width:410px;background:#FFFFFF;border:1px solid #E3E4E8;border-radius:24px;padding:36px 32px;box-sizing:border-box;display:flex;flex-direction:column;gap:16px;box-shadow:0 20px 60px rgba(4,45,124,.08);animation:skp-in .35s ease">
-<img src="assets/wordmark-blue.png" alt="Skilleaze" style="height:30px;width:auto;align-self:flex-start">
-<div><div style="font-size:11px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:#053BA0">Team only</div><h1 style="margin:6px 0 0;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:34px;line-height:1.1;color:#042D7C">Internal CV Portal</h1><p style="margin:8px 0 0;font-size:14px;color:#5B6470">Sign in with the username and password your admin gave you.</p></div>
-<label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:700">Username<input name="un" required autocomplete="username" autocapitalize="none" style="border:1px solid #D5D9E0;border-radius:12px;padding:12px 14px;font-weight:400;font-size:15px"></label>
-<label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:700">Password<input name="pw" type="password" required autocomplete="current-password" style="border:1px solid #D5D9E0;border-radius:12px;padding:12px 14px;font-weight:400;font-size:15px"></label>
-<sc-if value="{{ loginErr }}"><div style="font-size:13px;color:#A12B2B;background:#FBECEC;border-radius:10px;padding:9px 12px">{{ loginErr }}</div></sc-if>
-<button type="submit" style="background:#042D7C;color:#FFFFFF;border:0;border-radius:999px;padding:14px 18px;font-weight:900;font-size:15px;cursor:pointer" style-hover="background:#053BA0">{{ loginBtn }}</button>
+<div style="min-height:100vh;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));background:#FFFFFF">
+<div style="background:#042D7C;color:#FFFFFF;padding:clamp(32px,6vw,72px);display:flex;flex-direction:column;justify-content:space-between;gap:40px;position:relative;overflow:hidden">
+<img src="assets/wordmark-white.png" alt="Skilleaze" style="height:30px;width:auto;align-self:flex-start">
+<div style="display:flex;flex-direction:column;gap:18px;max-width:520px">
+<div style="display:inline-flex;align-self:flex-start;gap:8px;align-items:center;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:7px 14px;font-size:12px;font-weight:900;letter-spacing:.14em;text-transform:uppercase">Internal · Team only</div>
+<h1 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:clamp(44px,6vw,76px);line-height:.98">CV Portal</h1>
+<p style="margin:0;font-size:17px;line-height:1.6;color:#E3E4E8;max-width:440px">Build. Track. Deliver.</p>
+</div>
+<div style="font-family:'Cormorant Garamond',serif;font-size:24px;color:#E3E4E8">Career Simplified</div>
+</div>
+<div style="display:flex;align-items:center;justify-content:center;padding:clamp(28px,5vw,64px)">
+<form onSubmit="{{ doLogin }}" style="width:100%;max-width:400px;display:flex;flex-direction:column;gap:18px;animation:skp-in .4s ease">
+<div><div style="font-size:12px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:#053BA0">Sign in</div><h2 style="margin:8px 0 0;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:38px;line-height:1.05;color:#042D7C">Welcome back.</h2><p style="margin:10px 0 0;font-size:15px;line-height:1.5;color:#5B6470">Sign in to continue.</p></div>
+<label style="display:flex;flex-direction:column;gap:7px;font-size:13px;font-weight:700">Username<input name="un" required autocomplete="username" autocapitalize="none" style="border:1px solid #D5D9E0;border-radius:14px;padding:14px 16px;font-weight:400;font-size:16px;background:#F8F9FA"></label>
+<label style="display:flex;flex-direction:column;gap:7px;font-size:13px;font-weight:700">Password<input name="pw" type="password" required autocomplete="current-password" style="border:1px solid #D5D9E0;border-radius:14px;padding:14px 16px;font-weight:400;font-size:16px;background:#F8F9FA"></label>
+<sc-if value="{{ loginErr }}"><div style="font-size:13px;color:#A12B2B;background:#FBECEC;border-radius:12px;padding:10px 14px">{{ loginErr }}</div></sc-if>
+<button type="submit" style="background:#042D7C;color:#FFFFFF;border:0;border-radius:999px;padding:16px 20px;font-weight:900;font-size:15px;cursor:pointer;display:flex;justify-content:space-between;align-items:center" style-hover="background:#053BA0"><span>{{ loginBtn }}</span><span>→</span></button>
 </form>
+</div>
 </div>
 </sc-if>
 
 <sc-if value="{{ showApp }}">
 <div style="min-height:100vh;display:flex;flex-direction:column">
-<header style="position:sticky;top:0;z-index:20;background:rgba(255,255,255,.94);backdrop-filter:blur(10px);border-bottom:1px solid #E3E4E8">
-<div style="max-width:1240px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+<header style="position:sticky;top:0;z-index:30;background:rgba(255,255,255,.88);backdrop-filter:saturate(1.4) blur(14px);-webkit-backdrop-filter:saturate(1.4) blur(14px);border-bottom:1px solid #E3E4E8">
+<div style="max-width:1320px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
 <img src="assets/wordmark-blue.png" alt="Skilleaze" style="height:26px;width:auto;display:block">
-<span style="font-size:11px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#053BA0;border-left:1px solid #E3E4E8;padding-left:14px">Internal CV Portal</span>
-<div style="margin-left:auto;display:flex;align-items:center;gap:10px;font-size:13px;flex-wrap:wrap">
-<span style="background:#E9EEF8;color:#042D7C;border-radius:999px;padding:7px 12px;font-weight:900">{{ meName }}</span>
-<sc-if value="{{ isAdmin }}"><span style="background:#042D7C;color:#FFFFFF;border-radius:999px;padding:7px 10px;font-weight:900;font-size:11px;letter-spacing:.08em">ADMIN</span></sc-if>
-<button onClick="{{ doLogout }}" style="all:unset;display:inline-flex;align-items:center;min-height:40px;padding:0 8px;cursor:pointer;font-weight:700;color:#5B6470" style-hover="color:#042D7C">Sign out</button>
+<nav style="display:flex;gap:4px;background:#EEF1F6;border-radius:999px;padding:4px;overflow-x:auto;max-width:100%;order:3;flex:1 1 100%;scrollbar-width:none;-webkit-overflow-scrolling:touch">
+<sc-for list="{{ tabs }}" as="t" hint-placeholder-count="4"><button onClick="{{ t.go }}" style="{{ t.style }}">{{ t.label }}</button></sc-for>
+</nav>
+<div style="margin-left:auto;display:flex;align-items:center;gap:8px;font-size:13px">
+<div style="display:flex;align-items:center;gap:8px;background:#FFFFFF;border:1px solid #E3E4E8;border-radius:999px;padding:4px 12px 4px 4px">
+<div style="width:30px;height:30px;border-radius:50%;background:#042D7C;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px">{{ meInitial }}</div>
+<div style="display:flex;flex-direction:column;line-height:1.15"><span style="font-weight:900;color:#042D7C">{{ meName }}</span><span style="font-size:11px;color:#5B6470">{{ meRole }}</span></div>
+</div>
+<button onClick="{{ doLogout }}" style="background:transparent;border:1px solid #E3E4E8;border-radius:999px;padding:9px 14px;cursor:pointer;font-weight:700;font-size:13px;color:#5B6470" style-hover="color:#042D7C;border-color:#042D7C">Sign out</button>
 </div>
 </div>
 </header>
 
-<main style="max-width:1240px;width:100%;margin:0 auto;padding:36px 20px 96px;box-sizing:border-box;display:flex;flex-direction:column;gap:36px;animation:skp-in .35s ease">
+<main style="max-width:1320px;width:100%;margin:0 auto;padding:28px 20px 96px;box-sizing:border-box;display:flex;flex-direction:column;gap:22px">
 
-<sc-if value="{{ preview }}"><div style="font-size:13px;color:#7A5B12;background:#FBF4E2;border:1px solid #F0E2BC;border-radius:14px;padding:12px 16px;line-height:1.5"><strong>Preview mode.</strong> Users and CVs are saved in this browser only. Connect the shared database (see SETUP.md) so the whole team sees the same CVs.</div></sc-if>
+<sc-if value="{{ preview }}"><div style="font-size:13px;color:#7A5B12;background:#FBF4E2;border:1px solid #F0E2BC;border-radius:14px;padding:12px 16px;line-height:1.5"><strong>Preview mode.</strong> Data is saved in this browser only. Connect Supabase (see SETUP.md) so the whole team shares it.</div></sc-if>
 
-<section style="display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap">
-<div style="display:flex;flex-direction:column;gap:6px">
-<div style="font-size:13px;color:#5B6470">{{ today }}</div>
-<h1 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:clamp(34px,4.4vw,48px);line-height:1.05;color:#042D7C">{{ heroTitle }}</h1>
-<div style="font-size:15px;color:#5B6470;max-width:560px;line-height:1.5">{{ heroSub }}</div>
+<sc-if value="{{ tabOverview }}"><section style="background:#042D7C;color:#FFFFFF;border-radius:28px;padding:clamp(22px,3.5vw,36px);display:flex;justify-content:space-between;align-items:flex-end;gap:22px;flex-wrap:wrap;animation:skp-in .35s ease">
+<div style="display:flex;flex-direction:column;gap:8px;min-width:0">
+<div style="font-size:13px;color:#C9D3E8">{{ today }}</div>
+<h1 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:clamp(34px,4.6vw,54px);line-height:1">{{ heroTitle }}</h1>
+<div style="font-size:15px;color:#E3E4E8;max-width:560px;line-height:1.5">{{ heroSub }}</div>
 </div>
-<sc-if value="{{ canCreate }}"><div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;flex:1 1 auto;min-width:0">
-<a href="./Skilleaze CV Builder.dc.html?new=1" style="display:inline-flex;align-items:center;gap:8px;background:#042D7C;color:#FFFFFF;border-radius:999px;padding:13px 22px;font-weight:900;font-size:15px;text-decoration:none;white-space:nowrap;line-height:1.2" style-hover="background:#053BA0;color:#FFFFFF">+ New ATS CV</a>
-<a href="./Skilleaze Europass CV Builder.dc.html?new=1" style="display:inline-flex;align-items:center;gap:8px;background:#FFFFFF;color:#042D7C;border:1px solid #042D7C;border-radius:999px;padding:12px 22px;font-weight:900;font-size:15px;text-decoration:none;white-space:nowrap;line-height:1.2" style-hover="background:#E9EEF8">+ New Europass CV</a>
-<a href="./Skilleaze CV Builder.dc.html?import=1" style="display:inline-flex;align-items:center;gap:8px;background:transparent;color:#042D7C;border:1px dashed #042D7C;border-radius:999px;padding:12px 20px;font-weight:900;font-size:15px;text-decoration:none;white-space:nowrap" style-hover="background:#E9EEF8">Upload existing CV</a>
+<sc-if value="{{ canCreate }}"><div style="display:flex;gap:10px;flex-wrap:wrap">
+<a href="./ats-cv-builder?new=1" style="display:inline-flex;align-items:center;gap:10px;background:#FFFFFF;color:#042D7C;border-radius:999px;padding:13px 20px;font-weight:900;font-size:14px;text-decoration:none;white-space:nowrap" style-hover="background:#E9EEF8;color:#042D7C">+ New ATS CV</a>
+<a href="./europass-cv-builder?new=1" style="display:inline-flex;align-items:center;gap:10px;background:rgba(255,255,255,.1);color:#FFFFFF;border:1px solid rgba(255,255,255,.4);border-radius:999px;padding:12px 20px;font-weight:900;font-size:14px;text-decoration:none;white-space:nowrap" style-hover="background:rgba(255,255,255,.18);color:#FFFFFF">+ New Europass CV</a>
+<a href="./ats-cv-builder?import=1" style="display:inline-flex;align-items:center;gap:10px;background:transparent;color:#FFFFFF;border:1px dashed rgba(255,255,255,.5);border-radius:999px;padding:12px 20px;font-weight:900;font-size:14px;text-decoration:none;white-space:nowrap" style-hover="background:rgba(255,255,255,.1);color:#FFFFFF">Upload existing CV</a>
 </div></sc-if>
+</section></sc-if>
+<sc-if value="{{ notOverview }}"><section style="display:flex;justify-content:space-between;align-items:flex-end;gap:14px;flex-wrap:wrap"><div><div style="font-size:12px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#053BA0">{{ tabKicker }}</div><h1 style="margin:4px 0 0;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:clamp(32px,4vw,44px);line-height:1.05;color:#042D7C">{{ tabTitle }}</h1></div><sc-if value="{{ canCreate }}"><a href="./ats-cv-builder?new=1" style="background:#042D7C;color:#FFFFFF;border-radius:999px;padding:12px 18px;font-weight:900;font-size:14px;text-decoration:none;white-space:nowrap" style-hover="background:#053BA0;color:#FFFFFF">+ New CV</a></sc-if></section></sc-if>
+
+<section style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:#FFFFFF;border:1px solid #E3E4E8;border-radius:20px;padding:10px 12px">
+<span style="font-size:12px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:#5B6470;padding:0 6px">Period</span>
+<div style="display:flex;gap:4px;flex-wrap:wrap">
+<sc-for list="{{ ranges }}" as="r" hint-placeholder-count="6"><button onClick="{{ r.go }}" style="{{ r.style }}">{{ r.label }}</button></sc-for>
+</div>
+<div style="display:flex;gap:6px;align-items:center;margin-left:auto;flex-wrap:wrap">
+<input type="date" value="{{ fromVal }}" onChange="{{ setFrom }}" aria-label="From date" style="border:1px solid #D5D9E0;border-radius:12px;padding:8px 10px;font-size:14px;color:#2C3E50;background:#F8F9FA">
+<span style="color:#8A919C">to</span>
+<input type="date" value="{{ toVal }}" onChange="{{ setTo }}" aria-label="To date" style="border:1px solid #D5D9E0;border-radius:12px;padding:8px 10px;font-size:14px;color:#2C3E50;background:#F8F9FA">
+</div>
 </section>
 
-<section style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:14px">
-<sc-for list="{{ statCards }}" as="k" hint-placeholder-count="4">
-<div style="background:#FFFFFF;border:1px solid #E3E4E8;border-radius:20px;padding:20px 22px;display:flex;flex-direction:column;gap:6px">
+<sc-if value="{{ tabOverview }}">
+<section style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));gap:14px">
+<sc-for list="{{ kpis }}" as="k" hint-placeholder-count="6">
+<div style="background:#FFFFFF;border:1px solid #E3E4E8;border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:8px;animation:skp-in .35s ease" style-hover="border-color:#C9D3E8;box-shadow:0 10px 30px rgba(4,45,124,.07)">
 <div style="font-size:12px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:#5B6470">{{ k.label }}</div>
-<div style="font-weight:900;font-size:38px;line-height:1.05;color:#042D7C;font-variant-numeric:tabular-nums">{{ k.value }}</div>
+<div style="font-weight:900;font-size:36px;line-height:1;color:#042D7C;font-variant-numeric:tabular-nums">{{ k.value }}</div>
 <div style="font-size:13px;color:#5B6470">{{ k.note }}</div>
 </div>
 </sc-for>
 </section>
 
-<section style="background:#FFFFFF;border:1px solid #E3E4E8;border-radius:24px;padding:24px;display:flex;flex-direction:column;gap:16px">
-<div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap">
-<h2 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:30px;color:#042D7C">Find a CV</h2>
-<div style="font-size:13px;color:#5B6470">{{ resultNote }}</div>
+<section style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,520px),1fr));gap:16px;align-items:stretch">
+<div style="background:#FFFFFF;border:1px solid #E3E4E8;border-radius:24px;padding:22px;display:flex;flex-direction:column;gap:16px;min-width:0">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap"><h2 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:28px;color:#042D7C">CVs created per day</h2><span style="font-size:13px;color:#5B6470">{{ chartNote }}</span></div>
+<div style="display:flex;align-items:flex-end;gap:3px;height:190px;padding:18px 14px 0">
+<sc-for list="{{ bars }}" as="b" hint-placeholder-count="14">
+<div title="{{ b.tip }}" style="flex:1 1 0;min-width:0;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:4px">
+<span style="font-size:11px;font-weight:900;color:#042D7C">{{ b.n }}</span>
+<div style="{{ b.style }}"></div>
+<span style="font-size:10px;color:#8A919C;white-space:nowrap;height:12px;width:0;display:flex;justify-content:center;overflow:visible">{{ b.lbl }}</span>
 </div>
-<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
-<input value="{{ q }}" onInput="{{ setQ }}" placeholder="Customer name, phone number or CV code" aria-label="Search CVs" style="flex:1 1 300px;min-width:0;border:1px solid #D5D9E0;border-radius:14px;padding:14px 16px;font-size:16px;background:#F8F9FA">
-<sc-if value="{{ isAdmin }}"><select value="{{ byVal }}" onChange="{{ setBy }}" aria-label="Created by" style="border:1px solid #D5D9E0;border-radius:999px;padding:11px 14px;font-size:14px;font-weight:700;color:#042D7C;background:#FFFFFF"><option value="">All CV experts</option><sc-for list="{{ byOpts }}" as="o" hint-placeholder-count="0"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select></sc-if>
-<div style="display:flex;background:#F1F3F6;border-radius:999px;padding:4px;gap:2px">
-<sc-for list="{{ kindTabs }}" as="t" hint-placeholder-count="3"><button onClick="{{ t.go }}" style="{{ t.style }}">{{ t.label }}</button></sc-for>
-</div>
-</div>
-<sc-if value="{{ hasResults }}">
-<div style="overflow-x:auto;overflow-y:hidden;margin:0 -4px">
-<table style="width:100%;border-collapse:collapse;font-size:14px;min-width:760px">
-<thead><tr style="text-align:left;color:#5B6470;font-size:12px;letter-spacing:.08em;text-transform:uppercase">
-<th style="padding:10px;border-bottom:2px solid #E3E4E8">Code</th><th style="padding:10px;border-bottom:2px solid #E3E4E8">Customer</th><th style="padding:10px;border-bottom:2px solid #E3E4E8">Phone</th><th style="padding:10px;border-bottom:2px solid #E3E4E8">Type</th><th style="padding:10px;border-bottom:2px solid #E3E4E8">Created by</th><th style="padding:10px;border-bottom:2px solid #E3E4E8">Last edit</th><th style="padding:10px;border-bottom:2px solid #E3E4E8"></th>
-</tr></thead>
-<tbody>
-<sc-for list="{{ results }}" as="r" hint-placeholder-count="3">
-<tr style="border-bottom:1px solid #EEF0F3" style-hover="background:#F8F9FA">
-<td style="padding:12px 10px;font-weight:900;color:#042D7C;letter-spacing:.04em;white-space:nowrap">{{ r.code }}</td>
-<td style="padding:12px 10px;font-weight:700">{{ r.customer }}</td>
-<td style="padding:12px 10px;white-space:nowrap">{{ r.phone }}</td>
-<td style="padding:12px 10px"><span style="{{ r.kindStyle }}">{{ r.kindLabel }}</span></td>
-<td style="padding:12px 10px">{{ r.createdBy }}</td>
-<td style="padding:12px 10px;color:#5B6470;white-space:nowrap">{{ r.edited }}</td>
-<td style="padding:12px 10px;text-align:right;white-space:nowrap"><div style="display:flex;gap:6px;justify-content:flex-end">
-<a href="{{ r.href }}" style="background:#042D7C;color:#FFFFFF;border-radius:999px;padding:8px 16px;font-weight:700;font-size:13px;text-decoration:none" style-hover="background:#053BA0;color:#FFFFFF">{{ openLabel }}</a>
-<sc-if value="{{ isAdmin }}"><button onClick="{{ r.del }}" style="background:#FFFFFF;color:#8A2D2D;border:1px solid #E8D5D5;border-radius:999px;padding:7px 12px;font-weight:700;font-size:13px;cursor:pointer" style-hover="border-color:#8A2D2D">Delete</button></sc-if>
-</div></td>
-</tr>
 </sc-for>
-</tbody>
-</table>
+</div>
+</div>
+<sc-if value="{{ isAdmin }}">
+<div style="background:#FFFFFF;border:1px solid #E3E4E8;border-radius:24px;padding:22px;display:flex;flex-direction:column;gap:12px;min-width:0">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px"><h2 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:28px;color:#042D7C">Expert leaderboard</h2><button onClick="{{ goExperts }}" style="background:transparent;border:0;color:#053BA0;font-weight:900;font-size:13px;cursor:pointer">All experts →</button></div>
+<sc-if value="{{ noBoard }}"><div style="color:#5B6470;font-size:14px;padding:20px 0">No CV experts yet. Add one in the Experts tab.</div></sc-if>
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,210px),1fr));gap:10px">
+<sc-for list="{{ board }}" as="e" hint-placeholder-count="3">
+<button onClick="{{ e.open }}" style="all:unset;cursor:pointer;background:#F8F9FA;border:1px solid #EEF0F3;border-radius:18px;padding:14px;display:flex;gap:12px;align-items:center" style-hover="border-color:#042D7C;background:#FFFFFF">
+<div style="{{ e.rankStyle }}">{{ e.rank }}</div>
+<div style="min-width:0;display:flex;flex-direction:column;gap:2px"><span style="font-weight:900;color:#042D7C;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ e.name }}</span><span style="font-size:12px;color:#5B6470">{{ e.line }}</span></div>
+</button>
+</sc-for>
+</div>
 </div>
 </sc-if>
-<sc-if value="{{ noResults }}"><div style="padding:28px;text-align:center;color:#5B6470;font-size:15px;background:#F8F9FA;border-radius:16px">{{ emptyText }}</div></sc-if>
 </section>
 
-<sc-if value="{{ isAdmin }}">
-<section style="display:flex;flex-direction:column;gap:16px">
-<div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap">
-<h2 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:30px;color:#042D7C">CV experts</h2>
-<div style="font-size:13px;color:#5B6470">{{ usersNote }}</div>
+<section style="display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px"><h2 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:28px;color:#042D7C">Latest CVs</h2><button onClick="{{ goCvs }}" style="background:transparent;border:0;color:#053BA0;font-weight:900;font-size:13px;cursor:pointer">See all →</button></div>
+<sc-if value="{{ noRecent }}"><div style="background:#FFFFFF;border:1px dashed #D5D9E0;border-radius:22px;padding:32px;color:#5B6470;font-size:15px">{{ emptyText }}</div></sc-if>
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,290px),1fr));gap:14px">
+<sc-for list="{{ recent }}" as="r" hint-placeholder-count="3">
+<article style="background:#FFFFFF;border:1px solid #E3E4E8;border-radius:22px;padding:18px;display:flex;flex-direction:column;gap:12px;animation:skp-in .35s ease" style-hover="border-color:#C9D3E8;box-shadow:0 12px 32px rgba(4,45,124,.08);transform:translateY(-2px)">
+<div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span style="font-weight:900;font-size:13px;color:#042D7C;background:#E9EEF8;border-radius:999px;padding:5px 11px;font-variant-numeric:tabular-nums">{{ r.no }}</span><span style="{{ r.kindStyle }}">{{ r.kindLabel }}</span></div>
+<div style="display:flex;flex-direction:column;gap:3px;min-width:0"><div style="font-weight:900;font-size:19px;color:#2C3E50;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.customer }}</div><div style="font-size:14px;color:#5B6470">{{ r.phone }}</div><div style="font-size:12px;color:#8A919C;font-family:ui-monospace,Menlo,monospace;letter-spacing:.04em">{{ r.code }}</div></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px;color:#5B6470;border-top:1px solid #EEF0F3;padding-top:12px">
+<div><div style="font-weight:900;color:#2C3E50">{{ r.createdBy }}</div>{{ r.created }}</div>
+<div><div style="font-weight:900;color:#2C3E50">{{ r.time }}</div>{{ r.dl }}</div>
 </div>
-<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr));gap:16px;align-items:start">
-
-<form onSubmit="{{ addUser }}" style="background:#042D7C;color:#FFFFFF;border-radius:24px;padding:24px;display:flex;flex-direction:column;gap:12px">
-<div style="font-family:'Cormorant Garamond',serif;font-weight:700;font-size:26px">Add a CV expert</div>
-<label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:700;color:#E3E4E8">Full name<input value="{{ nu.name }}" onInput="{{ nuSet.name }}" required placeholder="Expert's full name" style="border:0;border-radius:12px;padding:12px 14px;font-size:15px;color:#2C3E50"></label>
-<label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:700;color:#E3E4E8">Username<input value="{{ nu.username }}" onInput="{{ nuSet.username }}" required autocapitalize="none" placeholder="e.g. sara.k" style="border:0;border-radius:12px;padding:12px 14px;font-size:15px;color:#2C3E50"></label>
-<label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:700;color:#E3E4E8">Password
-<div style="display:flex;gap:8px"><input value="{{ nu.password }}" onInput="{{ nuSet.password }}" required minlength="8" style="flex:1;min-width:0;border:0;border-radius:12px;padding:12px 14px;font-size:15px;color:#2C3E50;font-family:ui-monospace,Menlo,monospace"><button type="button" onClick="{{ genPw }}" style="background:#053BA0;color:#FFFFFF;border:1px solid rgba(255,255,255,.35);border-radius:12px;padding:0 14px;font-weight:700;font-size:13px;cursor:pointer;white-space:nowrap" style-hover="background:#0A4BC4">Generate</button></div></label>
-
-<sc-if value="{{ nuMsg }}"><div style="{{ nuMsgStyle }}">{{ nuMsg }}</div></sc-if>
-<button type="submit" style="background:#FFFFFF;color:#042D7C;border:0;border-radius:999px;padding:13px 18px;font-weight:900;font-size:15px;cursor:pointer;margin-top:4px" style-hover="background:#E9EEF8">Create expert account</button>
-</form>
-
-<div style="background:#FFFFFF;border:1px solid #E3E4E8;border-radius:24px;padding:8px;display:flex;flex-direction:column">
-<sc-if value="{{ noExperts }}"><div style="padding:32px 20px;color:#5B6470;font-size:15px;line-height:1.5">No CV experts yet. Add the first one with the form; they sign in with that username and password.</div></sc-if>
-<sc-for list="{{ users }}" as="u" hint-placeholder-count="3">
-<div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:14px;border-bottom:1px solid #EEF0F3">
-<div style="width:42px;height:42px;border-radius:50%;background:#E9EEF8;color:#042D7C;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;flex-shrink:0">{{ u.initial }}</div>
-<div style="flex:1 1 160px;min-width:0;display:flex;flex-direction:column;gap:3px">
-<div style="font-weight:900;font-size:15px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">{{ u.name }}<span style="{{ u.badgeStyle }}">{{ u.badge }}</span></div>
-<div style="font-size:13px;color:#5B6470">@{{ u.username }} · {{ u.logins }} · {{ u.cvs }}</div>
-<div style="font-size:12px;color:#8A919C">{{ u.last }}</div>
-</div>
-<sc-if value="{{ u.editable }}"><div style="display:flex;gap:6px;flex-wrap:wrap">
-<button onClick="{{ u.reset }}" style="background:#FFFFFF;color:#042D7C;border:1px solid #D9DCE3;border-radius:999px;padding:7px 12px;font-weight:700;font-size:12px;cursor:pointer;white-space:nowrap" style-hover="border-color:#042D7C">Reset password</button>
-<sc-if value="{{ u.canRemove }}"><button onClick="{{ u.toggle }}" style="background:#FFFFFF;color:#042D7C;border:1px solid #D9DCE3;border-radius:999px;padding:7px 12px;font-weight:700;font-size:12px;cursor:pointer;white-space:nowrap" style-hover="border-color:#042D7C">{{ u.toggleLabel }}</button>
-<button onClick="{{ u.del }}" style="background:#FFFFFF;color:#8A2D2D;border:1px solid #E8D5D5;border-radius:999px;padding:7px 12px;font-weight:700;font-size:12px;cursor:pointer;white-space:nowrap" style-hover="border-color:#8A2D2D">Delete</button></sc-if>
-</div></sc-if>
-</div>
+<div style="display:flex;gap:8px"><a href="{{ r.href }}" style="flex:1;text-align:center;background:#042D7C;color:#FFFFFF;border-radius:999px;padding:10px 14px;font-weight:900;font-size:13px;text-decoration:none" style-hover="background:#053BA0;color:#FFFFFF">{{ openLabel }}</a><button onClick="{{ r.info }}" style="background:#FFFFFF;color:#042D7C;border:1px solid #D9DCE3;border-radius:999px;padding:9px 14px;font-weight:900;font-size:13px;cursor:pointer" style-hover="border-color:#042D7C">Details</button></div>
+</article>
 </sc-for>
 </div>
+</section>
+</sc-if>
+
+<sc-if value="{{ showSearch }}">
+<section style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+<div style="flex:1 1 320px;min-width:0;display:flex;align-items:center;gap:10px;background:#FFFFFF;border:1px solid #D5D9E0;border-radius:999px;padding:4px 6px 4px 18px">
+<span style="color:#8A919C;font-size:16px">⌕</span>
+<input value="{{ q }}" onInput="{{ setQ }}" placeholder="{{ searchPh }}" aria-label="Search" style="flex:1;min-width:0;border:0;outline:0;padding:11px 0;font-size:16px;background:transparent">
 </div>
+<sc-if value="{{ showKind }}"><div style="display:flex;background:#EEF1F6;border-radius:999px;padding:4px;gap:2px"><sc-for list="{{ kindTabs }}" as="t" hint-placeholder-count="3"><button onClick="{{ t.go }}" style="{{ t.style }}">{{ t.label }}</button></sc-for></div></sc-if>
+<sc-if value="{{ showBy }}"><select value="{{ byVal }}" onChange="{{ setBy }}" aria-label="Created by" style="border:1px solid #D5D9E0;border-radius:999px;padding:11px 14px;font-size:14px;font-weight:700;color:#042D7C;background:#FFFFFF"><option value="">All CV experts</option><sc-for list="{{ byOpts }}" as="o" hint-placeholder-count="0"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select></sc-if>
+<span style="font-size:13px;color:#5B6470;white-space:nowrap">{{ resultNote }}</span>
+</section>
+</sc-if>
+
+<sc-if value="{{ tabCvs }}">
+<sc-if value="{{ noResults }}"><div style="background:#FFFFFF;border:1px dashed #D5D9E0;border-radius:22px;padding:32px;color:#5B6470;font-size:15px">{{ emptyText }}</div></sc-if>
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,290px),1fr));gap:14px">
+<sc-for list="{{ results }}" as="r" hint-placeholder-count="6">
+<article style="background:#FFFFFF;border:1px solid #E3E4E8;border-radius:22px;padding:18px;display:flex;flex-direction:column;gap:12px" style-hover="border-color:#C9D3E8;box-shadow:0 12px 32px rgba(4,45,124,.08);transform:translateY(-2px)">
+<div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span style="font-weight:900;font-size:13px;color:#042D7C;background:#E9EEF8;border-radius:999px;padding:5px 11px;font-variant-numeric:tabular-nums">{{ r.no }}</span><span style="{{ r.kindStyle }}">{{ r.kindLabel }}</span></div>
+<div style="display:flex;flex-direction:column;gap:3px;min-width:0"><div style="font-weight:900;font-size:19px;color:#2C3E50;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.customer }}</div><div style="font-size:14px;color:#5B6470">{{ r.phone }}</div><div style="font-size:12px;color:#8A919C;font-family:ui-monospace,Menlo,monospace;letter-spacing:.04em">{{ r.code }}</div></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px;color:#5B6470;border-top:1px solid #EEF0F3;padding-top:12px">
+<div><div style="font-weight:900;color:#2C3E50">{{ r.createdBy }}</div>{{ r.created }}</div>
+<div><div style="font-weight:900;color:#2C3E50">{{ r.time }}</div>{{ r.dl }}</div>
+</div>
+<div style="display:flex;gap:8px"><a href="{{ r.href }}" style="flex:1;text-align:center;background:#042D7C;color:#FFFFFF;border-radius:999px;padding:10px 14px;font-weight:900;font-size:13px;text-decoration:none" style-hover="background:#053BA0;color:#FFFFFF">{{ openLabel }}</a><button onClick="{{ r.info }}" style="background:#FFFFFF;color:#042D7C;border:1px solid #D9DCE3;border-radius:999px;padding:9px 14px;font-weight:900;font-size:13px;cursor:pointer" style-hover="border-color:#042D7C">Details</button></div>
+</article>
+</sc-for>
+</div>
+</sc-if>
+
+<sc-if value="{{ tabCustomers }}">
+<sc-if value="{{ noCustomers }}"><div style="background:#FFFFFF;border:1px dashed #D5D9E0;border-radius:22px;padding:32px;color:#5B6470;font-size:15px">No customers in this period.</div></sc-if>
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,270px),1fr));gap:14px">
+<sc-for list="{{ customers }}" as="c" hint-placeholder-count="6">
+<button onClick="{{ c.open }}" style="all:unset;cursor:pointer;background:#FFFFFF;border:1px solid #E3E4E8;border-radius:22px;padding:18px;display:flex;flex-direction:column;gap:14px" style-hover="border-color:#C9D3E8;box-shadow:0 12px 32px rgba(4,45,124,.08)">
+<div style="display:flex;gap:12px;align-items:center;min-width:0"><div style="width:46px;height:46px;border-radius:16px;background:#E9EEF8;color:#042D7C;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;flex-shrink:0">{{ c.ini }}</div><div style="min-width:0;display:flex;flex-direction:column;gap:2px"><span style="font-weight:900;font-size:17px;color:#2C3E50;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ c.name }}</span><span style="font-size:13px;color:#5B6470">{{ c.phone }}</span></div></div>
+<div style="display:flex;gap:6px;flex-wrap:wrap;font-size:12px"><span style="background:#042D7C;color:#FFFFFF;border-radius:999px;padding:4px 10px;font-weight:900">{{ c.count }}</span><span style="background:#F1F3F6;border-radius:999px;padding:4px 10px;color:#2C3E50">{{ c.last }}</span></div>
+<div style="font-size:12px;color:#8A919C;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ c.email }}</div>
+</button>
+</sc-for>
+</div>
+</sc-if>
+
+<sc-if value="{{ tabExperts }}">
+<section style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,290px),1fr));gap:14px;align-items:start">
+<form onSubmit="{{ addUser }}" style="background:#042D7C;color:#FFFFFF;border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:11px">
+<div style="font-family:'Cormorant Garamond',serif;font-weight:700;font-size:26px">Add a CV expert</div>
+<input value="{{ nu.name }}" onInput="{{ nuSet.name }}" required placeholder="Full name" aria-label="Full name" style="border:0;border-radius:12px;padding:12px 14px;font-size:15px;color:#2C3E50">
+<input value="{{ nu.username }}" onInput="{{ nuSet.username }}" required autocapitalize="none" placeholder="Username, e.g. sara.k" aria-label="Username" style="border:0;border-radius:12px;padding:12px 14px;font-size:15px;color:#2C3E50">
+<div style="display:flex;gap:8px"><input value="{{ nu.password }}" onInput="{{ nuSet.password }}" required minlength="8" placeholder="Password" aria-label="Password" style="flex:1;min-width:0;border:0;border-radius:12px;padding:12px 14px;font-size:15px;color:#2C3E50;font-family:ui-monospace,Menlo,monospace"><button type="button" onClick="{{ genPw }}" style="background:#053BA0;color:#FFFFFF;border:1px solid rgba(255,255,255,.35);border-radius:12px;padding:0 14px;font-weight:700;font-size:13px;cursor:pointer" style-hover="background:#0A4BC4">Generate</button></div>
+<sc-if value="{{ nuMsg }}"><div style="{{ nuMsgStyle }}">{{ nuMsg }}</div></sc-if>
+<button type="submit" style="background:#FFFFFF;color:#042D7C;border:0;border-radius:999px;padding:13px 18px;font-weight:900;font-size:14px;cursor:pointer" style-hover="background:#E9EEF8">Create expert account</button>
+</form>
+<sc-for list="{{ experts }}" as="u" hint-placeholder-count="3">
+<button onClick="{{ u.open }}" style="all:unset;cursor:pointer;background:#FFFFFF;border:1px solid #E3E4E8;border-radius:22px;padding:18px;display:flex;flex-direction:column;gap:14px" style-hover="border-color:#C9D3E8;box-shadow:0 12px 32px rgba(4,45,124,.08)">
+<div style="display:flex;gap:12px;align-items:center;min-width:0"><div style="width:46px;height:46px;border-radius:50%;background:#042D7C;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:17px;flex-shrink:0">{{ u.initial }}</div><div style="min-width:0;display:flex;flex-direction:column;gap:3px"><span style="font-weight:900;font-size:17px;color:#2C3E50">{{ u.name }}</span><span style="font-size:12px;color:#5B6470">@{{ u.username }}</span></div><span style="{{ u.badgeStyle }}">{{ u.badge }}</span></div>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;text-align:left">
+<div style="background:#F8F9FA;border-radius:14px;padding:10px"><div style="font-weight:900;font-size:20px;color:#042D7C">{{ u.cvs }}</div><div style="font-size:11px;color:#5B6470">CVs in period</div></div>
+<div style="background:#F8F9FA;border-radius:14px;padding:10px"><div style="font-weight:900;font-size:20px;color:#042D7C">{{ u.time }}</div><div style="font-size:11px;color:#5B6470">Time worked</div></div>
+<div style="background:#F8F9FA;border-radius:14px;padding:10px"><div style="font-weight:900;font-size:20px;color:#042D7C">{{ u.dl }}</div><div style="font-size:11px;color:#5B6470">Downloads</div></div>
+</div>
+<div style="font-size:12px;color:#8A919C">{{ u.last }}</div>
+</button>
+</sc-for>
+</section>
+</sc-if>
+
+<sc-if value="{{ tabActivity }}">
+<section style="background:#FFFFFF;border:1px solid #E3E4E8;border-radius:24px;padding:10px">
+<sc-if value="{{ noActivity }}"><div style="padding:28px;color:#5B6470;font-size:15px">No activity in this period.</div></sc-if>
+<sc-for list="{{ feed }}" as="a" hint-placeholder-count="6">
+<div style="display:flex;gap:14px;align-items:center;padding:12px;border-bottom:1px solid #F1F3F6;flex-wrap:wrap">
+<div style="{{ a.dotStyle }}">{{ a.icon }}</div>
+<div style="flex:1 1 240px;min-width:0;display:flex;flex-direction:column;gap:2px"><div style="font-size:14px"><strong style="color:#042D7C">{{ a.who }}</strong> {{ a.what }} <strong>{{ a.customer }}</strong></div><div style="font-size:12px;color:#8A919C">{{ a.no }} · {{ a.code }}{{ a.sec }}</div></div>
+<div style="font-size:12px;color:#5B6470;white-space:nowrap">{{ a.at }}</div>
+<button onClick="{{ a.open }}" style="background:#FFFFFF;color:#042D7C;border:1px solid #D9DCE3;border-radius:999px;padding:7px 12px;font-weight:900;font-size:12px;cursor:pointer" style-hover="border-color:#042D7C">CV</button>
+</div>
+</sc-for>
 </section>
 </sc-if>
 
@@ -165,61 +243,172 @@ input,select,button{font-family:inherit}
 </div>
 </sc-if>
 
-<sc-if value="{{ toast }}"><div style="position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:50;background:#2C3E50;color:#FFFFFF;border-radius:999px;padding:12px 20px;font-size:14px;font-weight:700;box-shadow:0 12px 30px rgba(0,0,0,.18);max-width:calc(100vw - 40px)">{{ toast }}</div></sc-if>
+<sc-if value="{{ drawerOpen }}">
+<div onClick="{{ closeDrawer }}" style="position:fixed;inset:0;background:rgba(10,20,48,.38);backdrop-filter:blur(2px);z-index:40"></div>
+<aside style="position:fixed;top:0;right:0;bottom:0;width:min(580px,100vw);background:#F4F6FA;z-index:41;overflow-y:auto;overflow-x:hidden;box-sizing:border-box;box-shadow:-20px 0 60px rgba(4,45,124,.18);animation:skp-dr .25s ease;display:flex;flex-direction:column">
+<div style="background:#042D7C;color:#FFFFFF;padding:22px 22px 26px;display:flex;flex-direction:column;gap:12px;position:sticky;top:0;z-index:1">
+<div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><span style="font-size:12px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#C9D3E8">{{ dr.kicker }}</span><button onClick="{{ closeDrawer }}" aria-label="Close" style="background:rgba(255,255,255,.12);border:0;color:#FFFFFF;width:38px;height:38px;border-radius:50%;font-size:18px;cursor:pointer" style-hover="background:rgba(255,255,255,.22)">✕</button></div>
+<div style="font-family:'Cormorant Garamond',serif;font-weight:700;font-size:36px;line-height:1.05;word-break:break-word">{{ dr.title }}</div>
+<div style="font-size:14px;color:#E3E4E8">{{ dr.sub }}</div>
+<sc-if value="{{ dr.href }}"><a href="{{ dr.href }}" style="align-self:flex-start;background:#FFFFFF;color:#042D7C;border-radius:999px;padding:11px 20px;font-weight:900;font-size:14px;text-decoration:none" style-hover="background:#E9EEF8;color:#042D7C">{{ dr.hrefLabel }}</a></sc-if>
+</div>
+<div style="padding:20px 22px 40px;display:flex;flex-direction:column;gap:18px">
+<sc-if value="{{ dr.loading }}"><div style="color:#5B6470;font-size:14px">Loading…</div></sc-if>
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,160px),1fr));gap:10px">
+<sc-for list="{{ dr.facts }}" as="f" hint-placeholder-count="0">
+<div style="background:#FFFFFF;border:1px solid #E3E4E8;border-radius:16px;padding:12px 14px;min-width:0"><div style="font-size:11px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#8A919C">{{ f.k }}</div><div style="font-size:15px;font-weight:700;color:#2C3E50;margin-top:4px;word-break:break-word">{{ f.v }}</div></div>
+</sc-for>
+</div>
+<sc-if value="{{ dr.isExpert }}"><div style="display:flex;gap:8px;flex-wrap:wrap">
+<button onClick="{{ dr.reset }}" style="background:#FFFFFF;color:#042D7C;border:1px solid #D9DCE3;border-radius:999px;padding:9px 14px;font-weight:900;font-size:13px;cursor:pointer" style-hover="border-color:#042D7C">Reset password</button>
+<button onClick="{{ dr.toggle }}" style="background:#FFFFFF;color:#042D7C;border:1px solid #D9DCE3;border-radius:999px;padding:9px 14px;font-weight:900;font-size:13px;cursor:pointer" style-hover="border-color:#042D7C">{{ dr.toggleLabel }}</button>
+<button onClick="{{ dr.del }}" style="background:#FFFFFF;color:#8A2D2D;border:1px solid #E8D5D5;border-radius:999px;padding:9px 14px;font-weight:900;font-size:13px;cursor:pointer" style-hover="border-color:#8A2D2D">Delete expert</button>
+</div></sc-if>
+<sc-if value="{{ dr.hasCvs }}"><div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-size:12px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:#5B6470">{{ dr.cvsTitle }}</div>
+<sc-for list="{{ dr.cvs }}" as="r" hint-placeholder-count="0">
+<div style="background:#FFFFFF;border:1px solid #E3E4E8;border-radius:16px;padding:12px 14px;display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+<span style="font-weight:900;font-size:12px;color:#042D7C;background:#E9EEF8;border-radius:999px;padding:4px 10px">{{ r.no }}</span>
+<div style="flex:1 1 160px;min-width:0"><div style="font-weight:900;font-size:14px">{{ r.customer }}</div><div style="font-size:12px;color:#5B6470">{{ r.kindLabel }} · {{ r.created }} · {{ r.time }}</div></div>
+<button onClick="{{ r.info }}" style="background:transparent;border:1px solid #D9DCE3;color:#042D7C;border-radius:999px;padding:7px 12px;font-weight:900;font-size:12px;cursor:pointer" style-hover="border-color:#042D7C">Details</button>
+<a href="{{ r.href }}" style="background:#042D7C;color:#FFFFFF;border-radius:999px;padding:8px 14px;font-weight:900;font-size:12px;text-decoration:none" style-hover="background:#053BA0;color:#FFFFFF">{{ openLabel }}</a>
+</div>
+</sc-for>
+</div></sc-if>
+<sc-if value="{{ dr.hasAct }}"><div style="display:flex;flex-direction:column;gap:2px;background:#FFFFFF;border:1px solid #E3E4E8;border-radius:18px;padding:8px 14px">
+<div style="font-size:12px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:#5B6470;padding:8px 0">Timeline</div>
+<sc-for list="{{ dr.act }}" as="a" hint-placeholder-count="0">
+<div style="display:flex;gap:12px;align-items:flex-start;padding:9px 0;border-top:1px solid #F1F3F6">
+<div style="{{ a.dotStyle }}">{{ a.icon }}</div>
+<div style="flex:1;min-width:0"><div style="font-size:14px"><strong style="color:#042D7C">{{ a.who }}</strong> {{ a.what }}{{ a.sec }}</div><div style="font-size:12px;color:#8A919C">{{ a.at }}</div></div>
+</div>
+</sc-for>
+</div></sc-if>
+</div>
+</aside>
+</sc-if>
 
+<sc-if value="{{ toast }}"><div style="position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:60;background:#2C3E50;color:#FFFFFF;border-radius:999px;padding:12px 20px;font-size:14px;font-weight:700;box-shadow:0 12px 30px rgba(0,0,0,.18);max-width:calc(100vw - 40px)">{{ toast }}</div></sc-if>
 </x-dc>
 <script type="text/x-dc" data-dc-script>
 class Component extends DCLogic {
-  state={by:'',ready:false,me:null,loginErr:'',busy:false,stats:null,q:'',kind:null,results:[],users:[],nu:{name:'',username:'',password:'',role:'user'},nuMsg:'',nuOk:false,toast:''};
-  componentDidMount(){this.wait=setInterval(()=>{if(window.SKP){clearInterval(this.wait);this.boot();}},60);}
-  componentWillUnmount(){clearInterval(this.wait);clearTimeout(this._q);clearTimeout(this._t);}
+  state={ready:false,me:null,loginErr:'',busy:false,tab:'overview',rk:'30d',from:'',to:'',q:'',kind:null,by:'',results:[],report:null,users:[],feed:[],nu:{name:'',username:'',password:''},nuMsg:'',nuOk:false,toast:'',dr:null};
+  componentDidMount(){this.setRange('30d',true);this.wait=setInterval(()=>{if(window.SKP){clearInterval(this.wait);this.boot();}},60);
+    this._key=e=>{if(e.key==='Escape'&&this.state.dr)this.setState({dr:null});};document.addEventListener('keydown',this._key);}
+  componentWillUnmount(){clearInterval(this.wait);clearTimeout(this._q);clearTimeout(this._t);document.removeEventListener('keydown',this._key);}
   async boot(){const me=await SKP.me();this.setState({ready:true,me});if(me)this.refresh();}
-  flash(t){clearTimeout(this._t);this.setState({toast:t});this._t=setTimeout(()=>this.setState({toast:''}),2600);}
-  async refresh(){try{const [stats,results]=await Promise.all([SKP.stats(),SKP.searchCVs(this.state.q,this.state.kind,this.state.by)]);this.setState({stats,results:results||[]});
-    if(this.state.me&&this.state.me.role==='admin')this.setState({users:(await SKP.listUsers())||[]});}catch(e){this.flash(e.message);if(/sign in/i.test(e.message))this.setState({me:null});}}
-  search(){clearTimeout(this._q);this._q=setTimeout(async()=>{try{this.setState({results:(await SKP.searchCVs(this.state.q,this.state.kind,this.state.by))||[]});}catch(e){this.flash(e.message);}},200);}
+  flash(t){clearTimeout(this._t);this.setState({toast:t});this._t=setTimeout(()=>this.setState({toast:''}),2800);}
+  ymd(d){const z=n=>String(n).padStart(2,'0');return d.getFullYear()+'-'+z(d.getMonth()+1)+'-'+z(d.getDate());}
+  setRange(k,quiet){const t=new Date(),y=this.ymd.bind(this);let f='',to=y(t);
+    if(k==='today')f=to;else if(k==='yday'){const d=new Date(t);d.setDate(d.getDate()-1);f=to=y(d);}
+    else if(k==='7d'){const d=new Date(t);d.setDate(d.getDate()-6);f=y(d);}else if(k==='30d'){const d=new Date(t);d.setDate(d.getDate()-29);f=y(d);}
+    else if(k==='month'){f=y(new Date(t.getFullYear(),t.getMonth(),1));}else if(k==='all'){f='';to='';}
+    this.setState({rk:k,from:f,to});if(!quiet)setTimeout(()=>this.refresh(),0);}
+  async refresh(){const s=this.state;if(!s.me)return;const admin=s.me.role==='admin';
+    try{const [report,results]=await Promise.all([SKP.report(s.from||null,s.to||null),SKP.searchCVs(s.q,s.kind,s.by,s.from||null,s.to||null)]);
+      this.setState({report,results:results||[]});
+      if(admin){const [users,feed]=await Promise.all([SKP.listUsers(),SKP.activity({from:s.from||null,to:s.to||null})]);this.setState({users:users||[],feed:feed||[]});}
+    }catch(e){this.flash(e.message);if(/sign in/i.test(e.message))this.setState({me:null});}}
+  search(){clearTimeout(this._q);this._q=setTimeout(async()=>{const s=this.state;try{this.setState({results:(await SKP.searchCVs(s.q,s.kind,s.by,s.from||null,s.to||null))||[]});}catch(e){this.flash(e.message);}},220);}
   pw(){const A='ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789',S='!@#$%&*?';const r=crypto.getRandomValues(new Uint8Array(12));let p=Array.from(r,b=>A[b%A.length]).join('');const i=r[0]%10+1;return p.slice(0,i)+S[r[1]%S.length]+p.slice(i,11)+(r[2]%10);}
+  dur(s){s=+s||0;if(s<60)return s?'<1m':'0m';const h=Math.floor(s/3600),m=Math.round((s%3600)/60);return h?h+'h '+m+'m':m+'m';}
+  no(n){return n?'No. '+String(n).padStart(5,'0'):'No. —';}
+  fmt(d,withTime){if(!d)return '—';return new Date(d).toLocaleString('en-GB',withTime===false?{day:'numeric',month:'short',year:'numeric'}:{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});}
+  custKey(r){const p=String(r.phone||'').replace(/\D/g,'');return p||String(r.customer||'').trim().toLowerCase()||r.code;}
+  async openCv(r){this.setState({dr:{type:'cv',r,act:[],loading:true}});try{const act=await SKP.activity({code:r.code});this.setState(x=>x.dr&&x.dr.r===r?{dr:Object.assign({},x.dr,{act:act||[],loading:false})}:null);}catch(e){this.setState(x=>({dr:x.dr&&Object.assign({},x.dr,{loading:false})}));}}
+  async openCust(c){this.setState({dr:{type:'cust',c,cvs:c.list,loading:true}});try{const q=c.phone&&c.phone!=='—'?c.phone:c.name;const all=await SKP.searchCVs(q,null,'',null,null);const k=c.key;const cvs=(all||[]).filter(r=>this.custKey(r)===k);this.setState(x=>x.dr&&x.dr.c===c?{dr:Object.assign({},x.dr,{cvs:cvs.length?cvs:c.list,loading:false})}:null);}catch(e){this.setState(x=>({dr:x.dr&&Object.assign({},x.dr,{loading:false})}));}}
+  async openExpert(u){this.setState({dr:{type:'exp',u,cvs:[],act:[],loading:true}});try{const [cvs,act]=await Promise.all([SKP.searchCVs('',null,u.username,null,null),SKP.activity({user:u.username})]);this.setState(x=>x.dr&&x.dr.u===u?{dr:Object.assign({},x.dr,{cvs:cvs||[],act:(act||[]).slice(0,40),loading:false})}:null);}catch(e){this.setState(x=>({dr:x.dr&&Object.assign({},x.dr,{loading:false})}));}}
   renderVals(){const s=this.state,me=s.me,admin=!!me&&me.role==='admin';
-    const fmt=d=>d?new Date(d).toLocaleString('en-GB',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}):'';
-    const names={};(s.users||[]).forEach(u=>names[u.username]=u.name);const nm=u=>names[u]||u||'';
-    const st=s.stats||{};
-    const pill=on=>`border:0;border-radius:999px;padding:9px 16px;font-weight:900;font-size:13px;cursor:pointer;background:${on?'#042D7C':'transparent'};color:${on?'#FFFFFF':'#2C3E50'}`;
+    const names={};(s.users||[]).forEach(u=>names[u.username]=u.name);((s.report&&s.report.experts)||[]).forEach(u=>names[u.username]=u.name);const nm=u=>names[u]||u||'—';
+    const R=s.report||{},T=R.totals||{};
+    const pill=(on,dark)=>`border:0;border-radius:999px;padding:9px 16px;font-weight:900;font-size:13px;cursor:pointer;white-space:nowrap;flex-shrink:0;background:${on?'#042D7C':'transparent'};color:${on?'#FFFFFF':'#2C3E50'}`;
+    const chip=on=>`white-space:nowrap;border:1px solid ${on?'#042D7C':'#E3E4E8'};border-radius:999px;padding:7px 13px;font-weight:900;font-size:12px;cursor:pointer;background:${on?'#042D7C':'#FFFFFF'};color:${on?'#FFFFFF':'#2C3E50'}`;
+    const kindStyle=k=>'font-size:11px;font-weight:900;letter-spacing:.06em;border-radius:999px;padding:4px 10px;'+(k==='europass'?'background:#FFF4D6;color:#7A5B12':'background:#042D7C;color:#FFFFFF');
+    const href=r=>(r.kind==='europass'?'./europass-cv-builder':'./ats-cv-builder')+'?code='+encodeURIComponent(r.code)+(admin?'&view=1':'');
+    const card=r=>({no:this.no(r.serial),code:r.code,customer:r.customer||'(no name yet)',phone:r.phone||'No phone',kindLabel:r.kind==='europass'?'EUROPASS':'ATS',kindStyle:kindStyle(r.kind),
+      createdBy:nm(r.created_by),created:this.fmt(r.created_at),time:this.dur(r.time_spent)+' worked',dl:(r.downloads||0)+' download'+(r.downloads===1?'':'s'),href:href(r),info:()=>this.openCv(r)});
+    const ACT={created:['✦','created CV for','#042D7C'],edited:['✎','edited CV for','#053BA0'],download_pdf:['↓','downloaded PDF of','#1E7A4C'],download_docx:['↓','downloaded Word of','#1E7A4C'],viewed:['◉','viewed CV of','#7A5B12'],imported:['⇪','imported CV for','#053BA0']};
+    const actRow=a=>{const m=ACT[a.action]||['•',a.action,'#5B6470'];return {icon:m[0],dotStyle:`width:32px;height:32px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;color:#FFFFFF;background:${m[2]}`,
+      who:nm(a.username),what:m[1],customer:a.customer||a.code,no:this.no(a.serial),code:a.code,sec:a.seconds>=60?' · '+this.dur(a.seconds):'',at:this.fmt(a.at),
+      open:()=>{const r=s.results.find(x=>x.code===a.code)||{code:a.code,customer:a.customer,serial:a.serial,kind:/^EUP/.test(a.code)?'europass':'ats'};this.openCv(r);}};};
+    // chart
+    const daily=R.daily||[];const mx=Math.max(1,...daily.map(d=>d.n));const step=Math.max(1,Math.ceil(daily.length/8));
+    const bars=daily.map((d,i)=>({n:d.n||'',tip:new Date(d.d+'T00:00:00').toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'})+': '+d.n+' CV'+(d.n===1?'':'s'),
+      lbl:(i%step===0&&(daily.length-1-i>=Math.ceil(step/2)||i===0)||i===daily.length-1)?new Date(d.d+'T00:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short'}):'',
+      style:`width:100%;max-width:34px;border-radius:8px 8px 3px 3px;background:${d.n?'#042D7C':'#E3E4E8'};height:${d.n?Math.max(6,Math.round(d.n/mx*140)):4}px;transition:height .3s`}));
+    // customers
+    const cm={};s.results.forEach(r=>{const k=this.custKey(r);(cm[k]=cm[k]||{key:k,name:r.customer||'(no name)',phone:r.phone||'—',email:r.email||'',list:[],last:r.updated_at}).list.push(r);if(r.updated_at>cm[k].last)cm[k].last=r.updated_at;if(!cm[k].email&&r.email)cm[k].email=r.email;});
+    const custs=Object.values(cm).sort((a,b)=>String(b.last).localeCompare(String(a.last)));
+    const exps=((R.experts&&R.experts.length)?R.experts:(s.users||[]).filter(u=>u.role!=='admin').map(u=>Object.assign({cvs:0,seconds:0,downloads:0,cvs_all:u.cv_count||0},u)));
+    const uById={};(s.users||[]).forEach(u=>uById[u.username]=u);
+    const expOpen=e=>()=>this.openExpert(Object.assign({},uById[e.username]||{},e));
+    const tabsDef=admin?[['overview','Overview'],['cvs','All CVs'],['customers','Customers'],['experts','Experts'],['activity','Activity']]:[['overview','Overview'],['cvs','All CVs'],['customers','Customers']];
+    const rangeDef=[['today','Today'],['yday','Yesterday'],['7d','7 days'],['30d','30 days'],['month','This month'],['all','All time']];
+    const periodLbl=s.rk==='all'?'all time':s.rk==='custom'?((s.from?this.fmt(s.from,false):'start')+' – '+(s.to?this.fmt(s.to,false):'today')):(rangeDef.find(x=>x[0]===s.rk)||[0,''])[1].toLowerCase();
+    // drawer
+    let dr=null;if(s.dr){const d=s.dr;
+      if(d.type==='cv'){const r=d.r;dr={kicker:this.no(r.serial)+' · '+(r.kind==='europass'?'Europass CV':'ATS CV'),title:r.customer||'(no name yet)',sub:[r.phone,r.email].filter(Boolean).join(' · ')||'No contact details yet',href:href(r),hrefLabel:admin?'View CV':'Open in builder',
+        facts:[['CV code',r.code],['CV number',this.no(r.serial)],['Created',this.fmt(r.created_at)],['Created by',nm(r.created_by)],['Last edited',this.fmt(r.updated_at)],['Edited by',nm(r.updated_by)],['Time spent',this.dur(r.time_spent)],['Saves',String(r.edit_count||0)],['Downloads',String(r.downloads||0)],['Last download',this.fmt(r.last_download)],['Label',r.label||'—']].map(([k,v])=>({k,v})),
+        isExpert:false,hasCvs:false,cvs:[],hasAct:(d.act||[]).length>0,act:(d.act||[]).map(actRow),loading:d.loading};}
+      else if(d.type==='cust'){const c=d.c;const L=d.cvs||[];dr={kicker:'Customer',title:c.name,sub:[c.phone!=='—'?c.phone:'',c.email].filter(Boolean).join(' · '),href:'',hrefLabel:'',
+        facts:[['CVs',String(L.length)],['ATS',String(L.filter(r=>r.kind!=='europass').length)],['Europass',String(L.filter(r=>r.kind==='europass').length)],['First CV',this.fmt(L.map(r=>r.created_at).sort()[0])],['Last update',this.fmt(L.map(r=>r.updated_at).sort().slice(-1)[0])],['Experts',[...new Set(L.map(r=>nm(r.created_by)))].join(', ')||'—'],['Total time',this.dur(L.reduce((a,r)=>a+(r.time_spent||0),0))]].map(([k,v])=>({k,v})),
+        isExpert:false,hasCvs:L.length>0,cvsTitle:'Their CVs',cvs:L.map(card),hasAct:false,act:[],loading:d.loading};}
+      else {const u=d.u;const L=d.cvs||[];dr={kicker:'CV expert · @'+u.username,title:u.name,sub:(u.active===false?'Disabled · ':'Active · ')+(u.last_login?'last sign-in '+this.fmt(u.last_login):'never signed in'),href:'',hrefLabel:'',
+        facts:[['CVs (all time)',String(L.length||u.cvs_all||0)],['CVs in period',String(u.cvs||0)],['Time in period',this.dur(u.seconds)],['Downloads in period',String(u.downloads||0)],['Avg time / CV',this.dur(L.length?L.reduce((a,r)=>a+(r.time_spent||0),0)/L.length:0)],['Sign-ins',String(u.login_count||0)],['Account created',this.fmt(u.created_at)]].map(([k,v])=>({k,v})),
+        isExpert:true,toggleLabel:u.active===false?'Enable account':'Disable account',
+        reset:async()=>{const p=prompt('New password for '+u.name+' (min 8 characters):',this.pw());if(!p)return;try{await SKP.updateUser(u.username,{password:p});this.flash('Password updated. Share it with '+u.name+'.');}catch(e){this.flash(e.message);}},
+        toggle:async()=>{try{await SKP.updateUser(u.username,{active:u.active===false});this.setState({dr:null});this.refresh();}catch(e){this.flash(e.message);}},
+        del:async()=>{if(!confirm('Delete '+u.name+'? Their CVs stay in the portal.'))return;try{await SKP.deleteUser(u.username);this.setState({dr:null});this.refresh();}catch(e){this.flash(e.message);}},
+        hasCvs:L.length>0,cvsTitle:'CVs by '+String(u.name).split(' ')[0],cvs:L.map(card),hasAct:(d.act||[]).length>0,act:(d.act||[]).map(actRow),loading:d.loading};}}
+    const avg=T.cvs?this.dur(T.seconds/T.cvs):'—';
+    const tab=s.tab;
     return {
       showLogin:s.ready&&!me,showApp:s.ready&&!!me,preview:window.SKP?!SKP.remote:false,
       loginErr:s.loginErr,loginBtn:s.busy?'Signing in…':'Sign in',
       doLogin:async e=>{e.preventDefault();const f=e.target;this.setState({busy:true,loginErr:''});try{const me=await SKP.login(f.un.value,f.pw.value);this.setState({me,busy:false});this.refresh();}catch(err){this.setState({busy:false,loginErr:err.message});}},
-      doLogout:async()=>{await SKP.logout();this.setState({me:null,users:[],results:[],stats:null});},
-      canCreate:!!me&&!admin,heroTitle:admin?'Portal overview':'Welcome, '+(me?String(me.name).split(' ')[0]:''),heroSub:admin?'Add CV experts, track how many CVs each expert creates, and look up any customer by name, phone or CV code.':'Create a new CV, or find any CV the team has made.',openLabel:admin?'View':'Open',byVal:s.by,byOpts:(s.users||[]).filter(u=>u.role!=='admin').map(u=>({v:u.username,l:u.name+' ('+(u.cv_count||0)+')'})),setBy:e=>{this.setState({by:e.target.value});this.search();},meName:me?me.name:'',meFirst:me?String(me.name).split(' ')[0]:'',isAdmin:admin,
+      doLogout:async()=>{await SKP.logout();this.setState({me:null,users:[],results:[],report:null,feed:[],dr:null});},
+      meName:me?me.name:'',meInitial:me?String(me.name||me.username).charAt(0).toUpperCase():'',meRole:admin?'Admin':'CV expert',isAdmin:admin,canCreate:!!me&&!admin,
       today:new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'}),
-      statCards:[
-        {label:'CVs created',value:st.cvs??'–',note:(st.ats??0)+' ATS · '+(st.europass??0)+' Europass'},
-        {label:'Customers',value:st.customers??'–',note:'Unique by phone or name'},
-        {label:'This week',value:st.cvs_week??'–',note:(st.cvs_today??0)+' created today'},
-        {label:'CV experts',value:st.experts??'–',note:(st.active_experts??0)+' active · '+(st.logins??0)+' sign-ins'}],
+      heroTitle:admin?'Portal overview':'Hey '+(me?String(me.name).split(' ')[0]:'')+', ready to build?',
+      heroSub:admin?'Every CV, customer and expert in one place. Pick a period to see the numbers.':'Start a new CV, upload an existing one, or find any CV the team has made.',
+      tabs:tabsDef.map(([k,l])=>({label:l,style:pill(tab===k),go:()=>this.setState({tab:k})})),
+      tabOverview:tab==='overview',notOverview:tab!=='overview',tabKicker:admin?'Admin':'Team',tabTitle:({cvs:'All CVs',customers:'Customers',experts:'CV experts',activity:'Activity log'})[tab]||'',tabCvs:tab==='cvs',tabCustomers:tab==='customers',tabExperts:tab==='experts'&&admin,tabActivity:tab==='activity'&&admin,
+      showSearch:tab==='cvs'||tab==='customers',showKind:tab==='cvs',showBy:tab==='cvs'&&admin,
+      searchPh:tab==='customers'?'Search customer by name, phone or email':'Search by customer name, phone, CV number or code',
+      goCvs:()=>this.setState({tab:'cvs'}),goExperts:()=>this.setState({tab:'experts'}),
+      ranges:rangeDef.map(([k,l])=>({label:l,style:chip(s.rk===k),go:()=>this.setRange(k)})),
+      fromVal:s.from,toVal:s.to,
+      setFrom:e=>{this.setState({from:e.target.value,rk:'custom'});setTimeout(()=>this.refresh(),0);},
+      setTo:e=>{this.setState({to:e.target.value,rk:'custom'});setTimeout(()=>this.refresh(),0);},
+      kpis:[
+        {label:admin?'CVs created':'My CVs',value:T.cvs??'–',note:(T.ats??0)+' ATS · '+(T.europass??0)+' Europass'},
+        {label:'Customers',value:T.customers??'–',note:'Unique by phone or name'},
+        {label:'Avg time / CV',value:avg,note:'Active editing time'},
+        {label:'Time worked',value:this.dur(T.seconds),note:'Across all CVs in period'},
+        {label:'Downloads',value:T.downloads??'–',note:'PDF + Word'},
+        admin?{label:'CV experts',value:exps.length,note:exps.filter(e=>e.active!==false).length+' active'}:{label:'Team CVs found',value:s.results.length,note:'In this period'}],
+      chartNote:periodLbl+(daily.length>=90?' (last 90 days shown)':''),bars,
+      board:exps.slice(0,6).map((e,i)=>({rank:i+1,name:e.name,line:(e.cvs||0)+' CVs · '+this.dur(e.seconds)+' · '+(e.downloads||0)+' dl',open:expOpen(e),
+        rankStyle:`width:36px;height:36px;border-radius:12px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:15px;${i===0?'background:#042D7C;color:#FFFFFF':'background:#E9EEF8;color:#042D7C'}`})),
+      noBoard:admin&&exps.length===0,
+      recent:s.results.slice(0,6).map(card),noRecent:s.ready&&!!me&&s.results.length===0,
+      emptyText:s.q?'Nothing matches “'+s.q+'” in this period. Try “All time”, or search by phone or CV number.':(admin?'No CVs in this period yet.':'No CVs in this period. Start one with the buttons above.'),
       q:s.q,setQ:e=>{this.setState({q:e.target.value});this.search();},
       kindTabs:[[null,'All'],['ats','ATS'],['europass','Europass']].map(([k,l])=>({label:l,style:pill(s.kind===k),go:()=>{this.setState({kind:k});this.search();}})),
-      hasResults:s.results.length>0,noResults:s.ready&&!!me&&s.results.length===0,
-      emptyText:s.q?'No CV matches “'+s.q+'”. Check the spelling, or search by phone or code.':(admin?'No CVs yet. CV experts create CVs from their own login.':'No CVs yet. Create the first one with the buttons above.'),
-      resultNote:s.results.length?(s.q?s.results.length+' match'+(s.results.length>1?'es':''):(s.results.length===1?'1 CV':'Latest '+s.results.length+' CVs')):'',
-      results:s.results.map(r=>({code:r.code,customer:r.customer||'(no name yet)',phone:r.phone||'–',kindLabel:r.kind==='europass'?'Europass':'ATS',
-        kindStyle:'font-size:12px;font-weight:900;border-radius:999px;padding:4px 10px;'+(r.kind==='europass'?'background:#FFF4D6;color:#7A5B12':'background:#E9EEF8;color:#042D7C'),
-        createdBy:nm(r.created_by),edited:fmt(r.updated_at)+(r.updated_by&&r.updated_by!==r.created_by?' · '+nm(r.updated_by):''),
-        href:'./'+(r.kind==='europass'?'Skilleaze Europass CV Builder':'Skilleaze CV Builder')+'.dc.html?code='+encodeURIComponent(r.code)+(admin?'&view=1':''),
-        del:async()=>{if(!confirm('Delete CV '+r.code+' ('+(r.customer||'no name')+')? This cannot be undone.'))return;try{await SKP.deleteCV(r.code);this.flash('CV deleted');this.refresh();}catch(e){this.flash(e.message);}}})),
-      noExperts:s.ready&&s.users.filter(u=>u.role!=='admin').length===0,usersNote:(n=>n?n+(n===1?' expert':' experts'):'')(s.users.filter(u=>u.role!=='admin').length),
-      users:s.users.filter(u=>u.role!=='admin').map(u=>({name:u.name,username:u.username,initial:String(u.name||u.username).charAt(0).toUpperCase(),
-        badge:!u.active?'Disabled':u.role==='admin'?'Admin':'CV expert',
-        badgeStyle:'font-size:11px;font-weight:900;letter-spacing:.06em;border-radius:999px;padding:3px 8px;'+(!u.active?'background:#FBECEC;color:#8A2D2D':u.role==='admin'?'background:#042D7C;color:#FFFFFF':'background:#E9EEF8;color:#042D7C'),
-        logins:(u.login_count||0)+' sign-in'+(u.login_count===1?'':'s'),cvs:(u.cv_count||0)+' CV'+(u.cv_count===1?'':'s'),
-        last:u.last_login?'Last sign-in '+fmt(u.last_login):'Never signed in',editable:u.username!=='skilleazeadmin'||me.username==='skilleazeadmin',
-        canRemove:u.username!=='skilleazeadmin',toggleLabel:u.active?'Disable':'Enable',
-        reset:async()=>{const p=prompt('New password for '+u.name+' (min 8 characters):',this.pw());if(!p)return;try{await SKP.updateUser(u.username,{password:p});this.flash('Password updated. Share it with '+u.name+'.');}catch(e){this.flash(e.message);}},
-        toggle:async()=>{try{await SKP.updateUser(u.username,{active:!u.active});this.refresh();}catch(e){this.flash(e.message);}},
-        del:async()=>{if(!confirm('Delete '+u.name+'? Their CVs stay in the portal.'))return;try{await SKP.deleteUser(u.username);this.refresh();}catch(e){this.flash(e.message);}}})),
-      nu:s.nu,nuSet:Object.fromEntries(['name','username','password','role'].map(k=>[k,e=>{const v=e.target.value;this.setState(x=>({nu:Object.assign({},x.nu,{[k]:v}),nuMsg:''}));}])),
+      byVal:s.by,byOpts:exps.map(u=>({v:u.username,l:u.name})),setBy:e=>{this.setState({by:e.target.value});this.search();},
+      resultNote:tab==='customers'?custs.length+' customer'+(custs.length===1?'':'s'):s.results.length+' CV'+(s.results.length===1?'':'s'),
+      results:s.results.map(card),noResults:s.ready&&!!me&&s.results.length===0,openLabel:admin?'View':'Open',
+      customers:custs.map(c=>({name:c.name,phone:c.phone,email:c.email||'No email',ini:String(c.name).split(/\s+/).map(w=>w[0]||'').join('').slice(0,2).toUpperCase()||'?',count:c.list.length+' CV'+(c.list.length===1?'':'s'),last:'Updated '+this.fmt(c.last,false),open:()=>this.openCust(c)})),
+      noCustomers:custs.length===0,
+      experts:exps.map(e=>{const u=Object.assign({},uById[e.username]||{},e);return {name:u.name,username:u.username,initial:String(u.name||u.username).charAt(0).toUpperCase(),cvs:u.cvs||0,time:this.dur(u.seconds),dl:u.downloads||0,
+        badge:u.active===false?'Disabled':'Active',badgeStyle:'margin-left:auto;font-size:11px;font-weight:900;border-radius:999px;padding:4px 10px;'+(u.active===false?'background:#FBECEC;color:#8A2D2D':'background:#E6F4EA;color:#1E5A32'),
+        last:(u.cvs_all||0)+' CVs all time · '+(u.last_login?'last sign-in '+this.fmt(u.last_login):'never signed in'),open:expOpen(e)};}),
+      feed:(s.feed||[]).map(actRow),noActivity:(s.feed||[]).length===0,
+      nu:s.nu,nuSet:Object.fromEntries(['name','username','password'].map(k=>[k,e=>{const v=e.target.value;this.setState(x=>({nu:Object.assign({},x.nu,{[k]:v}),nuMsg:''}));}])),
       genPw:()=>this.setState(x=>({nu:Object.assign({},x.nu,{password:this.pw()})})),
       nuMsg:s.nuMsg,nuMsgStyle:'font-size:13px;border-radius:10px;padding:9px 12px;'+(s.nuOk?'background:#E6F4EA;color:#1E5A32':'background:#FBECEC;color:#8A2D2D'),
-      addUser:async e=>{e.preventDefault();const n=s.nu;try{await SKP.createUser(Object.assign({},n,{role:'user'}));this.setState({nu:{name:'',username:'',password:'',role:'user'},nuOk:true,nuMsg:'Created @'+n.username.trim().toLowerCase()+'. Password: '+n.password+' (share it privately).'});this.refresh();}catch(err){this.setState({nuOk:false,nuMsg:err.message});}},
+      addUser:async e=>{e.preventDefault();const n=s.nu;try{await SKP.createUser(Object.assign({},n,{role:'user'}));this.setState({nu:{name:'',username:'',password:''},nuOk:true,nuMsg:'Created @'+n.username.trim().toLowerCase()+'. Password: '+n.password+' (share it privately).'});this.refresh();}catch(err){this.setState({nuOk:false,nuMsg:err.message});}},
+      drawerOpen:!!dr,dr:dr||{facts:[],cvs:[],act:[]},closeDrawer:()=>this.setState({dr:null}),
       toast:s.toast
     };}
 }

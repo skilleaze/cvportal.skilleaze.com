@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<base href="./Skilleaze%20Europass%20CV%20Builder.dc.html">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <script src="./support.js"></script>
@@ -42,14 +43,14 @@ textarea{resize:vertical}
 <a href="#" onClick="{{ goHome }}" style="display:flex;align-items:center;gap:10px;text-decoration:none">
 <img src="assets/wordmark-blue.png" alt="Skilleaze" style="height:28px;width:auto;display:block">
 </a>
-<div style="display:flex;background:#F1F3F6;border-radius:999px;padding:3px;gap:2px"><a href="./Skilleaze CV Builder.dc.html" style="font-size:11px;font-weight:900;letter-spacing:.06em;border-radius:999px;padding:6px 11px;text-decoration:none;white-space:nowrap;color:#042D7C">ATS CV BUILDER</a><a href="./Skilleaze Europass CV Builder.dc.html" style="font-size:11px;font-weight:900;letter-spacing:.06em;border-radius:999px;padding:6px 11px;text-decoration:none;white-space:nowrap;background:#0B4F8A;color:#FFFFFF">EUROPASS CV BUILDER</a></div>
+<div style="display:flex;background:#F1F3F6;border-radius:999px;padding:3px;gap:2px"><a href="./ats-cv-builder" style="font-size:11px;font-weight:900;letter-spacing:.06em;border-radius:999px;padding:6px 11px;text-decoration:none;white-space:nowrap;color:#042D7C">ATS CV BUILDER</a><a href="./europass-cv-builder" style="font-size:11px;font-weight:900;letter-spacing:.06em;border-radius:999px;padding:6px 11px;text-decoration:none;white-space:nowrap;background:#0B4F8A;color:#FFFFFF">EUROPASS CV BUILDER</a></div>
 <nav style="display:flex;gap:4px;flex-wrap:wrap;margin-left:auto">
 <button onClick="{{ goHome }}" style="{{ navHome }}">Open CVs</button>
 <button onClick="{{ goEditCur }}" style="{{ navEdit }}">Editor</button>
 <button onClick="{{ goAts }}" style="{{ navAts }}">ATS check</button>
 <button onClick="{{ goCover }}" style="{{ navCover }}">Cover letter</button>
 </nav>
-<div style="display:inline-flex;align-items:center;gap:10px;font-size:13px;color:#2C3E50;white-space:nowrap;flex-shrink:0"><a href="./Portal.dc.html" style="white-space:nowrap;font-weight:900;color:#042D7C;text-decoration:none;border:1px solid #D9DCE3;border-radius:999px;padding:6px 12px" style-hover="border-color:#042D7C">← Dashboard</a><span style="background:#E9EEF8;color:#042D7C;border-radius:999px;padding:7px 12px;font-weight:900;white-space:nowrap">{{ userName }}</span><button onClick="{{ doLogout }}" style="all:unset;display:inline-flex;align-items:center;min-height:40px;padding:0 8px;white-space:nowrap;cursor:pointer;font-weight:700;color:#5B6470" style-hover="color:#042D7C">Sign out</button></div>
+<div style="display:inline-flex;align-items:center;gap:10px;font-size:13px;color:#2C3E50;white-space:nowrap;flex-shrink:0"><a href="./" style="white-space:nowrap;font-weight:900;color:#042D7C;text-decoration:none;border:1px solid #D9DCE3;border-radius:999px;padding:6px 12px" style-hover="border-color:#042D7C">← Dashboard</a><span style="background:#E9EEF8;color:#042D7C;border-radius:999px;padding:7px 12px;font-weight:900;white-space:nowrap">{{ userName }}</span><button onClick="{{ doLogout }}" style="all:unset;display:inline-flex;align-items:center;min-height:40px;padding:0 8px;white-space:nowrap;cursor:pointer;font-weight:700;color:#5B6470" style-hover="color:#042D7C">Sign out</button></div>
 </div>
 </header>
 
@@ -426,7 +427,10 @@ class Component extends DCLogic {
     this.els={};['prev','pick','cover','share'].forEach(k=>{this[k+'Ref']=el=>{this.els[k]=el;if(el)this.sched();};});
   }
   componentDidMount(){
-    this.authed=false;const gate=setInterval(async()=>{if(!window.SKP)return;clearInterval(gate);const me=await SKP.me();if(!me){location.href='./Portal.dc.html';return;}const q=new URLSearchParams(location.search);const code=q.get('code');const ro=me.role==='admin';if(ro&&!code){location.href='./Portal.dc.html';return;}this.setState({me,ro});if(ro){const st=document.createElement('style');st.textContent='main input,main textarea,main select,main [contenteditable]{pointer-events:none!important;background:#F4F5F7!important}';document.head.appendChild(st);}
+    this._act=Date.now();this._sec=0;this._mk=()=>{this._act=Date.now();};['keydown','input','pointerdown','wheel','touchstart'].forEach(ev=>document.addEventListener(ev,this._mk,{passive:true,capture:true}));
+    this._tick=setInterval(()=>{if(document.visibilityState==='visible'&&Date.now()-this._act<90000&&!this.state.ro&&this.authed&&this.cvObj())this._sec+=5;if(this._sec>=60)this.pushCv(true);},5000);
+    this._vis=()=>{if(document.visibilityState==='hidden'&&this._sec>0)this.pushCv(true,true);};document.addEventListener('visibilitychange',this._vis);
+    this.authed=false;const gate=setInterval(async()=>{if(!window.SKP)return;clearInterval(gate);const me=await SKP.me();if(!me){location.href='./';return;}const q=new URLSearchParams(location.search);const code=q.get('code');const ro=me.role==='admin';if(ro&&!code){location.href='./';return;}this.setState({me,ro});if(ro){const st=document.createElement('style');st.textContent='main input,main textarea,main select,main [contenteditable]{pointer-events:none!important;background:#F4F5F7!important}';document.head.appendChild(st);}
       if(code){try{const rec=await SKP.getCV(code);if(!rec||!rec.doc){this.flash('CV '+code+' not found.');}else{const doc=Object.assign({},rec.doc,{code:rec.code});this.setState(x=>{const cvs=x.cvs.filter(c=>c.code!==rec.code&&c.id!==doc.id);return {cvs:[doc,...cvs],cur:doc.id,view:'edit',synced:rec.code};});}}catch(e){this.flash(e.message);}}
       else if(q.get('new')&&!ro){this.create();}
       else if(q.get('import')&&!ro){this.setState({importOpen:true,importInto:null,impTab:'file'});}
@@ -435,7 +439,7 @@ class Component extends DCLogic {
     this._last={cvs:this.state.cvs,cur:this.state.cur,paid:this.state.paid};this.ro=new ResizeObserver(en=>{const w=Math.round(en[0].contentRect.width);if(Math.abs(w-(this._rw||0))<24)return;this._rw=w;this.lastKey='';this.paint();});
     this.wait=setInterval(()=>{if(window.SKCV){clearInterval(this.wait);this.lastKey='';this.paint();}},120);
   }
-  componentWillUnmount(){clearInterval(this.wait);this.ro&&this.ro.disconnect();}
+  componentWillUnmount(){clearInterval(this._tick);document.removeEventListener('visibilitychange',this._vis);['keydown','input','pointerdown','wheel','touchstart'].forEach(ev=>document.removeEventListener(ev,this._mk,{capture:true}));clearInterval(this.wait);this.ro&&this.ro.disconnect();}
   sched(){if(this._raf)return;this._raf=setTimeout(()=>{this._raf=0;try{this.tick();}catch(e){console.warn('skb',e);}},30);}
   tick(){['prev','pick','cover','share','hero'].forEach(k=>{this.els[k]=document.querySelector('[data-skb="'+k+'"]');});const s=this.state,p=this._last||{};
     if(p.cvs!==s.cvs||p.cur!==s.cur||p.paid!==s.paid){try{localStorage.setItem(KEY,JSON.stringify({cvs:s.cvs,cur:s.cur,paid:s.paid}));}catch(e){}this.pushCv();try{}catch(e){this.flash('Storage full: remove the photo or an old CV.');}}
@@ -444,10 +448,10 @@ class Component extends DCLogic {
     if(s.pickerOpen&&this.els.pick&&(!p.pickerOpen||p.filter!==s.filter||p.pickEl!==this.els.pick))this.buildThumbs();
     this._last={cvs:s.cvs,cur:s.cur,paid:s.paid,view:s.view,pickerOpen:s.pickerOpen,filter:s.filter,pickEl:this.els.pick};}
   componentDidUpdate(){this.sched();}
-  pushCv(){if(!this.authed||!window.SKP||this.state.ro)return;clearTimeout(this._pt);this._pt=setTimeout(async()=>{let cv=this.cvObj();if(!cv)return;
+  pushCv(force,now){if(!this.authed||!window.SKP||this.state.ro)return;clearTimeout(this._pt);this._pt=setTimeout(async()=>{let cv=this.cvObj();if(!cv)return;
     if(!cv.code||this.state.cvs.some(c=>c.id!==cv.id&&c.code===cv.code)){const code=SKP.newCode('europass');this.setState(x=>({cvs:x.cvs.map(c=>c.id===cv.id?Object.assign({},c,{code}):c)}));return;}
-    const j=JSON.stringify(cv);if(this._lastPush===j)return;const D=cv.data||{};
-    try{await SKP.saveCV({code:cv.code,kind:'europass',customer:D.name||'',phone:D.phone||'',email:D.email||'',label:cv.label||'',doc:cv});this._lastPush=j;this.setState({synced:cv.code,syncErr:false});}catch(e){this.setState({syncErr:true});this.flash('Not saved to portal: '+e.message);}},900);}
+    const j=JSON.stringify(cv);if(this._lastPush===j&&!(force&&this._sec>0))return;const D=cv.data||{};const sec=this._sec;
+    try{await SKP.saveCV({code:cv.code,kind:'europass',customer:D.name||'',phone:D.phone||'',email:D.email||'',label:cv.label||'',doc:cv,seconds:sec});this._lastPush=j;this._sec=Math.max(0,this._sec-sec);this.setState({synced:cv.code,syncErr:false});}catch(e){this.setState({syncErr:true});this.flash('Not saved to portal: '+e.message);}},now?0:900);}
   cvObj(){return this.state.cvs.find(c=>c.id===this.state.cur)||null;}
   toD(d){const ini=(d.name||'Your Name').split(/\s+/).map(w=>w[0]||'').join('').slice(0,2).toUpperCase();
     return {name:(d.name||'Your Name').toUpperCase(),ini,title:d.title||'',sub:d.sub||'',contact:['location','phone','email','website','linkedin'].map(k=>{const o=new String((d[k]||'').trim());o._k=k;return o;}).filter(o=>o.length),visa:d.extraLine||'',summary:(d.summary||'').trim(),
@@ -578,19 +582,20 @@ class Component extends DCLogic {
       el.insertAdjacentHTML('beforeend',frag.join(''));const w=el.firstElementChild?el.firstElementChild.clientWidth:170;el.style.setProperty('--s',(w/794).toFixed(4));if(i<list.length)setTimeout(step,0);};setTimeout(step,50);}
   printHtml(pages,title){const fr=document.createElement('iframe');fr.style.cssText='position:fixed;right:0;bottom:0;width:0;height:0;border:0';document.body.appendChild(fr);
     const doc=fr.contentWindow.document;doc.open();doc.write(`<!doctype html><html><head><title>${esc(title)}</title><link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Open+Sans:wght@400;700&display=swap" rel="stylesheet"><style>@page{size:${this.ph===1056?'letter':'A4'};margin:0}html,body{margin:0;padding:0}.pg{width:${this.ph===1056?'8.5in':'210mm'};height:${this.ph===1056?'11in':'297mm'};overflow:hidden;page-break-after:always;break-after:page}.pg>div{transform:scale(1);transform-origin:0 0}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}</style></head><body>${pages.map(p=>`<div class="pg">${p}</div>`).join('')}</body></html>`);doc.close();
-    setTimeout(()=>{fr.contentWindow.focus();fr.contentWindow.print();setTimeout(()=>fr.remove(),4000);},900);}
+    const go=()=>{fr.contentWindow.focus();fr.contentWindow.print();setTimeout(()=>fr.remove(),60000);};const W=fr.contentWindow;
+    Promise.race([Promise.all([W.document.fonts?W.document.fonts.ready:1,...[...W.document.images].map(i=>i.complete?1:new Promise(r=>{i.onload=i.onerror=r;}))]),new Promise(r=>setTimeout(r,5000))]).then(()=>setTimeout(go,250));}
   async docx(kind){const X=window.docx;if(!X){this.flash('Word export is still loading. Try again in a moment.');return;}const cv=this.cvObj();const D=this.toD(cv.data);const C=(cv.color||window.SKCV.DES[cv.tpl||0].c[1]).replace('#','');
-    const font=cv.font||window.SKCV.DES[cv.tpl||0].f;const T=(t,o)=>new X.TextRun(Object.assign({text:t,font,size:21},o||{}));const P=(r,o)=>new X.Paragraph(Object.assign({children:Array.isArray(r)?r:[r],spacing:{after:80}},o||{}));
+    const font=(String(cv.font||window.SKCV.DES[cv.tpl||0].f||'Calibri').split(',')[0].replace(/['"]/g,'').trim())||'Calibri';const T=(t,o)=>new X.TextRun(Object.assign({text:t,font,size:21},o||{}));const P=(r,o)=>new X.Paragraph(Object.assign({children:Array.isArray(r)?r:[r],spacing:{after:80}},o||{}));
     const H=t=>P(T(t.toUpperCase(),{bold:true,color:C,size:22}),{spacing:{before:240,after:100},border:{bottom:{style:X.BorderStyle.SINGLE,size:8,color:C,space:2}}});const ch=[];
     if(kind==='cover'){const c=cv.cover||{};ch.push(P(T(D.name,{bold:true,size:36,color:C})),P(T(D.title,{bold:true,size:24})),P(T(D.contact.join('  |  '),{size:19})),P(T('')),P(T(new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}))));if(c.company)ch.push(P(T((c.to?c.to+', ':'')+c.company)));if(c.role)ch.push(P(T('Re: '+c.role,{bold:true})));(c.text||'').split(/\n\s*\n/).forEach(p=>ch.push(P(T(p.replace(/\n/g,' ')),{spacing:{after:200}})));}
     else{ch.push(P(T(D.name,{bold:true,size:36,color:C})));if(D.title)ch.push(P(T(D.title,{bold:true,size:24})));if(D.sub)ch.push(P(T(D.sub)));ch.push(P(T(D.contact.join('  |  '),{size:19})));if(D.visa)ch.push(P(T(D.visa,{size:19})));
       if(D.summary){ch.push(H('Professional Summary'),P(T(D.summary)));}
       if(D.skills.length){ch.push(H('Core Skills'));D.skills.forEach(s=>ch.push(P([T(s[0]+': ',{bold:true}),T(s[1])])));}
-      if(D.exp.length){ch.push(H('Work Experience'));D.exp.forEach(e=>{ch.push(P([T(e.t,{bold:true,size:22}),T(e.d?'   '+e.d:'')],{spacing:{before:140,after:20}}),P(T(e.c,{italics:true})));e.b.forEach(b=>ch.push(P(T(b),{bullet:{level:0}})));});}
-      if(D.edu.length){ch.push(H('Education'));D.edu.forEach(e=>ch.push(P([T(e[0],{bold:true}),T(e[2]?'   '+e[2]:'')]),P(T(e[1]))));}
+      if(D.exp.length){ch.push(H('Work Experience'));D.exp.forEach(e=>{ch.push(P([T(e.t,{bold:true,size:22}),...(e.d?[T('\t'+e.d,{size:20})]:[])],{spacing:{before:140,after:20},tabStops:[{type:X.TabStopType.RIGHT,position:X.TabStopPosition.MAX}]}),P(T(e.c,{italics:true})));e.b.forEach(b=>ch.push(P(T(b),{bullet:{level:0}})));});}
+      if(D.edu.length){ch.push(H('Education'));D.edu.forEach(e=>ch.push(P([T(e[0],{bold:true}),...(e[2]?[T('\t'+e[2],{size:20})]:[])],{tabStops:[{type:X.TabStopType.RIGHT,position:X.TabStopPosition.MAX}]}),P(T(e[1]))));}
       if(D.langs){ch.push(H('Languages'),P(T(D.langs)));}
       D.extra.forEach(x=>{if(!x.items.length)return;ch.push(H(x.title||'Additional'));x.items.forEach(b=>ch.push(P(T(b),{bullet:{level:0}})));});}
-    const doc=new X.Document({sections:[{properties:{page:{margin:{top:900,bottom:900,left:1000,right:1000}}},children:ch}]});const blob=await X.Packer.toBlob(doc);
+    const doc=new X.Document({creator:'Skilleaze',title:(D.name||'CV')+(kind==='cover'?' Cover Letter':' CV'),sections:[{properties:{page:{size:this.ph===1056?{width:12240,height:15840}:{width:11906,height:16838},margin:{top:900,bottom:900,left:1000,right:1000}}},children:ch}]});const blob=await X.Packer.toBlob(doc);
     const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=(D.name||'CV').replace(/\s+/g,'_')+(kind==='cover'?'_Cover_Letter':'_CV')+'.docx';document.body.appendChild(a);a.click();setTimeout(()=>a.remove(),500);}
   async extract(file){const buf=await file.arrayBuffer();
     if(/\.docx$/i.test(file.name)){const r=await window.mammoth.extractRawText({arrayBuffer:buf});return r.value;}
@@ -634,16 +639,17 @@ class Component extends DCLogic {
     const doDl=fmt=>async()=>{const k=s.pay.kind;const key=cv.id+':'+k;
       
       if(fmt==='pdf'){if(k==='cover')this.printHtml([this.coverPage(cv)],(d.name||'Cover')+' Cover Letter');else this.printHtml(this.render1(cv).pages,(d.name||'CV')+' CV');}else await this.docx(k);
+      try{if(cv.code&&SKP.logCV)SKP.logCV(cv.code,fmt==='pdf'?'download_pdf':'download_docx',k==='cover'?'cover letter':'cv');}catch(e){}
       this.setState({pay:null});};
     const SES=s.me;
     return {
       userName:SES?SES.name:'',viewOnly:!!s.ro,syncLabel:s.ro&&cv?'View only · '+(cv.code||''):cv?(cv.code?(s.syncErr?'Not saved · '+cv.code:(s.synced===cv.code?'Saved to portal · ':'Saving… · ')+cv.code):''):'',
-      doLogout:async()=>{await SKP.logout();location.href='./Portal.dc.html';},
+      doLogout:async()=>{await SKP.logout();location.href='./';},
       waExpert:`https://wa.me/${WA}?text=${encodeURIComponent('Hi Skilleaze, I was using the CV Builder and would like an expert to write my CV.')}`,
       priceCv:PRICE[0],priceCover:PRICE[1],priceExpert:PRICE[2],
       isHome:v==='home',isEdit:v==='edit'&&!!cv,isAts:v==='ats'&&!!cv,isCover:v==='cover'&&!!cv,isShare:v==='share',
       navHome:pill(v==='home'),navEdit:pill(v==='edit'),navAts:pill(v==='ats'),navCover:pill(v==='cover'),
-      goHome:e=>{e&&e.preventDefault&&e.preventDefault();if(!this.state.cvs.length){location.href='./Portal.dc.html';return;}if(location.hash)history.replaceState(null,'',location.pathname);this.setState({view:'home'});},
+      goHome:e=>{e&&e.preventDefault&&e.preventDefault();if(!this.state.cvs.length){location.href='./';return;}if(location.hash)history.replaceState(null,'',location.pathname);this.setState({view:'home'});},
       goEditCur:need(()=>this.setState({view:'edit'})),goAts:need(()=>this.setState({view:'ats'})),goCover:need(()=>this.setState({view:'cover'})),
       newCv:()=>{if(location.hash)history.replaceState(null,'',location.pathname);this.create();},
       openImport:()=>this.setState({importOpen:true,importInto:null,impTab:'file'}),openImportHere:()=>this.setState({importOpen:true,importInto:true,impTab:'file'}),importIntoNote:s.importInto?'The details will replace the matching fields in this CV. Your design, colour and photo stay as they are.':'A new CV is created from the file, with its own code, and saved to the portal.',closeImport:()=>this.setState({importOpen:false}),stop:e=>e.stopPropagation(),
