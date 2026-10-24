@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<title>Skilleaze Internal CV Portal · Europass CV</title><meta name="robots" content="noindex,nofollow">
+
+<link rel="icon" href="assets/fav-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Lato:wght@400;700;900&family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
+<script src="./cv-builder/cv-engine.js"></script>
+<script src="./cv-builder/europass-engine.js"></script>
+<script src="./cv-builder/muneez.js"></script>
+<script src="./cv-builder/portal-config.js"></script>
+<script src="./cv-builder/portal-store.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+<script src="https://unpkg.com/docx@8.5.0/build/index.umd.js"></script>
+<style>
+body{margin:0;background:#F8F9FA;color:#2C3E50;font-family:'Lato',sans-serif;-webkit-font-smoothing:antialiased}
+a{color:#053BA0;text-decoration:none}
+a:hover{color:#042D7C}
+textarea{resize:vertical}
+@keyframes skb-spin{to{transform:rotate(360deg)}}
+@keyframes skb-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+</style>
+<style id="skp-touch">html{-webkit-text-size-adjust:100%;text-size-adjust:100%}body{overflow-x:hidden;-webkit-tap-highlight-color:rgba(4,45,124,.12)}img,svg,video,canvas{max-width:100%}
+@media (pointer:coarse),(max-width:820px){input,select,textarea{font-size:16px!important}button,a[href],[role=button],select{touch-action:manipulation}button:not(:empty),[role=button]:not(:empty){min-height:40px}button:empty{min-width:34px;min-height:34px}input[type=checkbox],input[type=radio]{width:22px;height:22px}}
+@supports(padding:max(0px)){body{padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right);padding-bottom:env(safe-area-inset-bottom)}}</style>
+</helmet>
+<sc-if value="{{ viewOnly }}"><div style="position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:80;background:#2C3E50;color:#FFFFFF;border-radius:999px;padding:11px 18px;font-family:Lato,sans-serif;font-size:13px;font-weight:700;box-shadow:0 12px 30px rgba(0,0,0,.2);white-space:nowrap">Admin view · read only. Team members create and edit CVs.</div></sc-if>
+
+<div style="min-height:100vh;display:flex;flex-direction:column">
+
+<header style="position:sticky;top:0;z-index:40;background:rgba(248,249,250,.92);backdrop-filter:blur(10px);border-bottom:1px solid #E3E4E8">
+<div style="max-width:1440px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+<a href="#" onClick="{{ goHome }}" style="display:flex;align-items:center;gap:10px;text-decoration:none">
+<img src="assets/wordmark-blue.png" alt="Skilleaze" style="height:28px;width:auto;display:block">
+</a>
+<div style="display:flex;background:#F1F3F6;border-radius:999px;padding:3px;gap:2px"><a href="./Skilleaze CV Builder.dc.html" style="font-size:11px;font-weight:900;letter-spacing:.06em;border-radius:999px;padding:6px 11px;text-decoration:none;white-space:nowrap;color:#042D7C">ATS CV BUILDER</a><a href="./Skilleaze Europass CV Builder.dc.html" style="font-size:11px;font-weight:900;letter-spacing:.06em;border-radius:999px;padding:6px 11px;text-decoration:none;white-space:nowrap;background:#0B4F8A;color:#FFFFFF">EUROPASS CV BUILDER</a></div>
+<nav style="display:flex;gap:4px;flex-wrap:wrap;margin-left:auto">
+<button onClick="{{ goHome }}" style="{{ navHome }}">Open CVs</button>
+<button onClick="{{ goEditCur }}" style="{{ navEdit }}">Editor</button>
+<button onClick="{{ goAts }}" style="{{ navAts }}">ATS check</button>
+<button onClick="{{ goCover }}" style="{{ navCover }}">Cover letter</button>
+</nav>
+<div style="display:inline-flex;align-items:center;gap:10px;font-size:13px;color:#2C3E50;white-space:nowrap;flex-shrink:0"><a href="./Portal.dc.html" style="white-space:nowrap;font-weight:900;color:#042D7C;text-decoration:none;border:1px solid #D9DCE3;border-radius:999px;padding:6px 12px" style-hover="border-color:#042D7C">← Dashboard</a><span style="background:#E9EEF8;color:#042D7C;border-radius:999px;padding:7px 12px;font-weight:900;white-space:nowrap">{{ userName }}</span><button onClick="{{ doLogout }}" style="all:unset;display:inline-flex;align-items:center;min-height:40px;padding:0 8px;white-space:nowrap;cursor:pointer;font-weight:700;color:#5B6470" style-hover="color:#042D7C">Sign out</button></div>
+</div>
+</header>
+
+<sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+<main style="max-width:1200px;width:100%;margin:0 auto;padding:56px 20px 96px;box-sizing:border-box;display:flex;flex-direction:column;gap:56px;animation:skb-in .4s ease">
+<section style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:40px;align-items:center">
+<div style="display:flex;flex-direction:column;gap:18px">
+<div style="font-size:13px;font-weight:900;letter-spacing:.14em;color:#053BA0">Skilleaze Internal CV Portal · 7 EUROPASS TEMPLATES · CEFR LANGUAGE GRID</div>
+<h1 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:clamp(40px,5.4vw,64px);line-height:1.02;color:#042D7C;text-wrap:balance">Build your Europass CV for jobs in Europe.</h1>
+<p style="margin:0;font-size:18px;line-height:1.6;max-width:520px;text-wrap:pretty">Pick a design, fill in a few simple steps, download. That’s it.</p>
+<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:6px">
+<button onClick="{{ newCv }}" style="display:inline-flex;align-items:center;gap:8px;white-space:nowrap;background:#042D7C;color:#FFFFFF;border:none;border-radius:999px;padding:14px 24px;font:inherit;font-weight:900;font-size:15px;cursor:pointer" style-hover="background:#053BA0">Create a new CV</button>
+<button onClick="{{ openImport }}" style="display:inline-flex;align-items:center;gap:8px;white-space:nowrap;background:#FFFFFF;color:#042D7C;border:1px solid #D9DCE3;border-radius:999px;padding:14px 24px;font:inherit;font-weight:900;font-size:15px;cursor:pointer" style-hover="border-color:#042D7C">Import CV or LinkedIn</button>
+</div>
+<div style="font-size:14px;color:#5B6470">Internal tool for the Skilleaze team. Every CV saves to the portal with its own code, so anyone on the team can find it from the Dashboard. PDF and Word downloads are free.</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px"><div data-skb="hero" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;align-items:start"></div><div style="font-size:13px;color:#5B6470">Official Europass layout with the Europass logo, CEFR language grid and optional photo. Pick any of 7, change colour any time.</div></div>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:18px">
+<div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap">
+<h2 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:36px;color:#042D7C">My CVs</h2>
+<div style="font-size:14px;color:#5B6470">{{ cvCountLabel }}</div>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:14px">
+<button onClick="{{ newCv }}" style="min-height:180px;border:2px dashed #C9CED8;border-radius:20px;background:transparent;font:inherit;font-weight:900;font-size:16px;color:#042D7C;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px" style-hover="border-color:#042D7C;background:#FFFFFF"><span style="font-size:32px;line-height:1">+</span>New CV</button>
+<sc-for list="{{ cvList }}" as="c" hint-placeholder-count="2">
+<div style="background:#FFFFFF;border:1px solid #E3E4E8;border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:10px;min-height:180px;box-sizing:border-box">
+<div style="font-size:12px;font-weight:900;letter-spacing:.1em;color:#053BA0">{{ c.code }}</div>
+<div style="font-family:'Cormorant Garamond',serif;font-weight:700;font-size:26px;color:#042D7C;line-height:1.1">{{ c.label }}</div>
+<div style="font-size:14px;color:#5B6470">{{ c.sub }}</div>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:auto">
+<button onClick="{{ c.open }}" style="background:#042D7C;color:#FFFFFF;border:none;border-radius:999px;padding:8px 16px;font:inherit;font-weight:700;font-size:13px;cursor:pointer" style-hover="background:#053BA0">Open</button>
+<button onClick="{{ c.dup }}" style="background:#FFFFFF;color:#042D7C;border:1px solid #D9DCE3;border-radius:999px;padding:8px 14px;font:inherit;font-weight:700;font-size:13px;cursor:pointer" style-hover="border-color:#042D7C">Duplicate</button>
+<button onClick="{{ c.del }}" style="background:#FFFFFF;color:#8A2D2D;border:1px solid #E8D5D5;border-radius:999px;padding:8px 14px;font:inherit;font-weight:700;font-size:13px;cursor:pointer" style-hover="border-color:#8A2D2D">Delete</button>
+</div>
+</div>
+</sc-for>
+</div>
+</section>
+</main>
+</sc-if>
+
+<sc-if value="{{ isEdit }}">
+<main style="max-width:1440px;width:100%;margin:0 auto;padding:20px;box-sizing:border-box;display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start">
+
+<section style="flex:1 1 380px;max-width:520px;min-width:0;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+<input value="{{ cvLabel }}" onChange="{{ setLabel }}" aria-label="CV name" style="flex:1;min-width:160px;border:none;background:transparent;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:28px;color:#042D7C;outline:none;padding:2px 0"><span style="font-size:12px;font-weight:900;letter-spacing:.06em;color:#053BA0;background:#E9EEF8;border-radius:999px;padding:6px 10px;white-space:nowrap">{{ syncLabel }}</span>
+</div>
+
+<sc-if value="{{ guided }}"><div style="display:flex;flex-direction:column;gap:8px"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px"><div style="font-size:14px;font-weight:700">Step {{ stepNo }} of 6 · <span style="color:#042D7C">{{ stepLabel }}</span></div><div style="display:flex;gap:14px;align-items:center"><button onClick="{{ toggleTips }}" style="background:none;border:none;padding:0;color:#5B6470;font:inherit;font-size:13px;cursor:pointer;text-decoration:underline">{{ tipsLabel }}</button><button onClick="{{ setFree }}" style="background:none;border:none;padding:0;color:#5B6470;font:inherit;font-size:13px;cursor:pointer;text-decoration:underline">Show all sections</button></div></div><div style="height:4px;background:#E3E4E8;border-radius:999px;overflow:hidden"><div style="{{ progress }}"></div></div><sc-if value="{{ tipsOn }}"><div style="display:flex;gap:10px;align-items:flex-start;background:#FBF6E6;border-radius:12px;padding:10px 12px;font-size:13px;line-height:1.5;color:#5A4A1A"><span style="flex-shrink:0;font-weight:900;color:#8A6D1F">Tip</span><span>{{ stepTip }}</span></div></sc-if></div></sc-if>
+<sc-if value="{{ freeMode }}"><div style="display:flex;justify-content:flex-end"><button onClick="{{ setGuided }}" style="background:none;border:none;padding:0;color:#5B6470;font:inherit;font-size:13px;cursor:pointer;text-decoration:underline">Go step by step</button></div></sc-if>
+
+<sc-if value="{{ showQuick }}"><div style="background:#042D7C;color:#FFFFFF;border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap"><h3 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:24px">Start with AI</h3><button onClick="{{ hideQuick }}" style="background:none;border:none;color:#C9D4EC;font:inherit;font-size:13px;cursor:pointer;text-decoration:underline">I’ll type it myself</button></div>
+<div style="font-size:14px;line-height:1.5;color:#E3E4E8">Tell us the job you want and a few lines about your work. We draft your title, summary, skills and bullets. You check and edit everything.</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:10px"><input value="{{ qs.role }}" onChange="{{ qsRole }}" placeholder="Target job, e.g. Sales Executive" style="border:1px solid #D9DCE3;border-radius:12px;padding:11px 13px;font:inherit;font-size:14px;color:#2C3E50;background:#FFFFFF;min-width:0"><input value="{{ qs.yrs }}" onChange="{{ qsYrs }}" placeholder="Years of experience, e.g. 3" style="border:1px solid #D9DCE3;border-radius:12px;padding:11px 13px;font:inherit;font-size:14px;color:#2C3E50;background:#FFFFFF;min-width:0"></div>
+<textarea value="{{ qs.notes }}" onChange="{{ qsNotes }}" rows="4" placeholder="Your jobs and what you did, in your own words." style="border:1px solid #D9DCE3;border-radius:12px;padding:11px 13px;font:inherit;font-size:14px;color:#2C3E50;background:#FFFFFF;min-width:0;resize:vertical;line-height:1.5"></textarea>
+<button onClick="{{ aiQuick }}" style="align-self:flex-start;background:#FFFFFF;color:#042D7C;border:none;border-radius:999px;padding:11px 20px;font:inherit;font-weight:900;font-size:14px;cursor:pointer;white-space:nowrap">{{ aiQuickLabel }}</button>
+<div style="font-size:12px;color:#C9D4EC">AI only uses what you write. It never adds companies, numbers or degrees you didn’t give.</div>
+</div></sc-if>
+<sc-if value="{{ showContact }}">
+<div style="background:#FFFFFF;border:1px solid #E3E4E8;border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><h3 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:24px;color:#042D7C">Contact details</h3><button onClick="{{ fillSample }}" style="background:none;border:none;color:#053BA0;font:inherit;font-weight:700;font-size:13px;cursor:pointer;text-decoration:underline">Fill with an example</button></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:12px">
+<label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:700">Full name<input value="{{ d.name }}" onChange="{{ on.name }}" placeholder="e.g. Aisha Rahman" style="border:1px solid #D9DCE3;border-radius:12px;padding:11px 14px;font:inherit;font-weight:400;font-size:15px;color:#2C3E50;background:#FFFFFF;outline:none" style-focus="border-color:#042D7C"></label>
+<label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:700">Job title<input value="{{ d.title }}" onChange="{{ on.title }}" placeholder="e.g. Marketing Executive" style="border:1px solid #D9DCE3;border-radius:12px;padding:11px 14px;font:inherit;font-weight:400;font-size:15px;color:#2C3E50;background:#FFFFFF;outline:none" style-focus="border-color:#042D7C"></label>
+<label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:700">Email<input value="{{ d.email }}" onChange="{{ on.email }}" type="email" placeholder="you@email.com" style="border:1px solid #D9DCE3;border-radius:12px;padding:11px 14px;font:inherit;font-weight:400;font-size:15px;color:#2C3E50;background:#FFFFFF;outline:none" style-focus="border-color:#042D7C"></label>
+<label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:700">Phone<input value="{{ d.phone }}" onChange="{{ on.phone }}" placeholder="+971 50 000 0000" style="border:1px solid #D9DCE3;border-radius:12px;padding:11px 14px;font:inherit;font-weight:400;font-size:15px;color:#2C3E50;background:#FFFFFF;outline:none" style-focus="border-color:#042D7C"></label>
+<label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:700">City, country<input value="{{ d.location }}" onChange="{{ on.location }}" placeholder="Dubai, UAE" style="border:1px solid #D9DCE3;border-radius:12px;padding:11px 14px;font:inherit;font-weight:400;font-size:15px;color:#2C3E50;background:#FFFFFF;outline:none" style-focus="border-color:#042D7C"></label>
+<label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:700">LinkedIn<input value="{{ d.linkedin }}" onChange="{{ on.linkedin }}" placeholder="linkedin.com/in/you" style="border:1px solid #D9DCE3;border-radius:12px;padding:11px 14px;font:inherit;font-weight:400;font-size:15px;color:#2C3E50;background:#FFFFFF;outline:none" style-focus="border-color:#042D7C"></label>
+<label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:700">Website / portfolio<input value="{{ d.website }}" onChange="{{ on.website }}" placeholder="yourname.com" style="border:1px solid #D9DCE3;border-radius:12px;padding:11px 14px;font:inherit;font-weight:400;font-size:15px;color:#2C3E50;background:#FFFFFF;outline:none" style-focus="border-color:#042D7C"></label>
+<label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:700">Specialisms line<input value="{{ d.sub }}" onChange="{{ on.sub }}" placeholder="Optional, e.g. SEO · Paid Social" style="border:1px solid #D9DCE3;border-radius:12px;padding:11px 14px;font:inherit;font-weight:400;font-size:15px;color:#2C3E50;background:#FFFFFF;outline:none" style-focus="border-color:#042D7C"></label>
+</div>
+<label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:700">Visa / availability line<input value="{{ d.extraLine }}" onChange="{{ on.extraLine }}" placeholder="Optional, e.g. UAE Employment Visa · Available immediately" style="border:1px solid #D9DCE3;border-radius:12px;padding:11px 14px;font:inherit;font-weight:400;font-size:15px;color:#2C3E50;background:#FFFFFF;outline:none" style-focus="border-color:#042D7C"></label>
+<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+<label style="display:inline-flex;align-items:center;gap:8px;background:#F1F3F6;border-radius:999px;padding:9px 16px;font-size:13px;font-weight:700;color:#042D7C;cursor:pointer">Upload photo<input type="file" accept="image/*" onChange="{{ onPhoto }}" style="display:none"></label>
+<sc-if value="{{ d.photo }}"><button onClick="{{ rmPhoto }}" style="background:none;border:none;color:#8A2D2D;font:inherit;font-weight:700;font-size:13px;cursor:pointer">Remove photo</button></sc-if>
+<span style="font-size:12px;color:#5B6470">Recommended for GCC applications. Leave it out for UK, US and Canada.</span>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ showSummary }}">
+<div style="background:#FFFFFF;border:1px solid #E3E4E8;border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><h3 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:24px;color:#042D7C">Professional summary</h3>
+<button onClick="{{ aiSummary }}" style="display:inline-flex;align-items:center;gap:8px;background:#F1F3F6;color:#042D7C;border:none;border-radius:999px;padding:8px 14px;font:inherit;font-weight:900;font-size:13px;cursor:pointer" style-hover="background:#E3E4E8">{{ aiSummaryLabel }}</button></div>
+<textarea value="{{ d.summary }}" onChange="{{ on.summary }}" rows="6" placeholder="3–4 sentences: who you are, years of experience, your strongest skills and the result you're known for." style="border:1px solid #D9DCE3;border-radius:12px;padding:12px 14px;font:inherit;font-size:15px;line-height:1.55;color:#2C3E50;outline:none" style-focus="border-color:#042D7C"></textarea>
+<div style="font-size:12px;color:#5B6470">{{ summaryWords }} words · aim for 40–120</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ showExp }}">
+<div style="background:#FFFFFF;border:1px solid #E3E4E8;border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:14px">
+<h3 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:24px;color:#042D7C">Work experience</h3>
+<sc-for list="{{ exps }}" as="e" hint-placeholder-count="1">
+<div style="border:1px solid #E3E4E8;border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:10px;background:#FBFBFC">
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:10px">
+<input value="{{ e.t }}" onChange="{{ e.onT }}" placeholder="Job title" style="border:1px solid #D9DCE3;border-radius:12px;padding:10px 12px;font:inherit;font-size:15px;color:#2C3E50;background:#FFFFFF;outline:none" style-focus="border-color:#042D7C">
+<input value="{{ e.d }}" onChange="{{ e.onD }}" placeholder="Jan 2022 – Present" style="border:1px solid #D9DCE3;border-radius:12px;padding:10px 12px;font:inherit;font-size:15px;color:#2C3E50;background:#FFFFFF;outline:none" style-focus="border-color:#042D7C">
+</div>
+<input value="{{ e.c }}" onChange="{{ e.onC }}" placeholder="Company · City, Country" style="border:1px solid #D9DCE3;border-radius:12px;padding:10px 12px;font:inherit;font-size:15px;color:#2C3E50;background:#FFFFFF;outline:none" style-focus="border-color:#042D7C">
+<textarea value="{{ e.b }}" onChange="{{ e.onB }}" rows="5" placeholder="One achievement per line. Start with a verb and add a number where you can, e.g. Cut onboarding time by 30% by..." style="border:1px solid #D9DCE3;border-radius:12px;padding:10px 12px;font:inherit;font-size:14px;line-height:1.55;color:#2C3E50;background:#FFFFFF;outline:none" style-focus="border-color:#042D7C"></textarea>
+<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+<button onClick="{{ e.ai }}" style="background:#F1F3F6;color:#042D7C;border:none;border-radius:999px;padding:7px 14px;font:inherit;font-weight:900;font-size:13px;cursor:pointer" style-hover="background:#E3E4E8">{{ e.aiLabel }}</button>
+<button onClick="{{ e.up }}" style="background:none;border:1px solid #D9DCE3;border-radius:999px;padding:6px 12px;font:inherit;font-weight:700;font-size:13px;color:#2C3E50;cursor:pointer">Move up</button>
+<button onClick="{{ e.rm }}" style="background:none;border:none;color:#8A2D2D;font:inherit;font-weight:700;font-size:13px;cursor:pointer;margin-left:auto">Remove</button>
+</div>
+</div>
+</sc-for>
+<button onClick="{{ addExp }}" style="align-self:flex-start;background:#FFFFFF;color:#042D7C;border:1px solid #D9DCE3;border-radius:999px;padding:9px 16px;font:inherit;font-weight:900;font-size:13px;cursor:pointer" style-hover="border-color:#042D7C">+ Add experience</button>
+</div>
+</sc-if>
+
+<sc-if value="{{ showSkills }}">
+<div style="background:#FFFFFF;border:1px solid #E3E4E8;border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:12px">
+<h3 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:24px;color:#042D7C">Skills</h3>
+<div style="font-size:13px;color:#5B6470">Group skills by type. Use the exact words from job ads you're applying to.</div>
+<sc-for list="{{ skills }}" as="k" hint-placeholder-count="2">
+<div style="display:grid;grid-template-columns:minmax(0,160px) minmax(0,1fr) auto;gap:8px;align-items:center">
+<input value="{{ k.cat }}" onChange="{{ k.onCat }}" placeholder="Category" style="border:1px solid #D9DCE3;border-radius:12px;padding:10px 12px;font:inherit;font-size:14px;font-weight:700;color:#2C3E50;background:#FFFFFF;outline:none;min-width:0" style-focus="border-color:#042D7C">
+<input value="{{ k.list }}" onChange="{{ k.onList }}" placeholder="Skill, skill, skill" style="border:1px solid #D9DCE3;border-radius:12px;padding:10px 12px;font:inherit;font-size:14px;color:#2C3E50;background:#FFFFFF;outline:none;min-width:0" style-focus="border-color:#042D7C">
+<button onClick="{{ k.rm }}" aria-label="Remove" style="width:34px;height:34px;border-radius:50%;border:1px solid #E3E4E8;background:#FFFFFF;color:#8A2D2D;font-size:18px;cursor:pointer;line-height:1">×</button>
+</div>
+</sc-for>
+<div style="display:flex;flex-direction:column;gap:8px;background:#F7F8FA;border-radius:14px;padding:14px"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><div style="font-size:13px;font-weight:700">Skills recruiters search for{{ skForLabel }}</div><button onClick="{{ aiSkills }}" style="background:#042D7C;color:#FFFFFF;border:none;border-radius:999px;padding:10px 18px;font:inherit;font-weight:900;font-size:13px;cursor:pointer;white-space:nowrap">{{ aiSkillsLabel }}</button></div>
+<sc-if value="{{ hasSkSug }}"><div style="font-size:12px;color:#5B6470">Tap to add. Only add skills you really have.</div><div style="display:flex;gap:6px;flex-wrap:wrap"><sc-for list="{{ skSug }}" as="k" hint-placeholder-count="0"><button onClick="{{ k.add }}" style="all:unset;cursor:pointer;background:#FFFFFF;border:1px solid #D9DCE3;color:#042D7C;border-radius:999px;padding:6px 12px;font-size:13px;font-weight:700" style-hover="background:#EEF2FA">+ {{ k.w }}</button></sc-for></div></sc-if></div>
+<button onClick="{{ addSkill }}" style="align-self:flex-start;background:#FFFFFF;color:#042D7C;border:1px solid #D9DCE3;border-radius:999px;padding:9px 16px;font:inherit;font-weight:900;font-size:13px;cursor:pointer" style-hover="border-color:#042D7C">+ Add skill group</button>
+</div>
+</sc-if>
+
+<sc-if value="{{ showEdu }}">
+<div style="background:#FFFFFF;border:1px solid #E3E4E8;border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:12px">
+<h3 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:24px;color:#042D7C">Education</h3>
+<sc-for list="{{ edus }}" as="u" hint-placeholder-count="1">
+<div style="border:1px solid #E3E4E8;border-radius:16px;padding:12px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,160px),1fr));gap:8px;background:#FBFBFC">
+<input value="{{ u.deg }}" onChange="{{ u.onDeg }}" placeholder="Degree / qualification" style="border:1px solid #D9DCE3;border-radius:12px;padding:10px 12px;font:inherit;font-size:14px;color:#2C3E50;background:#FFFFFF;outline:none" style-focus="border-color:#042D7C">
+<input value="{{ u.school }}" onChange="{{ u.onSchool }}" placeholder="University / school" style="border:1px solid #D9DCE3;border-radius:12px;padding:10px 12px;font:inherit;font-size:14px;color:#2C3E50;background:#FFFFFF;outline:none" style-focus="border-color:#042D7C">
+<div style="display:flex;gap:8px"><input value="{{ u.yrs }}" onChange="{{ u.onYrs }}" placeholder="2018 – 2022" style="flex:1;min-width:0;border:1px solid #D9DCE3;border-radius:12px;padding:10px 12px;font:inherit;font-size:14px;color:#2C3E50;background:#FFFFFF;outline:none" style-focus="border-color:#042D7C"><button onClick="{{ u.rm }}" aria-label="Remove" style="width:38px;border-radius:12px;border:1px solid #E3E4E8;background:#FFFFFF;color:#8A2D2D;font-size:18px;cursor:pointer">×</button></div>
+</div>
+</sc-for>
+<button onClick="{{ addEdu }}" style="align-self:flex-start;background:#FFFFFF;color:#042D7C;border:1px solid #D9DCE3;border-radius:999px;padding:9px 16px;font:inherit;font-weight:900;font-size:13px;cursor:pointer" style-hover="border-color:#042D7C">+ Add education</button>
+</div>
+</sc-if>
+
+<sc-if value="{{ showExtra }}">
+<div style="background:#FFFFFF;border:1px solid #E3E4E8;border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:12px">
+<h3 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:24px;color:#042D7C">Languages &amp; more</h3>
+<label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:700">Languages<input value="{{ d.langs }}" onChange="{{ on.langs }}" placeholder="English (Fluent), Arabic (Conversational)" style="border:1px solid #D9DCE3;border-radius:12px;padding:11px 14px;font:inherit;font-weight:400;font-size:15px;color:#2C3E50;background:#FFFFFF;outline:none" style-focus="border-color:#042D7C"></label>
+<sc-for list="{{ extras }}" as="x" hint-placeholder-count="0">
+<div style="border:1px solid #E3E4E8;border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:8px;background:#FBFBFC">
+<div style="display:flex;gap:8px"><input value="{{ x.title }}" onChange="{{ x.onTitle }}" placeholder="Section title, e.g. Certifications" style="flex:1;min-width:0;border:1px solid #D9DCE3;border-radius:12px;padding:10px 12px;font:inherit;font-size:14px;font-weight:700;color:#2C3E50;background:#FFFFFF;outline:none" style-focus="border-color:#042D7C"><button onClick="{{ x.rm }}" aria-label="Remove" style="width:38px;border-radius:12px;border:1px solid #E3E4E8;background:#FFFFFF;color:#8A2D2D;font-size:18px;cursor:pointer">×</button></div>
+<textarea value="{{ x.items }}" onChange="{{ x.onItems }}" rows="3" placeholder="One item per line" style="border:1px solid #D9DCE3;border-radius:12px;padding:10px 12px;font:inherit;font-size:14px;line-height:1.5;color:#2C3E50;background:#FFFFFF;outline:none" style-focus="border-color:#042D7C"></textarea>
+</div>
+</sc-for>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<sc-for list="{{ extraPresets }}" as="p" hint-placeholder-count="4">
+<button onClick="{{ p.add }}" style="background:#FFFFFF;color:#042D7C;border:1px solid #D9DCE3;border-radius:999px;padding:8px 14px;font:inherit;font-weight:700;font-size:13px;cursor:pointer" style-hover="border-color:#042D7C">+ {{ p.label }}</button>
+</sc-for>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ guided }}">
+<div style="display:flex;justify-content:space-between;gap:10px">
+<button onClick="{{ prevStep }}" style="background:#FFFFFF;color:#042D7C;border:1px solid #D9DCE3;border-radius:999px;padding:11px 20px;font:inherit;font-weight:900;font-size:14px;cursor:pointer;white-space:nowrap;flex-shrink:0">Back</button>
+<button onClick="{{ nextStep }}" style="background:#042D7C;color:#FFFFFF;border:none;border-radius:999px;padding:11px 22px;font:inherit;font-weight:900;font-size:14px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0" style-hover="background:#053BA0">{{ nextLabel }}</button>
+</div>
+</sc-if>
+
+
+</section>
+
+<section style="flex:999 1 440px;min-width:0;position:sticky;top:76px;display:flex;flex-direction:column;gap:12px">
+<div style="background:#FFFFFF;border:1px solid #E3E4E8;border-radius:20px;padding:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+<button onClick="{{ openPicker }}" style="display:inline-flex;align-items:center;gap:8px;background:#F1F3F6;color:#042D7C;border:none;border-radius:999px;padding:9px 16px;font:inherit;font-weight:900;font-size:13px;cursor:pointer" style-hover="background:#E3E4E8">{{ tplCode }}<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="m6 9 6 6 6-6"></path></svg></button>
+<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+<sc-for list="{{ colors }}" as="c" hint-placeholder-count="8">
+<button onClick="{{ c.pick }}" title="{{ c.name }}" aria-label="{{ c.name }}" style="{{ c.style }}"></button>
+</sc-for>
+<label title="Any colour" style="width:24px;height:24px;border-radius:50%;background:conic-gradient(#E54848,#E5B848,#48E57A,#48B8E5,#7A48E5,#E54848);cursor:pointer;position:relative;overflow:hidden"><input type="color" value="{{ curColor }}" onChange="{{ pickCustom }}" style="opacity:0;position:absolute;inset:0;cursor:pointer"></label>
+</div>
+<button onClick="{{ toggleSetup }}" style="margin-left:auto;background:#F1F3F6;color:#042D7C;border:none;border-radius:999px;padding:9px 16px;font:inherit;font-weight:900;font-size:14px;cursor:pointer;white-space:nowrap" style-hover="background:#E3E4E8">Page setup</button>
+<button onClick="{{ dlCv }}" style="background:#042D7C;color:#FFFFFF;border:none;border-radius:999px;padding:10px 20px;font:inherit;font-weight:900;font-size:14px;cursor:pointer;white-space:nowrap" style-hover="background:#053BA0">Download</button>
+</div>
+<sc-if value="{{ setupOpen }}" hint-placeholder-val="{{ false }}"><div style="background:#FFFFFF;border:1px solid #E3E4E8;border-radius:20px;padding:18px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:18px">
+<div style="display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;flex-direction:column;gap:8px"><div style="font-size:12px;font-weight:900;letter-spacing:.12em;color:#5B6470">MARGINS</div><div style="display:flex;gap:8px"><sc-for list="{{ margins }}" as="m" hint-placeholder-count="3"><button onClick="{{ m.pick }}" style="{{ m.style }}"><div style="font-weight:900;font-size:14px;color:#042D7C">{{ m.label }}</div><div style="font-size:12px;color:#5B6470;margin-top:2px">{{ m.hint }}</div></button></sc-for></div></div>
+<div style="display:flex;flex-direction:column;gap:8px"><div style="font-size:12px;font-weight:900;letter-spacing:.12em;color:#5B6470">PAPER SIZE</div><div style="display:flex;gap:8px"><sc-for list="{{ papers }}" as="p" hint-placeholder-count="2"><button onClick="{{ p.pick }}" style="{{ p.style }}"><div style="font-weight:900;font-size:14px;color:#042D7C">{{ p.label }}</div><div style="font-size:12px;color:#5B6470;margin-top:2px">{{ p.hint }}</div></button></sc-for></div></div>
+<div style="display:flex;flex-direction:column;gap:8px"><div style="font-size:12px;font-weight:900;letter-spacing:.12em;color:#5B6470">PHOTO</div><div style="display:flex;gap:8px"><sc-for list="{{ photoModes }}" as="pm" hint-placeholder-count="2"><button onClick="{{ pm.pick }}" style="{{ pm.style }}">{{ pm.label }}</button></sc-for></div>
+<sc-if value="{{ photoShown }}"><div style="display:flex;gap:6px"><sc-for list="{{ photoShapes }}" as="ps" hint-placeholder-count="4"><button onClick="{{ ps.pick }}" style="{{ ps.style }}"><span style="{{ ps.ico }}"></span>{{ ps.label }}</button></sc-for></div>
+<div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap"><label style="display:inline-flex;align-items:center;background:#F1F3F6;border-radius:999px;padding:8px 14px;font-size:13px;font-weight:700;color:#042D7C;cursor:pointer">Upload photo<input type="file" accept="image/*" onChange="{{ onPhoto }}" style="display:none"></input></label><sc-if value="{{ hasPhoto }}"><button onClick="{{ rmPhoto }}" style="background:none;border:none;color:#8A2D2D;font:inherit;font-weight:700;font-size:13px;cursor:pointer">Remove</button></sc-if><span style="font-size:12px;color:#5B6470">Or click the photo on the CV.</span></div></sc-if>
+<div style="font-size:12px;color:#5B6470">Photos are recommended for GCC applications. No photo is safest for UK, US and Canada.</div></div>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px"><div style="display:flex;justify-content:space-between;align-items:baseline"><div style="font-size:12px;font-weight:900;letter-spacing:.12em;color:#5B6470">SECTION ORDER</div><button onClick="{{ resetSetup }}" style="background:none;border:none;padding:0;color:#5B6470;font:inherit;font-size:12px;cursor:pointer;text-decoration:underline">Reset</button></div>
+<sc-for list="{{ secList }}" as="r" hint-placeholder-count="6"><div style="{{ r.rowStyle }}"><span style="flex:1;font-size:14px;font-weight:700">{{ r.label }}</span><button onClick="{{ r.up }}" aria-label="Move up" style="all:unset;cursor:pointer;width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:8px;color:#042D7C" style-hover="background:#E3E4E8"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"></path></svg></button><button onClick="{{ r.down }}" aria-label="Move down" style="all:unset;cursor:pointer;width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:8px;color:#042D7C" style-hover="background:#E3E4E8"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg></button><button onClick="{{ r.toggle }}" style="all:unset;cursor:pointer;font-size:12px;font-weight:700;color:#5B6470;padding:4px 8px;border-radius:8px;min-width:34px;text-align:center" style-hover="background:#E3E4E8">{{ r.eye }}</button></div></sc-for>
+<div style="font-size:12px;color:#5B6470">Sidebar designs keep skills and education in the side column.</div></div>
+</div></sc-if>
+<div style="background:#E9ECF1;border-radius:20px;padding:16px;max-height:calc(100vh - 170px);overflow:auto">
+<div data-skb="prev" style="display:flex;flex-direction:column;align-items:center;gap:16px"></div>
+</div>
+<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:13px"><button onClick="{{ goAts }}" style="{{ scorePill }}">ATS score {{ atsScore }}</button><button onClick="{{ share }}" style="background:none;border:none;color:#2C3E50;font:inherit;font-weight:700;font-size:13px;cursor:pointer;text-decoration:underline">Share link</button><select value="{{ curFont }}" onChange="{{ pickFont }}" aria-label="Font" style="border:1px solid #D9DCE3;border-radius:999px;padding:6px 10px;font:inherit;font-size:13px;color:#2C3E50;background:#FFFFFF"><option value="Lato">Lato</option><option value="Open Sans">Open Sans</option><option value="Arial">Arial</option><option value="Georgia">Georgia</option></select><span style="margin-left:auto;display:flex;align-items:center;gap:4px;background:#F1F3F6;border-radius:999px;padding:2px"><button onClick="{{ zoomOut }}" aria-label="Zoom out" style="all:unset;cursor:pointer;width:26px;height:26px;display:flex;align-items:center;justify-content:center;border-radius:50%;font-weight:900;color:#042D7C" style-hover="background:#E3E4E8">−</button><span style="min-width:40px;text-align:center;font-weight:700;color:#2C3E50">{{ zoomLabel }}</span><button onClick="{{ zoomIn }}" aria-label="Zoom in" style="all:unset;cursor:pointer;width:26px;height:26px;display:flex;align-items:center;justify-content:center;border-radius:50%;font-weight:900;color:#042D7C" style-hover="background:#E3E4E8">+</button></span><span style="color:#5B6470">{{ pageInfo }}</span></div>
+<div style="font-size:12px;color:#5B6470">Click any text, heading or the photo on the CV to edit it directly. Hover any entry to move, copy or delete it; jobs also get AI improve.</div>
+</section>
+</main>
+</sc-if>
+
+<sc-if value="{{ isAts }}">
+<main style="max-width:1200px;width:100%;margin:0 auto;padding:32px 20px 96px;box-sizing:border-box;display:flex;flex-direction:column;gap:20px;animation:skb-in .4s ease">
+<div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap">
+<div><div style="font-size:13px;font-weight:900;letter-spacing:.14em;color:#053BA0">ATS CHECK · {{ cvLabel }}</div><h1 style="margin:6px 0 0;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:clamp(32px,4vw,46px);color:#042D7C">How your CV scores</h1></div>
+<button onClick="{{ goEditCur }}" style="background:#042D7C;color:#FFFFFF;border:none;border-radius:999px;padding:11px 20px;font:inherit;font-weight:900;font-size:14px;cursor:pointer" style-hover="background:#053BA0">Back to editor</button>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:20px;align-items:start">
+<div style="display:flex;flex-direction:column;gap:16px">
+<div style="background:#FFFFFF;border:1px solid #E3E4E8;border-radius:20px;padding:24px;display:flex;gap:22px;align-items:center;flex-wrap:wrap">
+<div style="{{ ring }}"><div style="width:104px;height:104px;border-radius:50%;background:#FFFFFF;display:flex;flex-direction:column;align-items:center;justify-content:center"><div style="font-family:'Cormorant Garamond',serif;font-weight:700;font-size:44px;line-height:1;color:#042D7C">{{ atsScore }}</div><div style="font-size:12px;color:#5B6470">out of 100</div></div></div>
+<div style="flex:1;min-width:200px;display:flex;flex-direction:column;gap:6px"><div style="font-weight:900;font-size:18px">{{ atsVerdict }}</div><div style="font-size:14px;line-height:1.55;color:#5B6470">{{ atsNote }}</div></div>
+</div>
+<div style="background:#FFFFFF;border:1px solid #E3E4E8;border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:2px">
+<sc-for list="{{ checks }}" as="c" hint-placeholder-count="8">
+<div style="display:grid;grid-template-columns:26px 1fr;gap:10px;padding:10px 0;border-bottom:1px solid #F0F1F4">
+<div style="{{ c.dot }}">{{ c.mark }}</div>
+<div><div style="font-weight:700;font-size:15px">{{ c.label }}</div><div style="font-size:13px;color:#5B6470;margin-top:2px">{{ c.tip }}</div></div>
+</div>
+</sc-for>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:16px">
+<div style="background:#FFFFFF;border:1px solid #E3E4E8;border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:12px">
+<h3 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:24px;color:#042D7C">Match to a job</h3>
+<textarea value="{{ jd }}" onChange="{{ setJd }}" rows="8" placeholder="Paste the job description here to see which keywords your CV matches and which are missing." style="border:1px solid #D9DCE3;border-radius:12px;padding:12px 14px;font:inherit;font-size:14px;line-height:1.55;color:#2C3E50;outline:none" style-focus="border-color:#042D7C"></textarea>
+<sc-if value="{{ hasJd }}">
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-weight:900;font-size:14px">Keyword match: {{ matchPct }}</div>
+<div style="font-size:13px;font-weight:700;color:#1F6B45">In your CV</div>
+<div style="display:flex;gap:6px;flex-wrap:wrap"><sc-for list="{{ matched }}" as="w" hint-placeholder-count="0"><span style="background:#E6F2EC;color:#1F6B45;border-radius:999px;padding:5px 11px;font-size:13px;font-weight:700">{{ w }}</span></sc-for></div>
+<div style="font-size:13px;font-weight:700;color:#8A2D2D;margin-top:4px">Missing (add only if true for you)</div>
+<div style="display:flex;gap:6px;flex-wrap:wrap"><sc-for list="{{ missingBtns }}" as="w" hint-placeholder-count="0"><button onClick="{{ w.add }}" title="Add to skills" style="all:unset;cursor:pointer;background:#F7E9E9;color:#8A2D2D;border-radius:999px;padding:5px 11px;font-size:13px;font-weight:700" style-hover="background:#F0D8D8">+ {{ w.w }}</button></sc-for></div>
+<button onClick="{{ aiTailor }}" style="align-self:flex-start;margin-top:6px;background:#042D7C;color:#FFFFFF;border:none;border-radius:999px;padding:10px 18px;font:inherit;font-weight:900;font-size:13px;cursor:pointer" style-hover="background:#053BA0">{{ aiTailorLabel }}</button>
+<sc-if value="{{ tailorTips }}"><div style="background:#F1F3F6;border-radius:14px;padding:14px 16px;font-size:14px;line-height:1.6;white-space:pre-wrap">{{ tailorTips }}</div></sc-if>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px"><button onClick="{{ aiTailorSum }}" style="background:#FFFFFF;color:#042D7C;border:1px solid #D9DCE3;border-radius:999px;padding:10px 18px;font:inherit;font-weight:900;font-size:13px;cursor:pointer;white-space:nowrap">{{ aiTailorSumLabel }}</button><sc-if value="{{ canUndoSum }}"><button onClick="{{ undoSum }}" style="background:none;border:none;color:#5B6470;font:inherit;font-size:13px;cursor:pointer;text-decoration:underline">Undo summary change</button></sc-if></div>
+
+</div>
+</sc-if>
+<div style="border-top:1px solid #E3E4E8;margin-top:12px;padding-top:12px;display:flex;flex-direction:column;gap:8px"><button onClick="{{ togglePlain }}" style="all:unset;cursor:pointer;font-size:14px;font-weight:900;color:#042D7C">{{ plainLabel }}</button><sc-if value="{{ plainOpen }}"><div style="font-size:12px;color:#5B6470">This is roughly the text an applicant tracking system pulls from your PDF. If something is missing here, it’s missing for the recruiter too.</div><pre style="margin:0;background:#F7F8FA;border:1px solid #E3E4E8;border-radius:12px;padding:14px;font:13px/1.55 ui-monospace,Menlo,monospace;white-space:pre-wrap;max-height:420px;overflow:auto">{{ plainText }}</pre></sc-if></div>
+</div>
+
+</div>
+</div>
+</main>
+</sc-if>
+
+<sc-if value="{{ isCover }}">
+<main style="max-width:1300px;width:100%;margin:0 auto;padding:32px 20px 96px;box-sizing:border-box;display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start;animation:skb-in .4s ease">
+<section style="flex:1 1 360px;max-width:500px;display:flex;flex-direction:column;gap:14px">
+<div><div style="font-size:13px;font-weight:900;letter-spacing:.14em;color:#053BA0">COVER LETTER · USES {{ cvLabel }}</div><h1 style="margin:6px 0 0;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:clamp(32px,4vw,44px);color:#042D7C">Write your cover letter</h1></div>
+<div style="background:#FFFFFF;border:1px solid #E3E4E8;border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:12px">
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:10px">
+<label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:700">Company<input value="{{ cover.company }}" onChange="{{ cv_on.company }}" placeholder="Company name" style="border:1px solid #D9DCE3;border-radius:12px;padding:11px 14px;font:inherit;font-weight:400;font-size:15px;color:#2C3E50;outline:none" style-focus="border-color:#042D7C"></label>
+<label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:700">Role<input value="{{ cover.role }}" onChange="{{ cv_on.role }}" placeholder="Job title" style="border:1px solid #D9DCE3;border-radius:12px;padding:11px 14px;font:inherit;font-weight:400;font-size:15px;color:#2C3E50;outline:none" style-focus="border-color:#042D7C"></label>
+<label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:700">Hiring manager<input value="{{ cover.to }}" onChange="{{ cv_on.to }}" placeholder="Optional" style="border:1px solid #D9DCE3;border-radius:12px;padding:11px 14px;font:inherit;font-weight:400;font-size:15px;color:#2C3E50;outline:none" style-focus="border-color:#042D7C"></label>
+<label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:700">Tone<select value="{{ cover.tone }}" onChange="{{ cv_on.tone }}" style="border:1px solid #D9DCE3;border-radius:12px;padding:11px 14px;font:inherit;font-weight:400;font-size:15px;color:#2C3E50;background:#FFFFFF"><option>Professional</option><option>Warm</option><option>Confident</option><option>Concise</option></select></label>
+</div>
+<label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:700">Job description (recommended)<textarea value="{{ cover.jd }}" onChange="{{ cv_on.jd }}" rows="5" placeholder="Paste the job ad" style="border:1px solid #D9DCE3;border-radius:12px;padding:11px 14px;font:inherit;font-weight:400;font-size:14px;line-height:1.5;color:#2C3E50;outline:none" style-focus="border-color:#042D7C"></textarea></label>
+<button onClick="{{ aiCover }}" style="align-self:flex-start;background:#042D7C;color:#FFFFFF;border:none;border-radius:999px;padding:11px 20px;font:inherit;font-weight:900;font-size:14px;cursor:pointer" style-hover="background:#053BA0">{{ aiCoverLabel }}</button>
+<div style="background:#F1F4F8;border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;gap:8px"><div style="font-size:12px;font-weight:900;letter-spacing:.12em;color:#042D7C">COVER LETTER FORMAT</div><div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 14px;font-size:13px;color:#2C3E50"><span>1 · Date &amp; contact</span><span>2 · Greeting</span><span>3 · Opening</span><span>4 · Middle paragraphs</span><span>5 · Closing</span><span>6 · Sign-off</span></div><div style="font-size:12px;color:#5B6470">Click anywhere on the letter to edit it directly, like a Word document. Press Enter in the letter body for a new paragraph.</div></div>
+<label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:700">Letter text (edit freely)<textarea value="{{ cover.text }}" onChange="{{ cv_on.text }}" rows="14" placeholder="Generate a draft above, or write your own." style="border:1px solid #D9DCE3;border-radius:12px;padding:12px 14px;font:inherit;font-weight:400;font-size:14px;line-height:1.6;color:#2C3E50;outline:none" style-focus="border-color:#042D7C"></textarea></label>
+</div>
+</section>
+<section style="flex:999 1 420px;min-width:0;display:flex;flex-direction:column;gap:12px;position:sticky;top:76px">
+<div style="background:#FFFFFF;border:1px solid #E3E4E8;border-radius:20px;padding:12px;display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><div style="display:flex;align-items:center;background:#F1F3F6;border-radius:999px;padding:3px"><button onClick="{{ cTplPrev }}" aria-label="Previous design" style="all:unset;cursor:pointer;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:50%;color:#042D7C;font-weight:900" style-hover="background:#E3E4E8">‹</button><span style="font-size:13px;font-weight:900;color:#042D7C;min-width:150px;text-align:center;white-space:nowrap">{{ cTplName }}</span><button onClick="{{ cTplNext }}" aria-label="Next design" style="all:unset;cursor:pointer;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:50%;color:#042D7C;font-weight:900" style-hover="background:#E3E4E8">›</button></div>
+<sc-if value="{{ cCustom }}"><button onClick="{{ cMatch }}" style="background:none;border:none;color:#053BA0;font:inherit;font-weight:700;font-size:13px;cursor:pointer;text-decoration:underline">Match my CV</button></sc-if>
+<select value="{{ cFont }}" onChange="{{ cPickFont }}" aria-label="Font" style="margin-left:auto;border:1px solid #D9DCE3;border-radius:999px;padding:7px 10px;font:inherit;font-size:13px;color:#2C3E50;background:#FFFFFF"><option value="Lato">Lato</option><option value="Open Sans">Open Sans</option><option value="Arial">Arial</option><option value="Georgia">Georgia</option></select></div>
+<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap"><sc-for list="{{ cColors }}" as="c" hint-placeholder-count="8"><button onClick="{{ c.pick }}" title="{{ c.name }}" aria-label="{{ c.name }}" style="{{ c.style }}"></button></sc-for><label title="Any colour" style="width:24px;height:24px;border-radius:50%;background:conic-gradient(#e53935,#fdd835,#43a047,#1e88e5,#8e24aa,#e53935);cursor:pointer;position:relative;overflow:hidden"><input type="color" value="{{ cCurColor }}" onChange="{{ cPickCustom }}" style="position:absolute;inset:0;opacity:0;cursor:pointer"></label><span style="font-size:12px;color:#5B6470;margin-left:auto">Simple letter styles that match your CV</span></div>
+</div>
+<div style="display:flex;justify-content:flex-end;gap:8px"><button onClick="{{ dlCover }}" style="background:#042D7C;color:#FFFFFF;border:none;border-radius:999px;padding:10px 20px;font:inherit;font-weight:900;font-size:13px;cursor:pointer" style-hover="background:#053BA0">Download · {{ priceCover }}</button></div>
+<div style="background:#E9ECF1;border-radius:20px;padding:16px;max-height:calc(100vh - 150px);overflow:auto"><div data-skb="cover" style="display:flex;justify-content:center"></div></div>
+</section>
+</main>
+</sc-if>
+
+<sc-if value="{{ isShare }}">
+<main style="max-width:960px;width:100%;margin:0 auto;padding:32px 20px 96px;box-sizing:border-box;display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><div style="font-size:14px;color:#5B6470">Shared CV · built with Skilleaze Europass CV Builder</div><button onClick="{{ newCv }}" style="background:#042D7C;color:#FFFFFF;border:none;border-radius:999px;padding:11px 20px;font:inherit;font-weight:900;font-size:14px;cursor:pointer">Build your own, free</button></div>
+<div style="background:#E9ECF1;border-radius:20px;padding:16px"><div data-skb="share" style="display:flex;flex-direction:column;align-items:center;gap:16px"></div></div>
+</main>
+</sc-if>
+
+<sc-if value="{{ pickerOpen }}">
+<div style="position:fixed;inset:0;z-index:80;background:rgba(10,20,45,.55);display:flex;align-items:flex-start;justify-content:center;padding:24px 14px;overflow-y:auto;overflow-x:hidden" onClick="{{ closePicker }}">
+<div onClick="{{ stop }}" style="background:#F8F9FA;border-radius:24px;width:min(1200px,100%);padding:22px;box-sizing:border-box;display:flex;flex-direction:column;gap:16px;animation:skb-in .3s ease">
+<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><div><h2 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:32px;color:#042D7C">Pick a design</h2><div style="font-size:14px;color:#5B6470">Shown with a real CV. Your own details go in next, and you can switch any time.</div></div>
+<div style="display:flex;gap:6px;flex-wrap:wrap"><sc-for list="{{ filters }}" as="f" hint-placeholder-count="4"><button onClick="{{ f.go }}" style="{{ f.style }}">{{ f.label }}</button></sc-for><button onClick="{{ closePicker }}" style="background:#FFFFFF;border:1px solid #D9DCE3;border-radius:999px;padding:8px 16px;font:inherit;font-weight:900;font-size:13px;cursor:pointer;color:#2C3E50">Close</button></div></div>
+<div data-skb="pick" onClick="{{ pickTpl }}" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,170px),1fr));gap:14px;min-width:0"></div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ payOpen }}">
+<div style="position:fixed;inset:0;z-index:90;background:rgba(10,20,45,.55);display:flex;align-items:center;justify-content:center;padding:16px" onClick="{{ closePay }}">
+<div onClick="{{ stop }}" style="background:#FFFFFF;border-radius:24px;width:min(460px,100%);padding:26px;box-sizing:border-box;display:flex;flex-direction:column;gap:14px;animation:skb-in .3s ease">
+<div style="font-size:13px;font-weight:900;letter-spacing:.14em;color:#053BA0">DOWNLOAD</div>
+<h2 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:32px;color:#042D7C;line-height:1.05">{{ payTitle }}</h2>
+<div style="display:flex;align-items:baseline;gap:10px"><div style="font-family:'Cormorant Garamond',serif;font-weight:700;font-size:48px;color:#042D7C;line-height:1">{{ payPrice }}</div><div style="font-size:14px;color:#5B6470">one-time · this document</div></div>
+<div style="font-size:14px;line-height:1.6">PDF and Word (DOCX), unlimited re-downloads of this document from this browser, edit and download again any time.</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+<button onClick="{{ payPdf }}" style="background:#042D7C;color:#FFFFFF;border:none;border-radius:999px;padding:13px 16px;font:inherit;font-weight:900;font-size:14px;cursor:pointer" style-hover="background:#053BA0">{{ payPdfLabel }}</button>
+<button onClick="{{ payDocx }}" style="background:#FFFFFF;color:#042D7C;border:1px solid #042D7C;border-radius:999px;padding:13px 16px;font:inherit;font-weight:900;font-size:14px;cursor:pointer">{{ payDocxLabel }}</button>
+</div>
+
+
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ importOpen }}">
+<div style="position:fixed;inset:0;z-index:90;background:rgba(10,20,45,.55);display:flex;align-items:center;justify-content:center;padding:16px" onClick="{{ closeImport }}">
+<div onClick="{{ stop }}" style="background:#FFFFFF;border-radius:24px;width:min(560px,100%);padding:26px;box-sizing:border-box;display:flex;flex-direction:column;gap:14px;animation:skb-in .3s ease">
+<h2 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:32px;color:#042D7C">Import your details</h2>
+<div style="display:flex;background:#E3E4E8;border-radius:999px;padding:3px;align-self:flex-start">
+<sc-for list="{{ impTabs }}" as="t" hint-placeholder-count="3"><button onClick="{{ t.go }}" style="{{ t.style }}">{{ t.label }}</button></sc-for>
+</div>
+<sc-if value="{{ impFile }}">
+<label style="border:2px dashed #C9CED8;border-radius:18px;padding:28px;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;text-align:center"><strong style="color:#042D7C;font-size:16px">Choose a PDF or Word file</strong><span style="font-size:13px;color:#5B6470">We read the text and fill the editor. Nothing is uploaded except to our AI reader.</span><input type="file" accept=".pdf,.docx" onChange="{{ onImportFile }}" style="display:none"></label>
+</sc-if>
+<sc-if value="{{ impLinkedin }}">
+<ol style="margin:0;padding-left:20px;font-size:14px;line-height:1.7"><li>Open your LinkedIn profile on a computer.</li><li>Click <strong>Resources</strong> (or <strong>More</strong>) → <strong>Save to PDF</strong>.</li><li>Upload that PDF here.</li></ol>
+<label style="border:2px dashed #C9CED8;border-radius:18px;padding:22px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer"><strong style="color:#042D7C">Upload LinkedIn PDF</strong><input type="file" accept=".pdf" onChange="{{ onImportFile }}" style="display:none"></label>
+</sc-if>
+<sc-if value="{{ impPaste }}">
+<textarea value="{{ pasteText }}" onChange="{{ setPaste }}" rows="8" placeholder="Paste your CV or LinkedIn profile text" style="border:1px solid #D9DCE3;border-radius:12px;padding:12px 14px;font:inherit;font-size:14px;line-height:1.5;color:#2C3E50;outline:none"></textarea>
+<button onClick="{{ importPaste }}" style="align-self:flex-start;background:#042D7C;color:#FFFFFF;border:none;border-radius:999px;padding:11px 20px;font:inherit;font-weight:900;font-size:14px;cursor:pointer">Import text</button>
+</sc-if>
+<sc-if value="{{ importBusy }}"><div style="display:flex;align-items:center;gap:10px;font-size:14px;font-weight:700;color:#042D7C"><span style="width:18px;height:18px;border:3px solid #E3E4E8;border-top-color:#042D7C;border-radius:50%;animation:skb-spin 1s linear infinite"></span>{{ importBusy }}</div></sc-if>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ toast }}">
+<div style="position:fixed;left:50%;bottom:28px;transform:translateX(-50%);z-index:100;background:#2C3E50;color:#FFFFFF;border-radius:999px;padding:12px 20px;font-size:14px;font-weight:700;box-shadow:0 10px 30px rgba(0,0,0,.2);animation:skb-in .25s ease;max-width:calc(100vw - 40px)">{{ toast }}</div>
+</sc-if>
+
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const WA='971567053289';
+const DEMO_PAY=true;
+const KEY='skint_ep_v1';
+const REG=(()=>{try{const z=Intl.DateTimeFormat().resolvedOptions().timeZone||'';
+ if(/Kolkata|Calcutta/.test(z))return'INR';if(/Dubai/.test(z))return'AED';if(/Riyadh/.test(z))return'SAR';if(/Qatar/.test(z))return'QAR';if(/Kuwait/.test(z))return'KWD';if(/Bahrain/.test(z))return'BHD';if(/Muscat/.test(z))return'OMR';}catch(e){}return'USD';})();
+const PRICE={INR:['₹245','₹50','₹490'],AED:['AED 10','AED 2.5','AED 20'],SAR:['SAR 10','SAR 2.5','SAR 20'],QAR:['QAR 10','QAR 2.5','QAR 20'],KWD:['KWD 0.85','KWD 0.2','KWD 1.7'],BHD:['BHD 1','BHD 0.25','BHD 2'],OMR:['OMR 1.05','OMR 0.25','OMR 2.1'],USD:['$3','$1','$6']}[REG];
+const blank=()=>({name:'',title:'',sub:'',location:'',phone:'',email:'',website:'',linkedin:'',extraLine:'',summary:'',skills:[{cat:'',list:''}],exp:[{t:'',c:'',d:'',b:''}],edu:[{deg:'',school:'',yrs:''}],langs:'',extra:[],photo:''});
+const SAMPLE={name:'Aisha Rahman',title:'Digital Marketing Executive',sub:'Paid Social · SEO · Marketing Automation',location:'Dubai, UAE',phone:'+971 50 123 4567',email:'aisha.rahman@email.com',website:'',linkedin:'linkedin.com/in/aisharahman',extraLine:'UAE Residence Visa · Available immediately',
+ summary:'Digital marketing executive with 4 years of experience running paid social, search and email campaigns for retail and hospitality brands in the UAE. Known for lowering cost per lead while growing qualified enquiries, and for building simple automation that saves sales teams time.',
+ skills:[{cat:'Paid Media',list:'Meta Ads, Google Ads, TikTok Ads, Budget Pacing, A/B Testing'},{cat:'SEO & Content',list:'Keyword Research, On-page SEO, Content Calendars, Copywriting'},{cat:'Tools',list:'GA4, Google Tag Manager, HubSpot, Canva, Excel'}],
+ exp:[{t:'Digital Marketing Executive',c:'Marina Retail Group · Dubai, UAE',d:'Mar 2023 – Present',b:'Manage AED 60k monthly paid social budget across Meta and TikTok, cutting cost per lead by 28%.\nLaunched email nurture flows in HubSpot that lifted repeat purchases by 15%.\nRebuilt landing pages with A/B tests, raising enquiry rate from 3.1% to 4.6%.'},{t:'Marketing Coordinator',c:'Seaside Hotels · Abu Dhabi, UAE',d:'Jun 2021 – Feb 2023',b:'Coordinated seasonal campaigns for 3 properties across search, social and email.\nGrew organic Instagram following by 40% in 12 months through a weekly content plan.\nProduced monthly performance reports for the commercial team.'}],
+ edu:[{deg:'BBA, Marketing',school:'University of Sharjah',yrs:'2017 – 2021'}],langs:'English (Fluent), Arabic (Native), Hindi (Conversational)',extra:[{title:'Certifications',items:'Google Ads Search Certification\nMeta Certified Digital Marketing Associate'}],photo:''};
+const STEPS=['Contact','Summary','Experience','Skills','Education','More'];
+const STOP=new Set('a an and are as at be by for from has have in is it of on or our that the to we will with you your this their they who what which job role work working team ability able experience years year strong skills skill including within across using use new must should can may also other all any etc per more such well good great based required requirements responsibilities candidate looking join company plus preferred minimum excellent knowledge understanding help ensure provide support'.split(' '));
+const VERBS=/^(led|built|managed|launched|grew|increased|reduced|cut|drove|delivered|designed|developed|created|improved|implemented|ran|achieved|generated|coordinated|produced|negotiated|optimised|optimized|automated|analysed|analyzed|owned|scaled|trained|mentored|introduced|streamlined|rebuilt|established|lowered|raised|won|handled|supported|organised|organized|planned|executed|directed|oversaw|spearheaded|boosted|secured|prepared|conducted|wrote|maintained|resolved|lifted|doubled|tripled|saved|partnered)\b/i;
+const b64e=s=>btoa(unescape(encodeURIComponent(s)));const b64d=s=>decodeURIComponent(escape(atob(s)));
+const uid=()=>Math.random().toString(36).slice(2,10);
+const esc=t=>String(t??'').replace(/&/g,'&amp;').replace(/</g,'&lt;');
+
+class Component extends DCLogic {
+  constructor(p){super(p);
+    let st={cvs:[],cur:null,paid:{}};try{st=Object.assign(st,JSON.parse(localStorage.getItem(KEY)||'{}'));}catch(e){}
+    this.state={qs:{role:'',yrs:'',notes:''},quickHidden:false,skSug:[],plain:false,prevSum:null,zoom:1,setup:false,tips:true,view:'home',cvs:st.cvs,cur:st.cur,paid:st.paid,step:0,mode:'guided',pickerOpen:false,filter:'all',pay:null,importOpen:false,impTab:'file',pasteText:'',importBusy:'',toast:'',busy:'',jd:'',tailorTips:'',share:null,pages:0};
+    this.els={};['prev','pick','cover','share'].forEach(k=>{this[k+'Ref']=el=>{this.els[k]=el;if(el)this.sched();};});
+  }
+  componentDidMount(){
+    this.authed=false;const gate=setInterval(async()=>{if(!window.SKP)return;clearInterval(gate);const me=await SKP.me();if(!me){location.href='./Portal.dc.html';return;}const q=new URLSearchParams(location.search);const code=q.get('code');const ro=me.role==='admin';if(ro&&!code){location.href='./Portal.dc.html';return;}this.setState({me,ro});if(ro){const st=document.createElement('style');st.textContent='main input,main textarea,main select,main [contenteditable]{pointer-events:none!important;background:#F4F5F7!important}';document.head.appendChild(st);}
+      if(code){try{const rec=await SKP.getCV(code);if(!rec||!rec.doc){this.flash('CV '+code+' not found.');}else{const doc=Object.assign({},rec.doc,{code:rec.code});this.setState(x=>{const cvs=x.cvs.filter(c=>c.code!==rec.code&&c.id!==doc.id);return {cvs:[doc,...cvs],cur:doc.id,view:'edit',synced:rec.code};});}}catch(e){this.flash(e.message);}}
+      else if(q.get('new')&&!ro){this.create();}
+      if(code||q.get('new'))history.replaceState(null,'',location.pathname);this.authed=true;},60);
+    const h=location.hash;if(h.startsWith('#cv=')){try{this.setState({view:'share',share:JSON.parse(b64d(h.slice(4)))});}catch(e){}}
+    this._last={cvs:this.state.cvs,cur:this.state.cur,paid:this.state.paid};this.ro=new ResizeObserver(en=>{const w=Math.round(en[0].contentRect.width);if(Math.abs(w-(this._rw||0))<24)return;this._rw=w;this.lastKey='';this.paint();});
+    this.wait=setInterval(()=>{if(window.SKCV){clearInterval(this.wait);this.lastKey='';this.paint();}},120);
+  }
+  componentWillUnmount(){clearInterval(this.wait);this.ro&&this.ro.disconnect();}
+  sched(){if(this._raf)return;this._raf=setTimeout(()=>{this._raf=0;try{this.tick();}catch(e){console.warn('skb',e);}},30);}
+  tick(){['prev','pick','cover','share','hero'].forEach(k=>{this.els[k]=document.querySelector('[data-skb="'+k+'"]');});const s=this.state,p=this._last||{};
+    if(p.cvs!==s.cvs||p.cur!==s.cur||p.paid!==s.paid){try{localStorage.setItem(KEY,JSON.stringify({cvs:s.cvs,cur:s.cur,paid:s.paid}));}catch(e){}this.pushCv();try{}catch(e){this.flash('Storage full: remove the photo or an old CV.');}}
+    if(p.view!==s.view)this.lastKey='';
+    this.paint();
+    if(s.pickerOpen&&this.els.pick&&(!p.pickerOpen||p.filter!==s.filter||p.pickEl!==this.els.pick))this.buildThumbs();
+    this._last={cvs:s.cvs,cur:s.cur,paid:s.paid,view:s.view,pickerOpen:s.pickerOpen,filter:s.filter,pickEl:this.els.pick};}
+  componentDidUpdate(){this.sched();}
+  pushCv(){if(!this.authed||!window.SKP||this.state.ro)return;clearTimeout(this._pt);this._pt=setTimeout(async()=>{let cv=this.cvObj();if(!cv)return;
+    if(!cv.code||this.state.cvs.some(c=>c.id!==cv.id&&c.code===cv.code)){const code=SKP.newCode('europass');this.setState(x=>({cvs:x.cvs.map(c=>c.id===cv.id?Object.assign({},c,{code}):c)}));return;}
+    const j=JSON.stringify(cv);if(this._lastPush===j)return;const D=cv.data||{};
+    try{await SKP.saveCV({code:cv.code,kind:'europass',customer:D.name||'',phone:D.phone||'',email:D.email||'',label:cv.label||'',doc:cv});this._lastPush=j;this.setState({synced:cv.code,syncErr:false});}catch(e){this.setState({syncErr:true});this.flash('Not saved to portal: '+e.message);}},900);}
+  cvObj(){return this.state.cvs.find(c=>c.id===this.state.cur)||null;}
+  toD(d){const ini=(d.name||'Your Name').split(/\s+/).map(w=>w[0]||'').join('').slice(0,2).toUpperCase();
+    return {name:(d.name||'Your Name').toUpperCase(),ini,title:d.title||'',sub:d.sub||'',contact:['location','phone','email','website','linkedin'].map(k=>{const o=new String((d[k]||'').trim());o._k=k;return o;}).filter(o=>o.length),visa:d.extraLine||'',summary:(d.summary||'').trim(),
+     skills:(d.skills||[]).map((s,i)=>Object.assign([s.cat||'Skills',s.list||''],{_i:i,_f:!!(s.cat||s.list)})).filter(s=>s._f),
+     exp:(d.exp||[]).map((e,i)=>Object.assign({},e,{_i:i})).filter(e=>e.t||e.c||e.b).map(e=>({_i:e._i,t:e.t||'',c:e.c||'',d:e.d||'',b:(e.b||'').split('\n').map(x=>x.replace(/^[\s•\-–*]+/,'').trim()).filter(Boolean)})),
+     edu:(d.edu||[]).map((e,i)=>Object.assign([e.deg||'',e.school||'',e.yrs||''],{_i:i})).filter(e=>e[0]||e[1]),langs:(d.langs||'').trim(),
+     extra:(d.extra||[]).map(x=>({title:x.title,items:(x.items||'').split('\n').map(s=>s.trim()).filter(Boolean)})),photo:d.photo||'',heads:d.heads||{}};}
+  pageHtml(pages,w,z){const PW=this.pw||794,PH=this.ph||1123;const s=Math.min(1,(w-4)/PW)*(z||1);return pages.map(p=>`<div style="width:${PW*s}px;height:${PH*s}px;overflow:hidden;background:#fff;border-radius:4px;box-shadow:0 6px 24px rgba(20,30,60,.12);flex-shrink:0"><div style="transform:scale(${s});transform-origin:0 0;width:${PW}px;height:${PH}px">${p}</div></div>`).join('');}
+  render1(cv,ed){const D=this.toD(cv.data);D.order=cv.order;D.hide=cv.hide;D.edit=!!ed;D.photoMode=cv.photoMode;D.photoShape=cv.photoShape;const r=window.SKCV.render(D,cv.tpl||0,{color:cv.color||undefined,font:cv.font||undefined,margin:cv.margin,paper:cv.paper});this.pw=r.w||794;this.ph=r.h||1123;return r;}
+  paint(){
+    if(window.SKCV_EP&&window.SKCV!==window.SKCV_EP)window.SKCV=window.SKCV_EP;if(!window.SKCV||!window.SKCV_EP){clearTimeout(this._epw);this._epw=setTimeout(()=>this.paint(),150);return;}const v=this.state.view;
+    if(v==='home'&&this.els.hero&&window.SKCV_MUNEEZ&&window.SKCV_ATS&&this.els.hero.dataset.ep!=='1'){this.els.hero.dataset.ep='1';const el=this.els.hero;const w=el.clientWidth/3-8;const s2=w/794;el.innerHTML=[0,2,4].map(n=>`<div style="height:${1123*s2}px;overflow:hidden;border-radius:6px;background:#fff;box-shadow:0 8px 24px rgba(20,30,60,.12)"><div style="transform:scale(${s2});transform-origin:0 0;width:794px;height:1123px">${window.SKCV.render(window.SKCV_MUNEEZ,n,{}).pages[0]}</div></div>`).join('');}
+    if(v==='edit'){const el=this.els.prev,cv=this.cvObj();if(!el||!cv)return;if(this.ro&&!el._ob){this.ro.observe(el.parentNode);el._ob=1;}
+      if(el.contains(document.activeElement)&&document.activeElement.dataset&&document.activeElement.dataset.f)return;
+      const key=JSON.stringify([cv.data,cv.tpl,cv.color,cv.font,cv.margin,cv.paper,cv.order,cv.hide,cv.photoMode,cv.photoShape,this.state.zoom,Math.round(el.parentNode.clientWidth/24)*24]);if(key===this.lastKey&&el.childElementCount)return;this.lastKey=key;
+      clearTimeout(this.pt);this.pt=setTimeout(()=>{const r=this.render1(cv,true);this.pagesCache=this.render1(cv).pages;el.innerHTML=this.pageHtml(r.pages,Math.round(el.parentNode.clientWidth/24)*24-32,this.state.zoom);this.bindEdit(el);if(r.pages.length!==this.state.pages)this.setState({pages:r.pages.length});},120);}
+    if(v==='share'){const el=this.els.share;if(!el||!this.state.share)return;const key='s'+Math.round(el.parentNode.clientWidth/24)*24;if(key===this.lastKey)return;this.lastKey=key;if(this.ro&&!el._ob){this.ro.observe(el.parentNode);el._ob=1;}
+      const sh=this.state.share;const r=this.render1(sh);el.innerHTML=this.pageHtml(r.pages,Math.round(el.parentNode.clientWidth/24)*24-32);}
+    if(v==='cover'){const el=this.els.cover,cv=this.cvObj();if(!el||!cv)return;if(el.contains(document.activeElement)&&document.activeElement.dataset&&document.activeElement.dataset.cl)return;if(this.ro&&!el._ob){this.ro.observe(el.parentNode);el._ob=1;}
+      const key=JSON.stringify([cv.cover,cv.data,cv.color,cv.coverTpl,cv.coverColor,cv.coverFont,cv.tpl,cv.font,cv.photoMode,cv.photoShape,cv.paper,cv.margin,Math.round(el.parentNode.clientWidth/24)*24]);if(key===this.lastKey)return;this.lastKey=key;
+      el.innerHTML=this.pageHtml([this.coverPage(cv,true)],Math.round(el.parentNode.clientWidth/24)*24-32);this.bindCover(el);}
+  }
+  coverPage(cv,ed){const D=this.toD(cv.data);const c=cv.cover||{};const DES=window.SKCV.DES;const n=cv.coverTpl!=null?cv.coverTpl:(cv.tpl||0);const S=DES[n]||DES[0];
+    const C=cv.coverColor||cv.color||S.c||'#042D7C';const F=cv.coverFont||cv.font||S.f||'Arial';const W=794,H=cv.paper==='letter'?1056:1123;const M=cv.margin==='compact'?56:cv.margin==='roomy'?88:72;this.pw=W;this.ph=H;
+    const EP=!!window.SKCV.ep;const map={side:'side',photoband:'band',band:'band',photoR:'rule',photoSq:'rule',photoL:'classic'};const st=map[S.hdr]||['classic','rule','band','side'][n%4];
+    const fld=(k,v,ph)=>ed?'<span data-cl="'+k+'" data-ph="'+esc(ph)+'">'+esc(v||'')+'</span>':esc(v||'');
+    const line=(k,v,ph,sty)=>(v||ed)?'<div style="'+(sty||'')+'">'+fld(k,v,ph)+'</div>':'';
+    const contact=(D.contact||[]).map(x=>esc(x));const name=esc(D.name||'Your Name');const title=esc(D.title||'');
+    const logo=w=>{if(!EP)return '';const im='<img src="cv-builder/europass-logo.png" alt="europass" style="height:'+(w?19:22)+'px;width:auto;display:block">';return w?'<span style="display:inline-flex;background:#fff;padding:6px 9px;border-radius:4px">'+im+'</span>':im;};
+    let head='';
+    if(st==='band')head='<div style="margin:-'+M+'px -'+M+'px 34px;padding:'+Math.round(M*.62)+'px '+M+'px;background:'+C+';color:#fff;display:flex;justify-content:space-between;gap:20px;align-items:flex-start"><div><div style="font-size:30px;font-weight:700;line-height:1.15">'+name+'</div>'+(title?'<div style="font-size:14px;font-weight:700;margin-top:4px;opacity:.95">'+title+'</div>':'')+'<div style="font-size:11.5px;margin-top:10px;opacity:.92;line-height:1.6">'+contact.join('  ·  ')+'</div></div>'+logo(1)+'</div>';
+    else if(st==='side')head='<div style="position:absolute;left:0;top:0;bottom:0;width:10px;background:'+C+'"></div><div style="display:flex;justify-content:space-between;gap:20px"><div><div style="font-size:28px;font-weight:700;color:'+C+';line-height:1.15">'+name+'</div>'+(title?'<div style="font-size:14px;font-weight:700;margin-top:4px">'+title+'</div>':'')+'</div>'+logo(0)+'</div><div style="font-size:11.5px;color:#444;margin:10px 0 30px;line-height:1.6">'+contact.join('  |  ')+'</div>';
+    else if(st==='rule')head='<div style="display:flex;justify-content:space-between;gap:20px"><div><div style="font-size:28px;font-weight:700;color:'+C+';line-height:1.15">'+name+'</div>'+(title?'<div style="font-size:14px;font-weight:700;margin-top:4px">'+title+'</div>':'')+'<div style="font-size:11.5px;color:#444;margin-top:8px;line-height:1.6">'+contact.join('  |  ')+'</div></div>'+logo(0)+'</div><div style="height:2px;background:'+C+';margin:18px 0 30px"></div>';
+    else head='<div style="display:flex;justify-content:space-between;gap:20px"><div><div style="font-size:26px;font-weight:700;color:#111;line-height:1.15">'+name+'</div>'+(title?'<div style="font-size:13.5px;margin-top:4px;color:'+C+';font-weight:700">'+title+'</div>':'')+'<div style="font-size:11.5px;color:#444;margin-top:8px;line-height:1.7">'+contact.join('<br>')+'</div></div>'+logo(0)+'</div><div style="height:1px;background:#C9CED6;margin:20px 0 28px"></div>';
+    const date=c.date||new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+    const paras=(c.text||'').split(/\n\s*\n/).map(p=>p.trim()).filter(Boolean);
+    const PH=['Opening: name the role you are applying for and where you saw it, then one line on why you are a strong fit.','Middle: two or three real achievements from your CV that match what the job asks for. Use numbers where you have them.','Closing: thank them for their time, say you would welcome an interview, and how they can reach you.'];
+    const body=paras.length?paras.map(p=>'<p style="margin:0 0 13px">'+esc(p).replace(/\n/g,'<br>')+'</p>').join(''):ed?PH.map(p=>'<p data-php style="margin:0 0 13px;color:#9AA3AE">'+p+'</p>').join(''):'';
+    const greet=c.greet||('Dear '+(c.to||'Hiring Manager')+',');
+    const html='<div style="width:'+W+'px;height:'+H+'px;box-sizing:border-box;padding:'+M+'px;position:relative;overflow:hidden;background:#fff;font-family:\''+F+'\',Arial,sans-serif;color:#222;font-size:14.5px;line-height:1.55">'+head
+      +line('date',date,'Date','margin-bottom:20px')
+      +'<div style="margin-bottom:20px">'+line('to',c.to,'Hiring manager name (if known)')+line('company',c.company,'Company name')+line('addr',c.addr,'Company address, city')+'</div>'
+      +((c.role||ed)?'<div style="font-weight:700;margin-bottom:18px">Re: '+fld('role',c.role,'Job title you are applying for')+'</div>':'')
+      +line('greet',greet,'Dear Hiring Manager,','margin-bottom:14px')
+      +(ed?'<div data-cl="text" data-body>'+body+'</div>':body)
+      +line('close',c.close||'Yours sincerely,','Yours sincerely,','margin-top:10px')
+      +line('sign',(c.sign&&!/^your name$/i.test(c.sign)?c.sign:'')||D.name||'','Your name','font-weight:700;margin-top:30px')+'</div>';
+    return html;}
+  bindCover(el){if(!el.querySelector('style[data-cled]'))el.insertAdjacentHTML('afterbegin','<style data-cled>[data-cl]{outline:1.5px dashed transparent;outline-offset:3px;border-radius:2px;cursor:text;transition:outline-color .15s}[data-cl]:hover{outline-color:#9DB3E0}[data-cl]:focus{outline:2px solid #042D7C;background:rgba(4,45,124,.05)}[data-cl]:empty:before{content:attr(data-ph);color:#9AA3AE}</style>');
+    el.querySelectorAll('[data-cl]').forEach(n=>{n.contentEditable='true';n.spellcheck=true;const k=n.dataset.cl;
+      if(k==='text'){n.addEventListener('focus',()=>{if(n.querySelector('[data-php]'))n.innerHTML='<p style="margin:0 0 13px"><br></p>';});}
+      else n.addEventListener('keydown',ev=>{if(ev.key==='Enter'){ev.preventDefault();n.blur();}});
+      n.addEventListener('blur',()=>{let v;if(k==='text'){const kids=[...n.children];v=(kids.length?kids.map(p=>p.innerText.trim()):[n.innerText.trim()]).filter(Boolean).join('\n\n');}else v=n.innerText.replace(/\s+/g,' ').trim();
+        const cur=(this.cvObj().cover||{})[k]||'';const dn=(this.toD(this.cvObj().data).name||'Your Name');const DEF={sign:[dn,'YOUR NAME','Your Name'],close:['Yours sincerely,'],greet:['Dear Hiring Manager,','Dear '+((this.cvObj().cover||{}).to||'Hiring Manager')+','],date:[new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})]};if(!cur&&DEF[k]&&DEF[k].some(d=>d.toLowerCase()===v.toLowerCase()))return;if(v===cur)return;setTimeout(()=>this.save(x=>{x.cover=Object.assign({},x.cover||{},{[k]:v});}),0);});});}
+  bindEdit(el){
+    if(!el.querySelector('style[data-ed]'))0;
+    el.insertAdjacentHTML('afterbegin','<style data-ed>[data-f]{outline:1.5px dashed transparent;outline-offset:2px;border-radius:2px;cursor:text;transition:outline-color .15s}[data-f]:hover{outline-color:#9DB3E0}[data-f]:focus{outline:2px solid #042D7C;background:rgba(4,45,124,.06)}[data-ul]:focus{background:rgba(4,45,124,.04)}</style>');
+    el.style.position='relative';
+    const get=p=>{const a=p.split('.');let o=this.cvObj().data;for(const k of a)o=o==null?'':o[k];return o==null?'':String(o);};
+    el.querySelectorAll('[data-f]').forEach(n=>{n.contentEditable='true';n.spellcheck=true;
+      if(!n.dataset.ul){n.addEventListener('focus',()=>{n.textContent=get(n.dataset.f);});n.addEventListener('keydown',ev=>{if(ev.key==='Enter'&&n.dataset.f!=='summary'){ev.preventDefault();n.blur();}});}
+      n.addEventListener('blur',()=>{const p=n.dataset.f;let v;if(n.dataset.ul){v=[...el.querySelectorAll(`[data-f="${p}"] li`)].map(li=>li.textContent.trim()).filter(Boolean).join('\n');}else v=n.innerText.replace(/\n+/g,p==='summary'?'\n':' ').trim();
+        if(v===get(p))return;const a=p.split('.');this.lastKey='';this.upd(x=>{let o=x;for(let k=0;k<a.length-1;k++)o=o[a[k]]??(o[a[k]]={});o[a[a.length-1]]=v;});});});
+    el.querySelectorAll('[data-photo]').forEach(n=>{n.style.cursor='pointer';n.title='Change photo';n.onclick=()=>{const inp=document.createElement('input');inp.type='file';inp.accept='image/*';inp.onchange=ev=>{this.lastKey='';this._onPhoto&&this._onPhoto(ev);};inp.click();};});
+    let bar=el.querySelector('[data-bar]');if(!bar){el.insertAdjacentHTML('beforeend','<div data-bar style="position:absolute;display:none;z-index:5;background:#042D7C;border-radius:12px;padding:4px;gap:2px;box-shadow:0 8px 24px rgba(4,45,124,.25)"></div>');bar=el.querySelector('[data-bar]');}
+    const ic=(d,t,act)=>`<button data-act="${act}" title="${t}" style="all:unset;cursor:pointer;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:8px;color:#fff" onmouseover="this.style.background='rgba(255,255,255,.15)'" onmouseout="this.style.background='none'"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${d}</svg></button>`;
+    const I={up:'<path d="m18 15-6-6-6 6"/>',down:'<path d="m6 9 6 6 6-6"/>',dup:'<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M4 16V6a2 2 0 0 1 2-2h10"/>',del:'<path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/>',ai:'<path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/>'};
+    let cur=null;const hide=()=>{bar.style.display='none';cur=null;};
+    el.onmouseover=ev=>{if(bar.contains(ev.target))return;const n=ev.target.closest&&ev.target.closest('[data-f]');if(!n){return;}const m=n.dataset.f.match(/^(exp|edu|extra|skills)\.(\d+)/);if(!m){hide();return;}
+      const k=m[1],i=+m[2];const blk=n.closest('div[style^="margin-top"]')||n;const pg=n.closest('[data-skb="prev"]>div')||blk;const er=el.getBoundingClientRect(),br=blk.getBoundingClientRect(),pr=pg.getBoundingClientRect();
+      cur={k,i};bar.innerHTML=ic(I.up,'Move up','up')+ic(I.down,'Move down','down')+ic(I.dup,'Duplicate','dup')+ic(I.del,'Delete','del')+(k==='exp'?`<button data-act="ai" style="all:unset;cursor:pointer;display:flex;align-items:center;gap:6px;padding:0 10px;height:30px;border-radius:8px;background:#fff;color:#042D7C;font:700 12px Lato,sans-serif;margin-left:4px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${I.ai}</svg>${this.state.busy==='exp'+i?'Improving…':'Improve'}</button>`:'');
+      bar.style.display='flex';bar.style.top=Math.max(0,br.top-er.top-38)+'px';bar.style.left=Math.max(4,pr.right-er.left-bar.offsetWidth-8)+'px';};
+    el.onmouseleave=hide;
+    bar.onclick=ev=>{const b=ev.target.closest('[data-act]');if(!b||!cur)return;const {k,i}=cur,act=b.dataset.act;const key=k==='extra'?'extra':k;this.lastKey='';
+      if(act==='ai'){this.run('exp'+i,async()=>{const e=this.cvObj().data.exp[i];const t=await this.ai(`Rewrite these CV bullet points for the role "${e.t}" at "${e.c}". Start each with a strong past-tense action verb, keep every fact true, never invent numbers, 3 to 5 bullets, one per line, no bullet symbols, no intro text.\n\n${e.b||e.t}`);this.lastKey='';this.upd(x=>{x.exp[i].b=t.trim().split('\n').map(l=>l.replace(/^[\s•\-–*\d.]+/,'').trim()).filter(Boolean).join('\n');});});hide();return;}
+      this.upd(x=>{const A=x[key];if(act==='up'&&i>0)[A[i-1],A[i]]=[A[i],A[i-1]];if(act==='down'&&i<A.length-1)[A[i+1],A[i]]=[A[i],A[i+1]];if(act==='dup')A.splice(i+1,0,JSON.parse(JSON.stringify(A[i])));if(act==='del')A.splice(i,1);});hide();};
+  }
+  addKw(w){this.lastKey='';this.upd(x=>{let g=x.skills.find(k=>/^key skills$/i.test(k.cat||''));if(!g){g=x.skills.find(k=>!k.cat&&!k.list);if(g)g.cat='Key Skills';else{g={cat:'Key Skills',list:''};x.skills.push(g);}}const L=(g.list||'').split(',').map(t=>t.trim()).filter(Boolean);if(!L.some(t=>t.toLowerCase()===String(w).toLowerCase()))L.push(w);g.list=L.join(', ');});this.flash('Added “'+w+'” to Key Skills');}
+  plainText(cv){const D=this.toD(cv.data);const H=k=>(D.heads&&D.heads[k])||null;const o=[D.name,D.title,D.sub,D.contact.join(' | '),D.visa,''];
+    if(D.summary)o.push((H('summary')||'PROFESSIONAL SUMMARY').toUpperCase(),D.summary,'');if(D.skills.length){o.push((H('skills')||'CORE SKILLS').toUpperCase());D.skills.forEach(k=>o.push(k[0]+': '+k[1]));o.push('');}
+    if(D.exp.length){o.push((H('exp')||'WORK EXPERIENCE').toUpperCase());D.exp.forEach(e=>{o.push(e.t+'  '+e.d,e.c);e.b.forEach(b=>o.push('• '+b));o.push('');});}
+    if(D.edu.length){o.push((H('edu')||'EDUCATION').toUpperCase());D.edu.forEach(e=>o.push(e[0]+' — '+e[1]+'  '+e[2]));o.push('');}if(D.langs)o.push((H('langs')||'LANGUAGES').toUpperCase(),D.langs,'');D.extra.forEach(x=>{if(x.items.length){o.push(String(x.title||'ADDITIONAL').toUpperCase(),...x.items.map(i=>'• '+i),'');}});return o.filter(v=>v!=null).join('\n').replace(/\n{3,}/g,'\n\n').trim();}
+  save(fn){const id=this.state.cur;this.setState(s=>({cvs:s.cvs.map(c=>{if(c.id!==id)return c;const n=JSON.parse(JSON.stringify(c));fn(n);n.updated=Date.now();return n;})}));}
+  upd(fn){this.save(c=>fn(c.data));}
+  flash(t){this.setState({toast:t});clearTimeout(this.tt);this.tt=setTimeout(()=>this.setState({toast:''}),2800);}
+  create(data,label){if(this.state.ro){this.flash('Admin accounts can view CVs but not create them.');return;}const id=uid();const cv={id,code:window.SKP?SKP.newCode('europass'):'',label:label||'My CV',tpl:0,color:null,font:null,updated:Date.now(),data:Object.assign(blank(),data||{}),cover:{company:'',role:'',to:'',tone:'Professional',jd:'',text:''}};
+    this.setState(s=>({cvs:[cv,...s.cvs],cur:id,view:'edit',step:0,mode:'guided',pickerOpen:!data}));}
+  async ai(prompt){const C=window.SKP_CONFIG||{};
+    if(!C.supabaseUrl){if(window.claude&&window.claude.complete)return await window.claude.complete(prompt);throw new Error('AI is not connected yet. See SETUP.md.');}
+    if(C.aiEnabled===false)throw new Error('AI is switched off.');
+    let tk='';try{tk=(JSON.parse(localStorage.getItem('skp_session_v1')||'null')||{}).token||''}catch(e){}
+    const r=await fetch(C.supabaseUrl.replace(/\/$/,'')+'/functions/v1/ai',{method:'POST',headers:{'content-type':'application/json','apikey':C.supabaseAnonKey,'Authorization':'Bearer '+C.supabaseAnonKey},body:JSON.stringify({prompt,token:tk})});
+    const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||'AI unavailable');return j.text;}
+  json(t){const m=String(t).match(/\{[\s\S]*\}/);return JSON.parse(m?m[0]:t);}
+  async run(tag,fn){if(this.state.busy)return;this.setState({busy:tag});try{await fn();}catch(e){this.flash('AI is unavailable right now. Please try again.');}this.setState({busy:''});}
+  ats(cv){const D=this.toD(cv.data);const bul=D.exp.flatMap(e=>e.b);const words=(D.summary.match(/\S+/g)||[]).length;
+    const text=[D.title,D.sub,D.summary,...D.skills.flat(),...D.exp.flatMap(e=>[e.t,e.c,...e.b]),...D.edu.flat(),D.langs,...D.extra.flatMap(x=>[x.title,...x.items])].join(' ').toLowerCase();
+    const metric=bul.length?bul.filter(b=>/\d/.test(b)).length/bul.length:0;const verb=bul.length?bul.filter(b=>VERBS.test(b)).length/bul.length:0;
+    const C=[
+     ['Contact details',!!(cv.data.email&&cv.data.phone),'Email and phone are both included.','Add your email and phone number.'],
+     ['Job title under your name',!!D.title,'Recruiters and ATS see your target role first.','Add the job title you are applying for.'],
+     ['Professional summary',words>=40&&words<=120,`${words} words, a good length.`,`${words} words. Aim for 40–120.`],
+     ['Work experience with dates',D.exp.length>0&&D.exp.every(e=>e.d),'Every role has dates.','Add dates (month and year) to every role.'],
+     ['3+ bullets for your latest role',(D.exp[0]?.b.length||0)>=3,'Your latest role is well described.','Add at least 3 achievement bullets to your latest role.'],
+     ['Measurable results',metric>=.3,`${Math.round(metric*100)}% of bullets include numbers.`,`Only ${Math.round(metric*100)}% of bullets include numbers. Add real figures where you can.`],
+     ['Strong action verbs',verb>=.6,'Bullets start with clear action verbs.','Start bullets with verbs like Led, Built, Reduced, Launched.'],
+     ['Skills section',D.skills.length>0,'Skills are listed and searchable.','Add a skills section with the tools and skills from job ads.'],
+     ['Education',D.edu.length>0,'Education is included.','Add your highest qualification.'],
+     ['Length: 1–2 pages',(this.state.pages||1)<=2,'Within 2 pages.','Over 2 pages. Trim older roles or bullets.'],
+     ['No clichés',!/(hard[- ]?working|team player|go[- ]getter|think outside the box|detail[- ]oriented|self[- ]motivated|dynamic individual|results[- ]driven|responsible for)/i.test(bul.join(' ')+' '+D.summary),'No overused phrases.','Swap phrases like “hardworking”, “team player” or “responsible for” for real results.'],
+     ['Professional email',!cv.data.email||!/(\d{4,}|cute|cool|baby|king|queen|love|sexy|boy|girl)/i.test(cv.data.email.split('@')[0]),'Email looks professional.','Use a simple name-based email, e.g. firstname.lastname@gmail.com.'],
+     ['Dates on every job',D.exp.length>0&&D.exp.every(e=>/\d{4}/.test(e.d)),'Every role has dates.','Add month and year (e.g. Mar 2022 – Present) to every job.'],
+     ['Bullet length',bul.length>0&&bul.every(b=>b.length>=35&&b.length<=230),'Bullets are a readable length.','Keep each bullet to 1–2 lines: action + what you did + result.'],
+     ['No first person',!/\b(i|my|me)\b/i.test(bul.join(' ')+' '+D.summary),'Written without "I" or "my".','Remove "I" and "my" from bullets and summary.']];
+    const checks=C.map(([label,ok,good,bad])=>({label,ok,tip:ok?good:bad}));
+    let base=checks.filter(c=>c.ok).length/checks.length*100;
+    let matched=[],missing=[],pct=null;const jd=this.state.jd.trim();
+    if(jd){const toks=(jd.toLowerCase().match(/[a-z][a-z0-9+#.\-]{1,}/g)||[]).map(t=>t.replace(/[.\-]+$/,'')).filter(t=>t.length>2&&!STOP.has(t));
+      const f={};toks.forEach(t=>f[t]=(f[t]||0)+1);const big={};const tw=jd.toLowerCase().match(/[a-z][a-z0-9+#]+/g)||[];for(let i=0;i<tw.length-1;i++){if(STOP.has(tw[i])||STOP.has(tw[i+1])||tw[i].length<3||tw[i+1].length<3)continue;const k=tw[i]+' '+tw[i+1];big[k]=(big[k]||0)+1;}
+      const kws=[...Object.entries(big).filter(([k,v])=>v>1).map(([k])=>k),...Object.entries(f).sort((a,b)=>b[1]-a[1]).map(([k])=>k)].filter((k,i,a)=>a.indexOf(k)===i).slice(0,28);
+      kws.forEach(k=>(text.includes(k)?matched:missing).push(k));pct=kws.length?Math.round(matched.length/kws.length*100):0;base=base*.65+pct*.35;}
+    return {score:Math.round(base),checks,matched,missing,pct};}
+  buildThumbs(){const el=this.els.pick,cv=this.cvObj();if(!el||!cv||!window.SKCV)return;const tok=this.thumbTok=uid();
+    const D=window.SKCV_MUNEEZ||this.toD(SAMPLE);const f=this.state.filter;
+    const list=window.SKCV.DES.map((S,n)=>({S,n})).filter(({S})=>f==='all'||(f==='photo'?S.hdr!=='side'&&/photo|band|Photo/.test(S.hdr):f==='side'?S.hdr==='side':S.hdr!=='side'&&!/band|tint/i.test(S.hdr)));const NP=f==='simple';
+    el.innerHTML='';let i=0;const step=()=>{if(this.thumbTok!==tok)return;const frag=[];for(let k=0;k<2&&i<list.length;k++,i++){const {S,n}=list[i];this.tc=this.tc||{};const ck=(NP?'np':'')+n+'|'+cv.color+'|'+cv.font;const r=this.tc[ck]||(this.tc[ck]={pages:[window.SKCV.render(NP?Object.assign({},D,{photoMode:'hide'}):D,n,{color:cv.color||undefined,font:cv.font||undefined}).pages[0]]});const sel=n===(cv.tpl||0);
+      frag.push(`<button data-n="${n}" style="all:unset;cursor:pointer;display:flex;flex-direction:column;gap:6px;min-width:0"><div style="width:100%;aspect-ratio:794/1123;overflow:hidden;border-radius:8px;background:#fff;box-shadow:0 4px 14px rgba(20,30,60,.1);outline:${sel?'3px solid #042D7C':'1px solid #E3E4E8'};outline-offset:${sel?'2px':'0'};position:relative"><div style="position:absolute;left:0;top:0;width:794px;height:1123px;transform-origin:0 0;transform:scale(var(--s,.22))">${r.pages[0]}</div></div><div style="font-size:12px;font-weight:900;letter-spacing:.06em;color:#042D7C">${window.SKCV.code(n)}</div><div style="font-size:11px;color:#5B6470;margin-top:-4px">${NP?S.nm.replace(/(Photo (Right|Left)|Centred Photo|Photo Split|Square Photo|Split Photo)/,'Classic'):S.nm}</div></button>`);}
+      el.insertAdjacentHTML('beforeend',frag.join(''));const w=el.firstElementChild?el.firstElementChild.clientWidth:170;el.style.setProperty('--s',(w/794).toFixed(4));if(i<list.length)setTimeout(step,0);};setTimeout(step,50);}
+  printHtml(pages,title){const fr=document.createElement('iframe');fr.style.cssText='position:fixed;right:0;bottom:0;width:0;height:0;border:0';document.body.appendChild(fr);
+    const doc=fr.contentWindow.document;doc.open();doc.write(`<!doctype html><html><head><title>${esc(title)}</title><link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Open+Sans:wght@400;700&display=swap" rel="stylesheet"><style>@page{size:${this.ph===1056?'letter':'A4'};margin:0}html,body{margin:0;padding:0}.pg{width:${this.ph===1056?'8.5in':'210mm'};height:${this.ph===1056?'11in':'297mm'};overflow:hidden;page-break-after:always;break-after:page}.pg>div{transform:scale(1);transform-origin:0 0}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}</style></head><body>${pages.map(p=>`<div class="pg">${p}</div>`).join('')}</body></html>`);doc.close();
+    setTimeout(()=>{fr.contentWindow.focus();fr.contentWindow.print();setTimeout(()=>fr.remove(),4000);},900);}
+  async docx(kind){const X=window.docx;if(!X){this.flash('Word export is still loading. Try again in a moment.');return;}const cv=this.cvObj();const D=this.toD(cv.data);const C=(cv.color||window.SKCV.DES[cv.tpl||0].c[1]).replace('#','');
+    const font=cv.font||window.SKCV.DES[cv.tpl||0].f;const T=(t,o)=>new X.TextRun(Object.assign({text:t,font,size:21},o||{}));const P=(r,o)=>new X.Paragraph(Object.assign({children:Array.isArray(r)?r:[r],spacing:{after:80}},o||{}));
+    const H=t=>P(T(t.toUpperCase(),{bold:true,color:C,size:22}),{spacing:{before:240,after:100},border:{bottom:{style:X.BorderStyle.SINGLE,size:8,color:C,space:2}}});const ch=[];
+    if(kind==='cover'){const c=cv.cover||{};ch.push(P(T(D.name,{bold:true,size:36,color:C})),P(T(D.title,{bold:true,size:24})),P(T(D.contact.join('  |  '),{size:19})),P(T('')),P(T(new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}))));if(c.company)ch.push(P(T((c.to?c.to+', ':'')+c.company)));if(c.role)ch.push(P(T('Re: '+c.role,{bold:true})));(c.text||'').split(/\n\s*\n/).forEach(p=>ch.push(P(T(p.replace(/\n/g,' ')),{spacing:{after:200}})));}
+    else{ch.push(P(T(D.name,{bold:true,size:36,color:C})));if(D.title)ch.push(P(T(D.title,{bold:true,size:24})));if(D.sub)ch.push(P(T(D.sub)));ch.push(P(T(D.contact.join('  |  '),{size:19})));if(D.visa)ch.push(P(T(D.visa,{size:19})));
+      if(D.summary){ch.push(H('Professional Summary'),P(T(D.summary)));}
+      if(D.skills.length){ch.push(H('Core Skills'));D.skills.forEach(s=>ch.push(P([T(s[0]+': ',{bold:true}),T(s[1])])));}
+      if(D.exp.length){ch.push(H('Work Experience'));D.exp.forEach(e=>{ch.push(P([T(e.t,{bold:true,size:22}),T(e.d?'   '+e.d:'')],{spacing:{before:140,after:20}}),P(T(e.c,{italics:true})));e.b.forEach(b=>ch.push(P(T(b),{bullet:{level:0}})));});}
+      if(D.edu.length){ch.push(H('Education'));D.edu.forEach(e=>ch.push(P([T(e[0],{bold:true}),T(e[2]?'   '+e[2]:'')]),P(T(e[1]))));}
+      if(D.langs){ch.push(H('Languages'),P(T(D.langs)));}
+      D.extra.forEach(x=>{if(!x.items.length)return;ch.push(H(x.title||'Additional'));x.items.forEach(b=>ch.push(P(T(b),{bullet:{level:0}})));});}
+    const doc=new X.Document({sections:[{properties:{page:{margin:{top:900,bottom:900,left:1000,right:1000}}},children:ch}]});const blob=await X.Packer.toBlob(doc);
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=(D.name||'CV').replace(/\s+/g,'_')+(kind==='cover'?'_Cover_Letter':'_CV')+'.docx';document.body.appendChild(a);a.click();setTimeout(()=>a.remove(),500);}
+  async extract(file){const buf=await file.arrayBuffer();
+    if(/\.docx$/i.test(file.name)){const r=await window.mammoth.extractRawText({arrayBuffer:buf});return r.value;}
+    const L=window.pdfjsLib;L.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';const pdf=await L.getDocument({data:buf}).promise;let t='';
+    for(let i=1;i<=pdf.numPages;i++){const pg=await pdf.getPage(i);const c=await pg.getTextContent();t+=c.items.map(x=>x.str+(x.hasEOL?'\n':' ')).join('')+'\n';}return t;}
+  async importText(text){this.setState({importBusy:'Reading your details…'});
+    try{const out=await this.ai(`Extract this CV or LinkedIn profile into JSON with exactly these keys: name,title,sub,location,phone,email,website,linkedin,summary,skills (array of {cat,list} where list is comma-separated),exp (array of {t: job title, c: "Company · City, Country", d: "Mon YYYY – Mon YYYY", b: achievement bullets joined with \\n}),edu (array of {deg,school,yrs}),langs (comma-separated string),extra (array of {title,items} for certifications, projects, awards; items joined with \\n). Use only information present in the text. Do not invent anything. Use "" for unknown values. Return JSON only.\n\nTEXT:\n${text.slice(0,14000)}`);
+      const j=this.json(out);this.setState({importOpen:false,importBusy:'',pasteText:''});this.create(j,(j.name||'Imported')+' CV');this.flash('Imported. Check every detail before downloading.');}
+    catch(e){this.setState({importBusy:''});this.flash('Could not read that file. Try pasting the text instead.');}}
+  renderVals(){
+    this.sched();const s=this.state,cv=this.cvObj(),v=s.view,d=cv?cv.data:blank();
+    const pill=on=>`background:${on?'#042D7C':'transparent'};color:${on?'#FFFFFF':'#2C3E50'};border:none;border-radius:999px;padding:8px 14px;font:inherit;font-weight:700;font-size:14px;cursor:pointer;white-space:nowrap`;
+    const seg=on=>`background:${on?'#FFFFFF':'transparent'};color:${on?'#042D7C':'#2C3E50'};border:none;border-radius:999px;padding:7px 14px;font:inherit;font-weight:900;font-size:13px;cursor:pointer;box-shadow:${on?'0 1px 4px rgba(0,0,0,.1)':'none'};white-space:nowrap`;
+    const need=fn=>()=>{if(!cv){this.create();return;}fn();};
+    const free=s.mode==='free',st=s.step;const show=i=>free||st===i;
+    const f=k=>e=>{const val=e.target.value;this.upd(x=>{x[k]=val;});};
+    const on={};['name','title','sub','location','phone','email','website','linkedin','extraLine','summary','langs'].forEach(k=>on[k]=f(k));
+    const lf=(arr,i,k)=>e=>{const val=e.target.value;this.upd(x=>{x[arr][i][k]=val;});};
+    const A=cv?this.ats(cv):{score:0,checks:[],matched:[],missing:[],pct:null};
+    const bad=A.score<60,mid=A.score<80;
+    const tag=s.busy;
+    const cvr=cv?cv.cover||{}:{};const cvOn={};['company','role','to','tone','jd','text'].forEach(k=>cvOn[k]=e=>{const val=e.target.value;this.save(c=>{c.cover=c.cover||{};c.cover[k]=val;});});
+    const curColor=cv?(cv.color||(window.SKCV?window.SKCV.DES[cv.tpl||0].c[1]:'#1F3A5F')):'#1F3A5F';
+    const COLS=[['Navy','#1F3A5F'],['Black','#1C1C1C'],['Charcoal','#3B4450'],['Dark Blue','#1E4D8C'],['Maroon','#6E2633'],['Forest','#2E5E4E'],['Slate','#44505C'],['Teal','#1F5F6B']];
+    const paid=true;
+    const doDl=fmt=>async()=>{const k=s.pay.kind;const key=cv.id+':'+k;
+      
+      if(fmt==='pdf'){if(k==='cover')this.printHtml([this.coverPage(cv)],(d.name||'Cover')+' Cover Letter');else this.printHtml(this.render1(cv).pages,(d.name||'CV')+' CV');}else await this.docx(k);
+      this.setState({pay:null});};
+    const SES=s.me;
+    return {
+      userName:SES?SES.name:'',viewOnly:!!s.ro,syncLabel:s.ro&&cv?'View only · '+(cv.code||''):cv?(cv.code?(s.syncErr?'Not saved · '+cv.code:(s.synced===cv.code?'Saved to portal · ':'Saving… · ')+cv.code):''):'',
+      doLogout:async()=>{await SKP.logout();location.href='./Portal.dc.html';},
+      waExpert:`https://wa.me/${WA}?text=${encodeURIComponent('Hi Skilleaze, I was using the CV Builder and would like an expert to write my CV.')}`,
+      priceCv:PRICE[0],priceCover:PRICE[1],priceExpert:PRICE[2],
+      isHome:v==='home',isEdit:v==='edit'&&!!cv,isAts:v==='ats'&&!!cv,isCover:v==='cover'&&!!cv,isShare:v==='share',
+      navHome:pill(v==='home'),navEdit:pill(v==='edit'),navAts:pill(v==='ats'),navCover:pill(v==='cover'),
+      goHome:e=>{e&&e.preventDefault&&e.preventDefault();if(!this.state.cvs.length){location.href='./Portal.dc.html';return;}if(location.hash)history.replaceState(null,'',location.pathname);this.setState({view:'home'});},
+      goEditCur:need(()=>this.setState({view:'edit'})),goAts:need(()=>this.setState({view:'ats'})),goCover:need(()=>this.setState({view:'cover'})),
+      newCv:()=>{if(location.hash)history.replaceState(null,'',location.pathname);this.create();},
+      openImport:()=>this.setState({importOpen:true}),closeImport:()=>this.setState({importOpen:false}),stop:e=>e.stopPropagation(),
+      cvCountLabel:s.cvs.length?`${s.cvs.length} saved in this browser`:'Nothing saved yet',
+      cvList:s.cvs.map(c=>({label:c.label,code:window.SKCV?window.SKCV.code(c.tpl||0):'',sub:'Edited '+new Date(c.updated).toLocaleDateString('en-GB',{day:'numeric',month:'short'})+(c.data.title?' · '+c.data.title:''),
+        open:()=>this.setState({cur:c.id,view:'edit'}),dup:()=>{const n=JSON.parse(JSON.stringify(c));n.id=uid();n.label=c.label+' (copy)';n.updated=Date.now();this.setState(x=>({cvs:[n,...x.cvs]}));},
+        del:()=>{if(confirm('Delete "'+c.label+'"?'))this.setState(x=>({cvs:x.cvs.filter(y=>y.id!==c.id),cur:x.cur===c.id?null:x.cur}));}})),
+      cvLabel:cv?cv.label:'',setLabel:e=>{const val=e.target.value;this.save(c=>{c.label=val;});},
+      guided:!free,setGuided:()=>this.setState({mode:'guided'}),setFree:()=>this.setState({mode:'free'}),modeGuided:seg(!free),modeFree:seg(free),
+      showQuick:show(0)&&!s.quickHidden&&!(d.summary||'').trim()&&!(d.exp||[]).some(e=>e.t),hideQuick:()=>this.setState({quickHidden:true}),qs:s.qs,
+      qsRole:e=>{const v=e.target.value;this.setState(x=>({qs:Object.assign({},x.qs,{role:v})}));},qsYrs:e=>{const v=e.target.value;this.setState(x=>({qs:Object.assign({},x.qs,{yrs:v})}));},qsNotes:e=>{const v=e.target.value;this.setState(x=>({qs:Object.assign({},x.qs,{notes:v})}));},
+      aiQuickLabel:tag==='quick'?'Drafting your CV…':'Draft my CV',
+      aiQuick:()=>{const q=s.qs;if(!q.role.trim()){this.flash('Add the job you want first.');return;}this.run('quick',async()=>{const t=await this.ai('You are a senior HR professional and Europass CV writer for European employers. Draft Europass CV content for a candidate. Target job: "'+q.role+'". Years of experience: "'+(q.yrs||'not given')+'". Candidate notes: """'+(q.notes||'none')+'""". Rules: use ONLY facts in the notes; never invent employers, dates, numbers, degrees or certifications; if a detail is missing leave that field empty; bullets start with strong past-tense action verbs (present tense for current role), 3-5 per job, ATS keywords for the target job where truthful; summary 3-4 sentences, no first person, no clichés. Return ONLY JSON: {"title":"","summary":"","skills":[{"cat":"","list":"comma separated"}],"exp":[{"t":"job title","c":"company · city","d":"dates as given","b":"bullet1\nbullet2"}]}');const j=this.json(t);this.lastKey='';this.upd(x=>{if(j.title&&!x.title)x.title=j.title;if(j.summary)x.summary=j.summary;if(j.skills&&j.skills.length)x.skills=j.skills.filter(k=>k.list).map(k=>({cat:k.cat||'Skills',list:k.list}));if(j.exp&&j.exp.length)x.exp=j.exp.map(e=>({t:e.t||'',c:e.c||'',d:e.d||'',b:e.b||''}));});this.setState({quickHidden:true});this.flash('Draft ready. Check every line before you download.');});},
+      skForLabel:d.title?' as a '+d.title:'',hasSkSug:s.skSug.length>0,
+      aiSkillsLabel:tag==='sk'?'Finding skills…':'Suggest skills with AI',
+      aiSkills:()=>{if(!d.title&&!(d.exp[0]&&d.exp[0].t)){this.flash('Add your job title first.');return;}this.run('sk',async()=>{const have=d.skills.map(k=>k.list).join(', ').toLowerCase();const t=await this.ai('List 16 skills and tools that recruiters and ATS filters commonly search for in CVs for the role "'+(d.title||d.exp[0].t)+'"'+(this.state.jd?' using this job description: '+this.state.jd.slice(0,1500):'')+'. Mix hard skills and tools, 1-3 words each. Return ONLY a JSON array of strings.');let a=[];try{a=JSON.parse(String(t).match(/\[[\s\S]*\]/)[0]);}catch(e){}this.setState({skSug:a.filter(w=>w&&!have.includes(String(w).toLowerCase())).slice(0,16)});});},
+      skSug:s.skSug.map(w=>({w,add:()=>{this.addKw(w);this.setState(x=>({skSug:x.skSug.filter(k=>k!==w)}));}})),
+      cTplName:(()=>{if(!cv||!window.SKCV)return 'Design';const n=cv.coverTpl!=null?cv.coverTpl:(cv.tpl||0);return window.SKCV.code(n);})(),
+      cCustom:!!(cv&&(cv.coverTpl!=null||cv.coverColor||cv.coverFont)),cMatch:()=>this.save(c=>{delete c.coverTpl;delete c.coverColor;delete c.coverFont;}),
+      cTplPrev:()=>this.save(c=>{const n=c.coverTpl!=null?c.coverTpl:(c.tpl||0);c.coverTpl=(n+6)%7;}),cTplNext:()=>this.save(c=>{const n=c.coverTpl!=null?c.coverTpl:(c.tpl||0);c.coverTpl=(n+1)%7;}),
+      cFont:cv?(cv.coverFont||cv.font||(window.SKCV?window.SKCV.DES[cv.coverTpl!=null?cv.coverTpl:(cv.tpl||0)].f:'Lato')):'Lato',cPickFont:e=>{const v=e.target.value;this.save(c=>{c.coverFont=v;});},
+      cCurColor:(()=>{if(!cv||!window.SKCV)return '#042D7C';return cv.coverColor||cv.color||window.SKCV.DES[cv.coverTpl!=null?cv.coverTpl:(cv.tpl||0)].c[1];})(),
+      cPickCustom:e=>{const v=e.target.value;this.save(c=>{c.coverColor=v;});},
+      cColors:COLS.map(([n,h])=>{const cur=(cv&&(cv.coverColor||cv.color))||'';return {name:n,pick:()=>this.save(c=>{c.coverColor=h;}),style:`width:24px;height:24px;border-radius:50%;background:${h};border:none;cursor:pointer;box-shadow:${cur.toLowerCase()===h.toLowerCase()?'0 0 0 2px #FFFFFF,0 0 0 4px #042D7C':'none'}`};}),
+      tipsOn:s.tips,tipsLabel:s.tips?'Tips on':'Tips off',toggleTips:()=>this.setState(x=>({tips:!x.tips})),stepTip:["Use a professional email and the city you’re applying from. A LinkedIn link helps recruiters check you quickly.","Keep it to 3–4 lines: who you are, years of experience, your strongest skills and the role you want.","Start each bullet with an action verb and add a number where you can — %, ₹, team size, time saved.","Group skills by type and mirror the exact words used in the job ad.","Most recent first. Add grades only if they’re strong or you’re a fresher.","Certifications, projects or internships fill gaps — especially for freshers and career changers."][st],
+      zoomLabel:Math.round(s.zoom*100)+'%',zoomIn:()=>this.setState(x=>({zoom:Math.min(1.6,+(x.zoom+.1).toFixed(1))})),zoomOut:()=>this.setState(x=>({zoom:Math.max(.5,+(x.zoom-.1).toFixed(1))})),
+      setupOpen:s.setup,toggleSetup:()=>this.setState(x=>({setup:!x.setup})),
+      photoModes:[['show','With photo'],['hide','No photo']].map(([k,l])=>{const on=((cv&&cv.photoMode)||'show')===k;return {label:l,pick:()=>this.save(c=>{c.photoMode=k;}),style:`all:unset;cursor:pointer;flex:1;min-width:0;text-align:center;padding:9px 10px;border-radius:12px;font-weight:900;font-size:13px;color:#042D7C;border:1.5px solid ${on?'#042D7C':'#E3E4E8'};background:${on?'#EEF2FA':'#FFFFFF'}`};}),
+      photoShapes:[['auto','Design default','border-radius:30%'],['circle','Circle','border-radius:50%'],['rounded','Rounded','border-radius:6px'],['square','Square','border-radius:0']].map(([k,l,r])=>{const on=((cv&&cv.photoShape)||'auto')===k;return {label:l,ico:`width:22px;height:22px;background:${k==='auto'?'linear-gradient(135deg,#9DB3E0 50%,#042D7C 50%)':'#9DB3E0'};${r}`,pick:()=>this.save(c=>{c.photoShape=k;}),style:`all:unset;cursor:pointer;flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:6px;padding:9px 6px;border-radius:12px;font-weight:700;font-size:12px;color:#042D7C;border:1.5px solid ${on?'#042D7C':'#E3E4E8'};background:${on?'#EEF2FA':'#FFFFFF'}`};}),
+      photoHidden:((cv&&cv.photoMode)||'show')==='hide',photoShown:((cv&&cv.photoMode)||'show')!=='hide',hasPhoto:!!(cv&&cv.data.photo),
+      margins:[['compact','Compact','More fits on a page'],['default','Standard','Recommended'],['roomy','Roomy','More white space']].map(([k,l,h])=>({label:l,hint:h,pick:()=>this.save(c=>{c.margin=k;}),style:`all:unset;cursor:pointer;flex:1;min-width:0;padding:10px 12px;border-radius:12px;border:1.5px solid ${((cv&&cv.margin)||'default')===k?'#042D7C':'#E3E4E8'};background:${((cv&&cv.margin)||'default')===k?'#EEF2FA':'#FFFFFF'}`})),
+      papers:[['a4','A4','India, GCC, Europe'],['letter','US Letter','USA, Canada']].map(([k,l,h])=>({label:l,hint:h,pick:()=>this.save(c=>{c.paper=k;}),style:`all:unset;cursor:pointer;flex:1;min-width:0;padding:10px 12px;border-radius:12px;border:1.5px solid ${((cv&&cv.paper)||'a4')===k?'#042D7C':'#E3E4E8'};background:${((cv&&cv.paper)||'a4')===k?'#EEF2FA':'#FFFFFF'}`})),
+      secList:(()=>{const NM={summary:'Summary',skills:'Skills',exp:'Experience',edu:'Education',langs:'Languages',extra:'Extra sections'};const base=['summary','skills','exp','edu','langs','extra'];const od=(cv&&cv.order)||base;const ord=[...od,...base.filter(k=>!od.includes(k))];const hid=(cv&&cv.hide)||[];return ord.map((k,i)=>({label:NM[k],eye:hid.includes(k)?'Show':'Hide',rowStyle:`display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;background:#F7F8FA;opacity:${hid.includes(k)?.5:1}`,
+        up:()=>this.save(c=>{const o=[...ord];if(i>0){[o[i-1],o[i]]=[o[i],o[i-1]];}c.order=o;}),down:()=>this.save(c=>{const o=[...ord];if(i<o.length-1){[o[i+1],o[i]]=[o[i],o[i+1]];}c.order=o;}),
+        toggle:()=>this.save(c=>{const h=new Set(c.hide||[]);h.has(k)?h.delete(k):h.add(k);c.hide=[...h];})}));})(),
+      resetSetup:()=>this.save(c=>{delete c.order;delete c.hide;c.margin='default';}),
+      stepNo:st+1,stepLabel:STEPS[st],freeMode:free,progress:`height:100%;width:${(st+1)/6*100}%;background:#042D7C;border-radius:999px;transition:width .3s`,steps:STEPS.map((l,i)=>({n:i+1,label:l,go:()=>this.setState({step:i}),style:`background:${i===st?'#042D7C':'#FFFFFF'};color:${i===st?'#FFFFFF':'#2C3E50'};border:1px solid ${i===st?'#042D7C':'#E3E4E8'};border-radius:999px;padding:7px 12px;font:inherit;font-weight:700;font-size:13px;cursor:pointer;white-space:nowrap`})),
+      prevStep:()=>this.setState({step:Math.max(0,st-1)}),nextStep:()=>{if(st<5)this.setState({step:st+1});else this.setState({view:'ats'});},nextLabel:st<5?'Next':'Check ATS score',
+      showContact:show(0),showSummary:show(1),showExp:show(2),showSkills:show(3),showEdu:show(4),showExtra:show(5),
+      d,on,
+      fillSample:()=>{if(d.name&&!confirm('Replace your details with the example?'))return;this.save(c=>{c.data=JSON.parse(JSON.stringify(SAMPLE));});},
+      onPhoto:this._onPhoto=e=>{const file=e.target.files[0];if(!file)return;const rd=new FileReader();rd.onload=()=>{const img=new Image();img.onload=()=>{const z=320,cn=document.createElement('canvas');cn.width=cn.height=z;const m=Math.min(img.width,img.height);cn.getContext('2d').drawImage(img,(img.width-m)/2,(img.height-m)/2*.6,m,m,0,0,z,z);const u=cn.toDataURL('image/jpeg',.82);this.upd(x=>{x.photo=u;});};img.src=rd.result;};rd.readAsDataURL(file);},
+      rmPhoto:()=>this.upd(x=>{x.photo='';}),
+      summaryWords:(d.summary.match(/\S+/g)||[]).length,
+      aiSummaryLabel:tag==='sum'?'Writing…':'Write with AI',
+      aiSummary:()=>this.run('sum',async()=>{const D=this.toD(d);const t=await this.ai(`Write a professional CV summary (3–4 sentences, 50–90 words, no first person, no clichés) for this candidate. Use ONLY facts given; do not invent numbers, employers or skills.\nTarget title: ${D.title}\nExperience: ${D.exp.map(e=>e.t+' at '+e.c+' ('+e.d+'): '+e.b.join('; ')).join('\n')}\nSkills: ${D.skills.map(s=>s.join(': ')).join('; ')}\nCurrent summary: ${D.summary}\nReturn only the summary text.`);this.upd(x=>{x.summary=t.trim().replace(/^"|"$/g,'');});}),
+      exps:d.exp.map((e,i)=>Object.assign({},e,{onT:lf('exp',i,'t'),onC:lf('exp',i,'c'),onD:lf('exp',i,'d'),onB:lf('exp',i,'b'),
+        rm:()=>this.upd(x=>{x.exp.splice(i,1);}),up:()=>this.upd(x=>{if(i>0){const t=x.exp[i];x.exp[i]=x.exp[i-1];x.exp[i-1]=t;}}),
+        aiLabel:tag==='exp'+i?'Improving…':(e.b?'Improve bullets with AI':'Suggest bullets with AI'),
+        ai:()=>this.run('exp'+i,async()=>{const t=await this.ai(`Rewrite these CV bullet points for the role "${e.t}" at "${e.c}". Rules: start each with a strong past-tense action verb (present tense if the role is current: "${e.d}"), one line each, ATS-friendly plain text, keep every fact true, never invent numbers — if a result would benefit from a figure, add "[add number]". If no bullets are given, suggest 4 typical responsibilities phrased as achievements with "[add number]" placeholders. Return only the bullets, one per line, no symbols.\n\nBULLETS:\n${e.b||'(none)'}`);this.upd(x=>{x.exp[i].b=t.split('\n').map(l=>l.replace(/^[\s•\-–*\d.)]+/,'').trim()).filter(Boolean).join('\n');});})})),
+      addExp:()=>this.upd(x=>{x.exp.push({t:'',c:'',d:'',b:''});}),
+      skills:d.skills.map((k,i)=>Object.assign({},k,{onCat:lf('skills',i,'cat'),onList:lf('skills',i,'list'),rm:()=>this.upd(x=>{x.skills.splice(i,1);})})),
+      addSkill:()=>this.upd(x=>{x.skills.push({cat:'',list:''});}),
+      edus:d.edu.map((u,i)=>Object.assign({},u,{onDeg:lf('edu',i,'deg'),onSchool:lf('edu',i,'school'),onYrs:lf('edu',i,'yrs'),rm:()=>this.upd(x=>{x.edu.splice(i,1);})})),
+      addEdu:()=>this.upd(x=>{x.edu.push({deg:'',school:'',yrs:''});}),
+      extras:d.extra.map((x0,i)=>Object.assign({},x0,{onTitle:lf('extra',i,'title'),onItems:lf('extra',i,'items'),rm:()=>this.upd(x=>{x.extra.splice(i,1);})})),
+      extraPresets:['Internships','Projects','Certifications','Awards','Volunteering','Interests','References','Custom section'].map(l=>({label:l,add:()=>this.upd(x=>{x.extra.push({title:l==='Custom section'?'':l,items:''});})})),
+      tplCode:cv&&window.SKCV?window.SKCV.code(cv.tpl||0):'Template',
+      openPicker:()=>this.setState({pickerOpen:true}),closePicker:()=>this.setState({pickerOpen:false}),
+      pickTpl:e=>{const b=e.target.closest('[data-n]');if(!b)return;const n=+b.dataset.n;const np=s.filter==='simple';this.save(c=>{c.tpl=n;if(np)c.photoMode='hide';else if(s.filter==='photo')c.photoMode='show';});this.setState({pickerOpen:false});this.flash(window.SKCV.code(n)+' applied');},
+      filters:[['all','All 7'],['simple','Simple · no photo'],['photo','With photo'],['side','Sidebar']].map(([k,l])=>({label:l,go:()=>this.setState({filter:k}),style:pill(s.filter===k)+';border:1px solid #D9DCE3'})),
+      pickerOpen:s.pickerOpen,
+      colors:COLS.map(([n,h])=>({name:n,pick:()=>this.save(c=>{c.color=h;}),style:`width:24px;height:24px;border-radius:50%;background:${h};border:none;cursor:pointer;box-shadow:${curColor.toLowerCase()===h.toLowerCase()?'0 0 0 2px #FFFFFF,0 0 0 4px '+h:'none'}`})),
+      curColor,pickCustom:e=>{const val=e.target.value;this.save(c=>{c.color=val;});},
+      curFont:cv?(cv.font||(window.SKCV?window.SKCV.DES[cv.tpl||0].f:'Lato')):'Lato',pickFont:e=>{const val=e.target.value;this.save(c=>{c.font=val;});},
+      atsScore:A.score,scorePill:`background:${bad?'#F7E9E9':mid?'#FBF4E2':'#E6F2EC'};color:${bad?'#8A2D2D':mid?'#8A6D1F':'#1F6B45'};border:none;border-radius:999px;padding:9px 14px;font:inherit;font-weight:900;font-size:13px;cursor:pointer;white-space:nowrap`,
+      pageInfo:s.pages?`${s.pages} page${s.pages>1?'s':''}`:'',
+      share:()=>{const c={data:Object.assign({},d,{photo:''}),tpl:cv.tpl,color:cv.color,font:cv.font,margin:cv.margin,paper:cv.paper,order:cv.order,hide:cv.hide,photoMode:cv.photoMode,photoShape:cv.photoShape};const url=location.origin+location.pathname+'#cv='+b64e(JSON.stringify(c));
+        (navigator.clipboard?navigator.clipboard.writeText(url):Promise.reject()).then(()=>this.flash('Share link copied. Anyone with it can view this CV.'),()=>{prompt('Copy your share link:',url);});},
+      dlCv:()=>this.setState({pay:{kind:'cv'}}),dlCover:()=>this.setState({pay:{kind:'cover'}}),
+      prevRef:this.prevRef,pickRef:this.pickRef,coverRef:this.coverRef,shareRef:this.shareRef,
+      ring:`width:124px;height:124px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:conic-gradient(${bad?'#B54848':mid?'#C9A13B':'#2E8A5C'} ${A.score*3.6}deg,#E9ECF1 0)`,
+      atsVerdict:bad?'Needs work before you apply':mid?'Good, a few fixes will help':'Strong and ATS-ready',
+      atsNote:'This score checks structure and content that applicant tracking systems and recruiters look for. It is a guide, not a guarantee of selection.',
+      checks:A.checks.map(c=>({label:c.label,tip:c.tip,mark:c.ok?'✓':'!',dot:`width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;color:#FFFFFF;background:${c.ok?'#2E8A5C':'#C9A13B'};margin-top:1px`})),
+      missingBtns:A.missing.map(w=>({w,add:()=>this.addKw(w)})),
+      aiTailorSumLabel:tag==='tsum'?'Rewriting…':'Tailor my summary to this job',canUndoSum:s.prevSum!==null,undoSum:()=>{const p=s.prevSum;this.lastKey='';this.upd(x=>{x.summary=p;});this.setState({prevSum:null});},
+      aiTailorSum:()=>{if(!s.jd.trim()){this.flash('Paste the job description first.');return;}this.run('tsum',async()=>{const D=this.toD(d);const t=await this.ai('Rewrite this CV summary so it targets the job description below. Keep every fact true, add only keywords the candidate clearly has from their CV, 3-4 sentences, 50-90 words, no first person, no clichés. Return only the summary text.\n\nCV title: '+D.title+'\nSkills: '+D.skills.map(k=>k[1]).join(', ')+'\nExperience: '+D.exp.map(e=>e.t+' at '+e.c).join('; ')+'\nCurrent summary: '+D.summary+'\n\nJob description:\n'+s.jd.slice(0,3000));const old=d.summary;this.lastKey='';this.upd(x=>{x.summary=t.trim().replace(/^"|"$/g,'');});this.setState({prevSum:old});this.flash('Summary tailored. Undo is below if you prefer the old one.');});},
+      plainOpen:s.plain,togglePlain:()=>this.setState(x=>({plain:!x.plain})),plainLabel:s.plain?'Hide what the ATS reads':'See what the ATS reads →',plainText:s.plain?this.plainText(cv):'',
+      jd:s.jd,setJd:e=>this.setState({jd:e.target.value,tailorTips:''}),hasJd:!!s.jd.trim(),matchPct:A.pct===null?'':A.pct+'%',matched:A.matched,missing:A.missing,
+      aiTailorLabel:tag==='tailor'?'Thinking…':'Get AI tailoring tips',tailorTips:s.tailorTips,
+      aiTailor:()=>this.run('tailor',async()=>{const D=this.toD(d);const t=await this.ai(`You are an ATS CV expert. Compare this CV to the job description and give 5–7 specific, practical edits (which section, what to change). Only suggest adding skills or keywords the candidate plausibly has based on the CV; flag anything they should add only if true. Plain text, numbered list, no markdown.\n\nCV:\n${JSON.stringify(D).slice(0,8000)}\n\nJOB:\n${s.jd.slice(0,6000)}`);this.setState({tailorTips:t.trim()});}),
+      cover:cvr,cv_on:cvOn,aiCoverLabel:tag==='cover'?'Writing…':(cvr.text?'Rewrite with AI':'Generate with AI'),
+      aiCover:()=>this.run('cover',async()=>{const D=this.toD(d);const t=await this.ai(`Write a ${cvr.tone||'Professional'} cover letter (250–330 words) for ${D.name} applying for "${cvr.role||D.title}" at "${cvr.company||'the company'}"${cvr.to?', addressed to '+cvr.to:''}. Use ONLY facts from the CV; do not invent achievements or numbers. Structure: greeting, why this role, 2 short evidence paragraphs, close with a call to action, sign-off with the candidate's name. Plain text paragraphs separated by blank lines.\n\nCV:\n${JSON.stringify(D).slice(0,7000)}\n\nJOB:\n${(cvr.jd||'').slice(0,5000)}`);this.save(c=>{c.cover=c.cover||{};c.cover.text=t.trim();});}),
+      payOpen:!!s.pay,closePay:()=>this.setState({pay:null}),payTitle:s.pay&&s.pay.kind==='cover'?'Your cover letter':'Your CV, ready to send',payPrice:'Internal · no charge',
+      payPdfLabel:paid?'Download PDF':'Pay & get PDF',payDocxLabel:paid?'Download Word':'Pay & get Word',payPdf:s.pay?doDl('pdf'):null,payDocx:s.pay?doDl('docx'):null,demoPay:DEMO_PAY&&!paid,
+      importOpen:s.importOpen,impTabs:[['file','CV file'],['linkedin','LinkedIn'],['paste','Paste text']].map(([k,l])=>({label:l,go:()=>this.setState({impTab:k}),style:seg(s.impTab===k)})),
+      impFile:s.impTab==='file',impLinkedin:s.impTab==='linkedin',impPaste:s.impTab==='paste',pasteText:s.pasteText,setPaste:e=>this.setState({pasteText:e.target.value}),
+      importPaste:()=>{if(s.pasteText.trim().length<40){this.flash('Paste a bit more text first.');return;}this.importText(s.pasteText);},
+      onImportFile:async e=>{const file=e.target.files[0];if(!file)return;this.setState({importBusy:'Opening file…'});try{const t=await this.extract(file);if(t.trim().length<40)throw 0;await this.importText(t);}catch(err){this.setState({importBusy:''});this.flash('Could not read that file. Try the Paste text tab.');}},
+      importBusy:s.importBusy,toast:s.toast
+    };
+  }
+}
+</script>
+</body>
+</html>
