@@ -36,7 +36,7 @@ function items(S,C,F,fs,W){
   h:(x,c)=>{const v=hf(x,c);return lab&&label&&!c?Math.max(v,lines([[label,fnt(F,fs-.5,1)]],LW)*(fs-.5)*1.35+2):v;}});};
  const side=S.sh.startsWith('side');
  const MK=[];const mk=k=>MK.push([k,out.length]);mk('summary');if(D.summary){sec(HT('summary','Professional Summary'));add(0,()=>`<p style="margin:0">${tf('summary',D.summary)}</p>`,()=>lines([[D.summary,fnt(F,fs)]],IW)*lh);}
- mk('skills');if(D.skills.length){sec(HT('skills','Core Skills'));
+ mk('skills');if(D.skills.length&&!(side&&IS('skills'))){sec(HT('skills','Core Skills'));
   if(S.sk==='grid2'){const cw=(IW-18)/2;for(let i=0;i<D.skills.length;i+=2){const pr=D.skills.slice(i,i+2);
    add(i?6:0,()=>`<div style="display:grid;grid-template-columns:1fr 1fr;gap:18px">${pr.map(s=>`<div><div style="font-weight:700;color:${C}">${tf(s._i!=null&&'skills.'+s._i+'.cat',s[0])}</div><div>${tf(s._i!=null&&'skills.'+s._i+'.list',s[1])}</div></div>`).join('')}</div>`,()=>Math.max(...pr.map(s=>(lines([[s[0],fnt(F,fs,1)]],cw)+lines([[s[1],fnt(F,fs)]],cw))*lh)));}}
   else D.skills.forEach((s,i)=>add(i?3:0,()=>`<div><strong style="color:#111">${tf(s._i!=null&&'skills.'+s._i+'.cat',s[0])}:</strong> ${tf(s._i!=null&&'skills.'+s._i+'.list',s[1])}</div>`,()=>lines([[s[0]+':',fnt(F,fs,1)],[s[1],fnt(F,fs)]],IW)*lh));}
@@ -51,8 +51,8 @@ function items(S,C,F,fs,W){
   else if(S.ex==='timeline'){const w=IW-22;add(i?0:0,(b,c)=>`<div style="position:relative;padding:0 0 11px 20px;border-left:2px solid #D3D8DE;margin-left:5px">${c?'':`<span style="position:absolute;left:-7px;top:4px;width:12px;height:12px;border-radius:50%;background:${C}"></span>`}${c?'':stdHead(e,w)[0]}${ul(b,'exp.'+e._i+'.b')}</div>`,(b,c)=>(c?0:stdHead(e,w)[1])+bh(b,w)+11,e.b);}
   else{const hd=S.ex==='cofirst'?coHead:stdHead;add(i?11:0,(b,c)=>`${c?'':hd(e,IW)[0]}${ul(b,'exp.'+e._i+'.b')}`,(b,c)=>(c?0:hd(e,IW)[1])+bh(b,IW),e.b);}
  });
- mk('edu');if(!side&&D.edu.length){sec(HT('edu','Education'));}if(!side)D.edu.forEach((e,i)=>add(i?6:0,()=>`<div style="display:flex;justify-content:space-between;gap:12px"><div><strong style="color:#111">${tf('edu.'+e._i+'.deg',e[0])}</strong><div>${tf('edu.'+e._i+'.school',e[1])}</div></div><span style="white-space:nowrap;color:#333">${tf('edu.'+e._i+'.yrs',e[2])}</span></div>`,()=>(lines([[e[0],fnt(F,fs,1)]],IW-100)+lines([[e[1],fnt(F,fs)]],IW-100))*lh));
- mk('langs');if(!side&&D.langs){sec(HT('langs','Languages'));}if(!side&&D.langs)add(0,()=>`<div>${tf('langs',D.langs)}</div>`,()=>lines([[D.langs,fnt(F,fs)]],IW)*lh);
+ mk('edu');if(!(side&&IS('edu'))&&D.edu.length){sec(HT('edu','Education'));}if(!(side&&IS('edu')))D.edu.forEach((e,i)=>add(i?6:0,()=>`<div style="display:flex;justify-content:space-between;gap:12px"><div><strong style="color:#111">${tf('edu.'+e._i+'.deg',e[0])}</strong><div>${tf('edu.'+e._i+'.school',e[1])}</div></div><span style="white-space:nowrap;color:#333">${tf('edu.'+e._i+'.yrs',e[2])}</span></div>`,()=>(lines([[e[0],fnt(F,fs,1)]],IW-100)+lines([[e[1],fnt(F,fs)]],IW-100))*lh));
+ mk('langs');if(!(side&&IS('langs'))&&D.langs){sec(HT('langs','Languages'));}if(!(side&&IS('langs'))&&D.langs)add(0,()=>`<div>${tf('langs',D.langs)}</div>`,()=>lines([[D.langs,fnt(F,fs)]],IW)*lh);
  mk('extra');(D.extra||[]).forEach((x,xi)=>{if(!x.items.length)return;sec(tf('extra.'+xi+'.title',x.title||'Additional'));add(0,()=>ul(x.items,'extra.'+xi+'.items'),()=>bh(x.items,IW));});
  if(!D.order&&!D.hide)return out;MK.push(['_end',out.length]);const seg={};for(let k=0;k<MK.length-1;k++)seg[MK[k][0]]=out.slice(MK[k][1],MK[k+1][1]);const od=D.order||[];const ord=[...od.filter(k=>seg[k]),...Object.keys(seg).filter(k=>!od.includes(k))];return ord.flatMap(k=>(D.hide||[]).includes(k)?[]:seg[k]);}
 const PH=(sz,bd,r)=>{if(D.photoMode==='hide')return '';r=D.photoShape==='square'?'0':D.photoShape==='rounded'?Math.round(sz*.14)+'px':D.photoShape==='circle'?'50%':r;return PH0(sz,bd,r);};
@@ -89,12 +89,12 @@ function header(S,C,F,fs,W){
 function aside(S,C,F,afs,photo){
  const dark=S.sh==='sideDark',hc=dark?'#FFFFFF':C,bc=dark?'rgba(255,255,255,.4)':C,tc=dark?'rgba(255,255,255,.88)':'#222',bd=dark?'#FFFFFF':'#111';
  const h=t=>`<h2 style="margin:0 0 7px;font-size:${afs+.5}px;line-height:1.3;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:${hc};border-bottom:1.5px solid ${bc};padding-bottom:4px">${t}</h2>`;
- return `<div style="display:flex;justify-content:center">${PH(140,'border:4px solid '+(dark?'#FFFFFF':C))}</div><div>${h(HT('contact','Contact'))}<div style="display:flex;flex-direction:column;gap:4px;word-break:break-word;color:${tc}">${D.contact.map(c=>`<div>${tf(c&&c._k,c)}</div>`).join('')}${D.visa?`<div style="margin-top:4px">${tf('extraLine',D.visa)}</div>`:''}</div></div>${D.edu.length?`<div>${h(HT('edu','Education'))}<div style="display:flex;flex-direction:column;gap:9px">${D.edu.map(e=>`<div><strong style="color:${bd}">${tf('edu.'+e._i+'.deg',e[0])}</strong><div style="color:${tc}">${tf('edu.'+e._i+'.school',e[1])}<br>${tf('edu.'+e._i+'.yrs',e[2])}</div></div>`).join('')}</div></div>`:''}${D.langs?`<div>${h(HT('langs','Languages'))}<div style="display:flex;flex-direction:column;gap:3px;color:${tc}">${(D.edit?`<div data-f="langs">${esc(D.langs)}</div>`:D.langs.split(/,\s*/).map(l=>`<div>${esc(l)}</div>`).join(''))}</div></div>`:''}`;}
+ return `<div style="display:flex;justify-content:center">${PH(140,'border:4px solid '+(dark?'#FFFFFF':C))}</div><div>${h(HT('contact','Contact'))}<div style="display:flex;flex-direction:column;gap:4px;word-break:break-word;color:${tc}">${D.contact.map(c=>`<div>${tf(c&&c._k,c)}</div>`).join('')}${D.visa?`<div style="margin-top:4px">${tf('extraLine',D.visa)}</div>`:''}</div></div>${IS('skills')&&D.skills.length?`<div>${h(HT('skills','Skills'))}<div style="display:flex;flex-direction:column;gap:7px;color:${tc}">${D.skills.map(s=>`<div><strong style="color:${bd}">${tf(s._i!=null&&'skills.'+s._i+'.cat',s[0])}</strong><div>${tf(s._i!=null&&'skills.'+s._i+'.list',s[1])}</div></div>`).join('')}</div></div>`:''}${IS('edu')&&D.edu.length?`<div>${h(HT('edu','Education'))}<div style="display:flex;flex-direction:column;gap:9px">${D.edu.map(e=>`<div><strong style="color:${bd}">${tf('edu.'+e._i+'.deg',e[0])}</strong><div style="color:${tc}">${tf('edu.'+e._i+'.school',e[1])}<br>${tf('edu.'+e._i+'.yrs',e[2])}</div></div>`).join('')}</div></div>`:''}${IS('langs')&&D.langs?`<div>${h(HT('langs','Languages'))}<div style="display:flex;flex-direction:column;gap:3px;color:${tc}">${(D.edit?`<div data-f="langs">${esc(D.langs)}</div>`:D.langs.split(/,\s*/).map(l=>`<div>${esc(l)}</div>`).join(''))}</div></div>`:''}`;}
 function asideH(F,afs,W,photo){const lh=afs*1.4,hh=afs*1.3+12.5;let t=92+(photo?136:0)+hh*2+16;
  t+=D.contact.reduce((a,c)=>a+lines([[c,fnt(F,afs)]],W)*lh+3,0)+4+(D.visa?lines([[D.visa,fnt(F,afs)]],W)*lh:0);
  t+=D.skills.reduce((a,s)=>a+(lines([[s[0],fnt(F,afs,1)]],W)+lines([[s[1],fnt(F,afs)]],W))*lh+6,0);return t;}
 const GEO={plain:[690,92],bar:[690,92],edge:[676,92],frame:[678,104],sideL:[472,92],sideR:[472,92],sideDark:[462,92]};
-let PX=52,PY=46,PGW=794,PGH=1123;const GW=S=>GEO[S.sh][0]+(PGW-794)+2*(52-PX);
+let KEEP=false;const IS=k=>((D.col||{})[k]||(k==='skills'?'main':'side'))==='side'&&!(D.hide||[]).includes(k);let PX=52,PY=46,PGW=794,PGH=1123;const GW=S=>GEO[S.sh][0]+(PGW-794)+2*(52-PX);
 const HT=(k,t)=>tf('heads.'+k,(D.heads&&D.heads[k])||t);
 const tf=(p,t)=>D.edit&&p?`<span data-f="${p}">${esc(t)}</span>`:esc(t);
 function shell(S,C,F,fs,p,flow,photo){
@@ -120,15 +120,15 @@ function paginate(S,C,F,fs,photo){
    if(it.keep){const nx=its[i+1];const fh=nx.bullets?nx.h(nx.bullets.slice(0,2),false):nx.h();if(used+(used?it.mt:0)+(it.h()+fh)*K>av)break;put(it.html(),it.mt,it.h());i++;placed++;continue;}
    if(it.bullets){const rest=it.bullets.slice(bi),c=bi>0;
     if(put(it.html(rest,c),c?0:it.mt,it.h(rest,c))){i++;bi=0;placed++;continue;}
-    let done=false;for(let k=rest.length-1;k>=1;k--){if(k<2&&!c)break;if(put(it.html(rest.slice(0,k),c),c?0:it.mt,it.h(rest.slice(0,k),c))){bi+=k;done=true;break;}}
+    if(KEEP&&!c&&placed>0)break;let done=false;for(let k=rest.length-1;k>=1;k--){if(k<2&&!c)break;if(put(it.html(rest.slice(0,k),c),c?0:it.mt,it.h(rest.slice(0,k),c))){bi+=k;done=true;break;}}
     if(!done&&placed===0){html+=it.html(rest,c);i++;bi=0;}break;}
    if(put(it.html(),it.mt,it.h())){i++;placed++;continue;}
    if(placed===0){html+=it.html();i++;}break;}
   pages.push({html:shell(S,C,F,fs,p,html,photo),fill:Math.round(used/av*100)});}
  if(!pages.length)pages.push({html:shell(S,C,F,fs,0,'',photo),fill:0});
  return pages;}
-function render(data,n,opt){opt=opt||{};D=data;const MG={compact:[34,30],default:[52,46],roomy:[66,58]}[opt.margin||'default']||[52,46];PX=MG[0];PY=MG[1];PGW=opt.paper==='letter'?816:794;PGH=opt.paper==='letter'?1056:1123;const S0=DES[n]||DES[0];const F=FONTS[opt.font]||FONTS[S0.f],C=opt.color||S0.c[1];let pg,fs,S=S0;
- const tries=[S0,{...S0,sk:'inline'}];outer:for(const T of tries){S=T;for(fs of [14,13.6,13.3]){pg=paginate(S,C,F,fs,true);if(pg.length<=(opt.max||2))break outer;}}
+function render(data,n,opt){opt=opt||{};D=data;KEEP=!!opt.keep;const MG={compact:[34,30],default:[52,46],roomy:[66,58]}[opt.margin||'default']||[52,46];PX=MG[0];PY=MG[1];PGW=opt.paper==='letter'?816:794;PGH=opt.paper==='letter'?1056:1123;const S0=DES[n]||DES[0];const F=FONTS[opt.font]||FONTS[S0.f],C=opt.color||S0.c[1];let pg,fs,S=S0;
+ const tries=[S0,{...S0,sk:'inline'}];outer:for(const T of tries){S=T;for(fs of (opt.tight?[14,13.6,13.3,13,12.6,12.2,11.8]:[14,13.6,13.3])){pg=paginate(S,C,F,fs,true);if(pg.length<=(opt.max||2))break outer;}}
  return {pages:pg.map(x=>x.html),fs,code:'SKZ-'+String(n+1).padStart(2,'0')+' '+S0.k,name:S0.nm,font:opt.font||S0.f,color:C,photo:S0.hdr!=='left',w:PGW,h:PGH};}
 function letter(data,n,opt,body){opt=opt||{};const P=opt.paper==='letter'?[816,1056]:[794,1123];const M={compact:[44,52],default:[60,68],roomy:[72,82]}[opt.margin||'default']||[60,68];const S=DES[n]||DES[0];const F=FONTS[opt.font]||FONTS[S.f],C=opt.color||S.c[1];const v=n%4;const x=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]);
 const ct=(data.contact||[]).filter(Boolean).map(x).join(' &nbsp;·&nbsp; ');const al=v===1?'center':'left';
