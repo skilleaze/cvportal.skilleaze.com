@@ -1,0 +1,22 @@
+{
+  "name": "Skilleaze CV Portal",
+  "short_name": "CV Portal",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#042D7C",
+  "theme_color": "#042D7C",
+  "icons": [
+    {
+      "src": "/assets/icons/app-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/icons/app-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
