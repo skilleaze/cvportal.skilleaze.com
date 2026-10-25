@@ -1,8 +1,6 @@
-1. Supabase → SQL Editor → paste supabase-upgrade-v3.sql → Run (one time). Existing data is kept.
-2. Copy everything else into your portal repo (keep your own cv-builder/portal-config.js), replacing old files.
-3. GitHub Desktop → Commit to main → Push origin. Vercel redeploys automatically.
+Copy all of these into your portal repo, replacing the old files (keep your own cv-builder/portal-config.js).
+GitHub Desktop → Commit to main → Push origin.
 
-Addresses:
-  https://cvportal.skilleaze.com/                      dashboard
-  https://cvportal.skilleaze.com/ats-cv-builder        ATS CV Builder
-  https://cvportal.skilleaze.com/europass-cv-builder   Europass CV Builder
+Then test:
+  https://cvportal.skilleaze.com/ats-cv-builder
+  https://cvportal.skilleaze.com/europass-cv-builder
