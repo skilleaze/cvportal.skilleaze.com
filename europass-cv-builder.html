@@ -23,15 +23,15 @@
 <title>Skilleaze Internal CV Portal · Europass CV</title><meta name="robots" content="noindex,nofollow">
 
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Lato:wght@400;700;900&family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
-<script src="./cv-builder/cv-engine.js"></script>
-<script src="./cv-builder/europass-engine.js"></script>
+<script src="./cv-builder/cv-engine.js?v=27"></script>
+<script src="./cv-builder/europass-engine.js?v=27"></script>
 <script src="./cv-builder/muneez.js"></script>
 <script src="./cv-builder/portal-config.js"></script>
 <script src="./cv-builder/portal-store.js"></script>
 <script src="./cv-builder/rich-text.js?v=font1"></script>
 <script src="./cv-builder/sk-ui.js"></script>
-<script src="./cv-builder/pdf-export.js"></script>
-<script src="./cv-builder/cv-import.js"></script>
+<script src="./cv-builder/pdf-export.js?v=27"></script>
+<script src="./cv-builder/cv-import.js?v=27"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
 <script src="https://unpkg.com/docx@8.5.0/build/index.umd.js"></script>
@@ -498,7 +498,7 @@ class Component extends DCLogic {
     if(v==='home'&&this.els.hero&&window.SKCV_MUNEEZ&&window.SKCV_ATS&&this.els.hero.dataset.ep!=='1'){this.els.hero.dataset.ep='1';const el=this.els.hero;const w=el.clientWidth/3-8;const s2=w/794;el.innerHTML=[0,2,4].map(n=>`<div style="height:${1123*s2}px;overflow:hidden;border-radius:6px;background:#fff;box-shadow:0 8px 24px rgba(20,30,60,.12)"><div style="transform:scale(${s2});transform-origin:0 0;width:794px;height:1123px">${window.SKCV.render(window.SKCV_MUNEEZ,n,{}).pages[0]}</div></div>`).join('');}
     if(v==='edit'){const el=this.els.prev,cv=this.cvObj();if(!el||!cv)return;if(this.ro&&!el._ob){this.ro.observe(el.parentNode);el._ob=1;}
       if(el.contains(document.activeElement)&&document.activeElement.dataset&&document.activeElement.dataset.f)return;
-      const key=JSON.stringify([cv.data,cv.tpl,cv.color,cv.font,cv.margin,cv.paper,cv.order,cv.hide,cv.photoMode,cv.photoShape,cv.dateFmt,cv.dateSep,cv.keep,cv.col,this.state.zoom,Math.round(el.parentNode.clientWidth/24)*24]);if(key===this.lastKey&&el.childElementCount)return;this.lastKey=key;
+      const key=JSON.stringify([cv.data,cv.tpl,cv.color,cv.font,cv.margin,cv.paper,cv.order,cv.hide,cv.photoMode,cv.photoShape,cv.dateFmt,cv.dateSep,cv.keep,cv.col,cv.fsize,cv.fitN,cv.tight,cv.cover,this.state.zoom,Math.round(el.parentNode.clientWidth/24)*24]);if(key===this.lastKey&&el.childElementCount)return;this.lastKey=key;
       clearTimeout(this.pt);this.pt=setTimeout(()=>{const r=this.render1(cv,true);this.pagesCache=this.render1(cv).pages;el.innerHTML=this.pageHtml(r.pages,Math.round(el.parentNode.clientWidth/24)*24-32,this.state.zoom);this.bindEdit(el);if(r.pages.length!==this.state.pages)this.setState({pages:r.pages.length});},120);}
     if(v==='share'){const el=this.els.share;if(!el||!this.state.share)return;const key='s'+Math.round(el.parentNode.clientWidth/24)*24;if(key===this.lastKey)return;this.lastKey=key;if(this.ro&&!el._ob){this.ro.observe(el.parentNode);el._ob=1;}
       const sh=this.state.share;const r=this.render1(sh);el.innerHTML=this.pageHtml(r.pages,Math.round(el.parentNode.clientWidth/24)*24-32);}
@@ -524,7 +524,7 @@ class Component extends DCLogic {
     const body=paras.length?paras.map(p=>'<p style="margin:0 0 13px">'+esc(p).replace(/\n/g,'<br>')+'</p>').join(''):ed?PH.map(p=>'<p data-php style="margin:0 0 13px;color:#9AA3AE">'+p+'</p>').join(''):'';
     const greet=c.greet||('Dear '+(c.to||'Hiring Manager')+',');
     const html='<div style="width:'+W+'px;height:'+H+'px;box-sizing:border-box;padding:'+M+'px;position:relative;overflow:hidden;background:#fff;font-family:\''+F+'\',Arial,sans-serif;color:#222;font-size:14.5px;line-height:1.55">'+head
-      +line('date',date,'Date','margin-bottom:20px')
+      
       +'<div style="margin-bottom:20px">'+line('to',c.to,'Hiring manager name (if known)')+line('company',c.company,'Company name')+line('addr',c.addr,'Company address, city')+'</div>'
       +((c.role||ed)?'<div style="font-weight:700;margin-bottom:18px">Re: '+fld('role',c.role,'Job title you are applying for')+'</div>':'')
       +line('greet',greet,'Dear Hiring Manager,','margin-bottom:14px')
@@ -691,7 +691,7 @@ class Component extends DCLogic {
   async docx(kind){let X=window.docx;if(!X||!X.Document){await new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js';sc.onload=ok;sc.onerror=no;document.head.appendChild(sc);}).catch(()=>{});X=window.docx;}if(!X||!X.Document)throw new Error('docx library not loaded');const T0=T=>T==null?'':String(T);const cv=this.cvObj();const D=this.toD(cv.data);const C=(cv.color||window.SKCV.DES[cv.tpl||0].c[1]).replace('#','');
     const font=(String(cv.font||window.SKCV.DES[cv.tpl||0].f||'Calibri').split(',')[0].replace(/['"]/g,'').trim())||'Calibri';const FSK=cv&&cv.fsize?cv.fsize/14:1;const MK=(t,o)=>{const q=Object.assign({text:T0(t),font,size:21},o||{});q.size=Math.round(q.size*FSK);return new X.TextRun(q);};const T=(t,o)=>window.SKRT&&SKRT.isRich(t)?SKRT.runs(X,t,o||{},MK):MK(t,o);const P=(r,o)=>new X.Paragraph(Object.assign({children:[].concat(r).flat(3),spacing:{after:80}},o||{}));
     const H=t=>P(T(t.toUpperCase(),{bold:true,color:C,size:22}),{spacing:{before:240,after:100},border:{bottom:{style:X.BorderStyle.SINGLE,size:8,color:C,space:2}}});const ch=[];
-    if(kind==='cover'){const c=cv.cover||{};ch.push(P(T(D.name,{bold:true,size:36,color:C})),P(T(D.title,{bold:true,size:24})),P(T(D.contact.join('  |  '),{size:19})),P(T('')),P(T(new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}))));if(c.company)ch.push(P(T((c.to?c.to+', ':'')+c.company)));if(c.role)ch.push(P(T('Re: '+c.role,{bold:true})));(c.text||'').split(/\n\s*\n/).forEach(p=>ch.push(P(T(p.replace(/\n/g,' ')),{spacing:{after:200}})));}
+    if(kind==='cover'){const c=cv.cover||{};ch.push(P(T(D.name,{bold:true,size:36,color:C})),P(T(D.title,{bold:true,size:24})),P(T(D.contact.join('  |  '),{size:19})),P(T('')));if(c.company)ch.push(P(T((c.to?c.to+', ':'')+c.company)));if(c.role)ch.push(P(T('Re: '+c.role,{bold:true})));(c.text||'').split(/\n\s*\n/).forEach(p=>ch.push(P(T(p.replace(/\n/g,' ')),{spacing:{after:200}})));}
     else{let ph=null;try{if((cv.photoMode||'show')!=='hide'&&cv.data&&cv.data.photo&&window.SKRT&&X.ImageRun){const S=window.SKCV.DES[cv.tpl||0]||{};let shape=cv.photoShape&&cv.photoShape!=='auto'?cv.photoShape:'';if(!shape){shape='circle';try{const im=(this.render1(cv).pages[0].match(/<img[^>]*data:image[^>]*>/)||[''])[0];const m=/border-radius:\s*([\d.]+)(%|px)/.exec(im);if(m)shape=m[2]==='%'?(+m[1]>=50?'circle':+m[1]/100):(+m[1]<=1?'square':Math.min(.5,+m[1]/110));}catch(e){}}const png=await SKRT.photoPng(cv.data.photo,shape);if(png){const left=/photoL|centerPhoto/.test(S.hdr||'')||/side(L|Dark)/.test(S.sh||'');ph=new X.ImageRun({data:png,transformation:{width:100,height:100}});window.__skphL=left;;}}}catch(e){console.warn('photo',e);}
       if(ph)ch.push(P([ph],{alignment:window.__skphL?X.AlignmentType.LEFT:X.AlignmentType.RIGHT,spacing:{after:120}}));ch.push(P(T(D.name,{bold:true,size:36,color:C})));if(D.title)ch.push(P(T(D.title,{bold:true,size:24})));if(D.sub)ch.push(P(T(D.sub)));ch.push(P(T(D.contact.join('  |  '),{size:19})));if(D.visa)ch.push(P(T(D.visa,{size:19})));
       if(D.summary){ch.push(H('Professional Summary'),...(window.SKRT?SKRT.paras(X,D.summary,{},MK,P):[P(T(D.summary))]));}
