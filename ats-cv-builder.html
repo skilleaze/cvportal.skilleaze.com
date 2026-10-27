@@ -62,6 +62,7 @@ textarea{resize:vertical}
 <button onClick="{{ goHome }}" style="{{ navHome }}">Open CVs</button>
 <button onClick="{{ goEditCur }}" style="{{ navEdit }}">Editor</button>
 <button onClick="{{ goAts }}" style="{{ navAts }}">ATS check</button>
+<button onClick="{{ goChecker }}" style="{{ navChecker }}">Check a CV</button>
 <button onClick="{{ goCover }}" style="{{ navCover }}">Cover letter</button>
 </nav>
 <div style="display:inline-flex;align-items:center;gap:10px;font-size:13px;color:#2C3E50;white-space:nowrap;flex-shrink:0"><a href="./" style="white-space:nowrap;font-weight:900;color:#042D7C;text-decoration:none;border:1px solid #D9DCE3;border-radius:999px;padding:6px 12px" style-hover="border-color:#042D7C">← Dashboard</a><span style="background:#E9EEF8;color:#042D7C;border-radius:999px;padding:7px 12px;font-weight:900;white-space:nowrap">{{ userName }}</span><button onClick="{{ doLogout }}" style="all:unset;display:inline-flex;align-items:center;min-height:40px;padding:0 8px;white-space:nowrap;cursor:pointer;font-weight:700;color:#5B6470" style-hover="color:#042D7C">Sign out</button></div>
@@ -282,6 +283,52 @@ textarea{resize:vertical}
 </div>
 </sc-if>
 
+<sc-if value="{{ isChecker }}">
+<main style="max-width:1100px;width:100%;margin:0 auto;padding:clamp(24px,4vw,48px) 20px 96px;box-sizing:border-box;display:flex;flex-direction:column;gap:22px;animation:skb-in .4s ease">
+<div style="display:flex;flex-direction:column;gap:10px;max-width:720px">
+<div style="align-self:flex-start;font-size:12px;font-weight:900;letter-spacing:.14em;color:#042D7C;background:#E8EDF7;border-radius:999px;padding:7px 12px">ATS CHECK</div>
+<h1 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:clamp(34px,5vw,56px);line-height:1.02;color:#042D7C">Check any CV</h1>
+<p style="margin:0;font-size:clamp(15px,1.5vw,18px);line-height:1.55;color:#2C3E50">Upload a CV to see its ATS score and what to fix.</p>
+</div>
+<sc-if value="{{ ckIdle }}">
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,max(calc((100% - 20px) / 2),calc((760px - 100%) * 999))),1fr));gap:20px;align-items:stretch">
+<label onDrop="{{ ckDrop }}" onDragOver="{{ ckOver }}" style="border:2px dashed #B9C4D9;background:#F7F9FC;border-radius:24px;padding:clamp(28px,5vw,48px) 24px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;cursor:pointer;min-height:240px;box-sizing:border-box" style-hover="border-color:#042D7C;background:#EEF2FA">
+<div style="width:56px;height:56px;border-radius:50%;background:#042D7C;color:#FFFFFF;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3m0 0-5 5m5-5 5 5M5 21h14"></path></svg></div>
+<div style="font-weight:900;font-size:18px;color:#042D7C">Upload your CV</div>
+<div style="font-size:14px;color:#5B6470">PDF or Word (.docx) · drag it here or tap to choose</div>
+<input type="file" accept=".pdf,.docx,.txt" onChange="{{ ckPick }}" style="display:none"></input>
+</label>
+<div style="background:#FFFFFF;border:1px solid #E3E4E8;border-radius:24px;padding:clamp(20px,3vw,28px);box-sizing:border-box;display:flex;flex-direction:column;gap:10px">
+<div style="font-size:12px;font-weight:900;letter-spacing:.12em;color:#053BA0">OPTIONAL · JOB DESCRIPTION</div>
+<div style="font-size:14px;color:#5B6470;line-height:1.5">Paste a job description to also see your keyword match for that role.</div>
+<textarea value="{{ ckJd }}" onInput="{{ ckSetJd }}" rows="7" placeholder="Paste the job description here" aria-label="Job description" style="width:100%;box-sizing:border-box;border:1px solid #D9DCE3;border-radius:14px;padding:12px 14px;font:inherit;font-size:16px;line-height:1.5;color:#2C3E50;resize:vertical;outline:none;flex:1" style-focus="border-color:#042D7C"></textarea>
+</div>
+</div>
+</sc-if>
+<sc-if value="{{ ckBusy }}"><div style="background:#FFFFFF;border:1px solid #E3E4E8;border-radius:24px;padding:clamp(20px,3vw,28px);box-sizing:border-box;display:flex;align-items:center;gap:16px;color:#042D7C;font-weight:900;font-size:16px"><div style="width:30px;height:30px;border-radius:50%;border:3px solid #E3E4E8;border-top-color:#042D7C;animation:skb-spin .8s linear infinite;flex:none"></div>{{ ckBusy }}</div></sc-if>
+<sc-if value="{{ ckHasRes }}">
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,max(calc((100% - 20px) / 2),calc((760px - 100%) * 999))),1fr));gap:20px;align-items:start">
+<section style="background:#FFFFFF;border:1px solid #E3E4E8;border-radius:24px;padding:clamp(20px,3vw,28px);box-sizing:border-box;display:flex;flex-direction:column;align-items:flex-start;gap:16px">
+<div style="font-size:12px;font-weight:900;letter-spacing:.12em;color:#053BA0">YOUR ATS SCORE</div>
+<div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap">
+<div style="width:132px;height:132px;border-radius:50%;background:{{ ckRing }};display:flex;align-items:center;justify-content:center;flex:none"><div style="width:106px;height:106px;border-radius:50%;background:#FFFFFF;display:flex;flex-direction:column;align-items:center;justify-content:center"><div style="font-weight:900;font-size:38px;line-height:1;color:{{ ckCol }}">{{ ckScore }}</div><div style="font-size:12px;color:#8A919C;font-weight:700">out of 100</div></div></div>
+<div style="display:flex;flex-direction:column;gap:6px;min-width:0;flex:1 1 180px"><div style="font-weight:900;font-size:18px;color:#2C3E50;line-height:1.3">{{ ckGrade }}</div><div style="font-size:14px;color:#5B6470">{{ ckPassN }} of {{ ckTotal }} checks passed</div><div style="font-size:12px;color:#8A919C;overflow-wrap:anywhere">{{ ckFileName }} · {{ ckMeta }}</div></div>
+</div>
+<sc-if value="{{ ckHasKw }}"><div style="width:100%;border-top:1px solid #EEF0F3;padding-top:14px;display:flex;flex-direction:column;gap:10px"><div style="display:flex;justify-content:space-between;gap:10px;font-size:14px"><span style="font-weight:900;color:#042D7C">Keyword match for the job</span><strong style="color:#042D7C">{{ ckPct }}</strong></div>
+<sc-if value="{{ ckHasMissing }}"><div style="font-size:13px;color:#5B6470">Missing from your CV:</div><div style="display:flex;gap:6px;flex-wrap:wrap"><sc-for list="{{ ckMissing }}" as="m" hint-placeholder-count="0"><span style="font-size:12px;font-weight:700;color:#B3261E;background:#FCEDEC;border-radius:999px;padding:5px 10px">{{ m.k }}</span></sc-for></div></sc-if></div></sc-if>
+
+<button onClick="{{ ckRecheck }}" style="all:unset;cursor:pointer;font-size:14px;font-weight:900;color:#042D7C;text-decoration:underline">Check another CV</button>
+</section>
+<section style="background:#FFFFFF;border:1px solid #E3E4E8;border-radius:24px;padding:clamp(20px,3vw,28px);box-sizing:border-box;display:flex;flex-direction:column;gap:6px">
+<sc-if value="{{ ckHasFails }}"><div style="font-size:12px;font-weight:900;letter-spacing:.12em;color:#053BA0;color:#B3261E">TO FIX</div>
+<sc-for list="{{ ckFails }}" as="c" hint-placeholder-count="0"><div style="display:flex;gap:10px;padding:12px 0;border-bottom:1px solid #EEF0F3"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B3261E" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" style="flex:none;margin-top:2px"><path d="M18 6 6 18M6 6l12 12"></path></svg><div style="display:flex;flex-direction:column;gap:2px;min-width:0"><div style="font-weight:900;font-size:14px;color:#2C3E50">{{ c.label }}</div><div style="font-size:13px;color:#5B6470;line-height:1.45">{{ c.tip }}</div></div></div></sc-for></sc-if>
+<div style="font-size:12px;font-weight:900;letter-spacing:.12em;color:#053BA0;color:#1E7A4C;margin-top:10px">PASSED</div>
+<sc-for list="{{ ckPasses }}" as="c" hint-placeholder-count="0"><div style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid #EEF0F3"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1E7A4C" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" style="flex:none;margin-top:2px"><path d="M20 6 9 17l-5-5"></path></svg><div style="display:flex;flex-direction:column;gap:2px;min-width:0"><div style="font-weight:700;font-size:14px;color:#2C3E50">{{ c.label }}</div><div style="font-size:13px;color:#8A919C;line-height:1.45">{{ c.tip }}</div></div></div></sc-for>
+</section>
+</div>
+</sc-if>
+</main>
+</sc-if>
 <sc-if value="{{ isAts }}">
 <main style="max-width:1200px;width:100%;margin:0 auto;padding:32px 20px 96px;box-sizing:border-box;display:flex;flex-direction:column;gap:20px;animation:skb-in .4s ease">
 <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap">
@@ -668,7 +715,7 @@ class Component extends DCLogic {
     this.setState({fixNotes:[...new Set(left)].slice(0,6).join('\n')});this.flash('ATS score '+before+' → '+A.score+(via==='local'?' (AI offline: basic fixes only)':'')+'. Undo is available.');
     }catch(e){this.flash('Could not fix: '+e.message);}this.setState({busy:''});}
   undoAi(){const u=this.state.undo;if(!u)return;this.lastKey='';this.setState(x=>({cvs:x.cvs.map(c=>{if(c.id!==u.id)return c;const n=Object.assign({},c,{data:u.data,margin:u.margin,updated:Date.now()});['fitN','tight','src'].forEach(k=>{if(u[k]===undefined)delete n[k];else n[k]=u[k];});return n;}),undo:null,fixNotes:''}));this.flash('Undone.');}
-  ats(cv){const D=this.toD(cv.data);const bul=D.exp.flatMap(e=>e.b);const words=(D.summary.match(/\S+/g)||[]).length;
+  ats(cv,opt){opt=opt||{};const D=this.toD(cv.data);const bul=D.exp.flatMap(e=>e.b);const words=(D.summary.match(/\S+/g)||[]).length;
     const text=[D.title,D.sub,D.summary,...D.skills.flat(),...D.exp.flatMap(e=>[e.t,e.c,...e.b]),...D.edu.flat(),D.langs,...D.extra.flatMap(x=>[x.title,...x.items])].join(' ').toLowerCase();
     const metric=bul.length?bul.filter(b=>/\d/.test(b)).length/bul.length:0;const verb=bul.length?bul.filter(b=>VERBS.test(b)).length/bul.length:0;
     const C=[
@@ -681,7 +728,7 @@ class Component extends DCLogic {
      ['Strong action verbs',verb>=.6,'Bullets start with clear action verbs.','Start bullets with verbs like Led, Built, Reduced, Launched.'],
      ['Skills section',D.skills.length>0,'Skills are listed and searchable.','Add a skills section with the tools and skills from job ads.'],
      ['Education',D.edu.length>0,'Education is included.','Add your highest qualification.'],
-     ['Length: 1–2 pages',(this.state.pages||1)<=2,'Within 2 pages.','Over 2 pages. Trim older roles or bullets.'],
+     ['Length: 1–2 pages',(opt.pages||this.state.pages||1)<=2,'Within 2 pages.','Over 2 pages. Trim older roles or bullets.'],
      ['No clichés',!/(hard[- ]?working|team player|go[- ]getter|think outside the box|detail[- ]oriented|self[- ]motivated|dynamic individual|results[- ]driven|responsible for)/i.test(bul.join(' ')+' '+D.summary),'No overused phrases.','Swap phrases like “hardworking”, “team player” or “responsible for” for real results.'],
      ['Professional email',!cv.data.email||!/(\d{4,}|cute|cool|baby|king|queen|love|sexy|boy|girl)/i.test(cv.data.email.split('@')[0]),'Email looks professional.','Use a simple name-based email, e.g. firstname.lastname@gmail.com.'],
      ['Dates on every job',D.exp.length>0&&D.exp.every(e=>/\d{4}/.test(e.d)),'Every role has dates.','Add month and year (e.g. Mar 2022 – Present) to every job.'],
@@ -689,7 +736,7 @@ class Component extends DCLogic {
      ['No first person',!/\b(i|my|me)\b/i.test(bul.join(' ')+' '+D.summary),'Written without "I" or "my".','Remove "I" and "my" from bullets and summary.']];
     const checks=C.map(([label,ok,good,bad])=>({label,ok,tip:ok?good:bad}));
     let base=checks.filter(c=>c.ok).length/checks.length*100;
-    let matched=[],missing=[],pct=null;const jd=this.state.jd.trim();
+    let matched=[],missing=[],pct=null;const jd=String(opt.jd!=null?opt.jd:(this.state.jd||'')).trim();
     if(jd){const toks=(jd.toLowerCase().match(/[a-z][a-z0-9+#.\-]{1,}/g)||[]).map(t=>t.replace(/[.\-]+$/,'')).filter(t=>t.length>2&&!STOP.has(t));
       const f={};toks.forEach(t=>f[t]=(f[t]||0)+1);const big={};const tw=jd.toLowerCase().match(/[a-z][a-z0-9+#]+/g)||[];for(let i=0;i<tw.length-1;i++){if(STOP.has(tw[i])||STOP.has(tw[i+1])||tw[i].length<3||tw[i+1].length<3)continue;const k=tw[i]+' '+tw[i+1];big[k]=(big[k]||0)+1;}
       const kws=[...Object.entries(big).filter(([k,v])=>v>1).map(([k])=>k),...Object.entries(f).sort((a,b)=>b[1]-a[1]).map(([k])=>k)].filter((k,i,a)=>a.indexOf(k)===i).slice(0,28);
@@ -722,6 +769,26 @@ class Component extends DCLogic {
       D.extra.forEach(x=>{if(!x.items.length)return;ch.push(H(x.title||'Additional'));x.items.forEach(b=>ch.push(P(T(b),{bullet:{level:0}})));});}
     const doc=new X.Document({creator:'Skilleaze',numbering:window.SKRT?SKRT.numbering:undefined,title:(D.name||'CV')+(kind==='cover'?' Cover Letter':' CV'),sections:[{properties:{page:{size:this.ph===1056?{width:12240,height:15840}:{width:11906,height:16838},margin:{top:900,bottom:900,left:1000,right:1000}}},children:ch}]});const blob=await X.Packer.toBlob(doc);
     const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=(D.name||'CV').replace(/\s+/g,'_')+(kind==='cover'?'_Cover_Letter':'_CV')+'.docx';document.body.appendChild(a);a.click();setTimeout(()=>{a.remove();URL.revokeObjectURL(a.href);},4000);}
+  async atsCheck(file){if(!file)return;this.setState({ckRes:null,ckBusy:'Reading your CV…',ckFile:file.name});
+    try{let pages=0,text='';if(/\.pdf$/i.test(file.name)){try{const L=window.pdfjsLib;L.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';const pdf=await L.getDocument({data:await file.arrayBuffer()}).promise;pages=pdf.numPages;}catch(e){}}
+      try{text=await this.extract(file);}catch(e){this.setState({ckBusy:''});this.flash(/doc/.test(e.message)?'Save the file as .docx or PDF, then upload it again.':'That file could not be read. Try a PDF or Word file.');return;}
+      const raw=String(text||'');const words=(raw.match(/\S+/g)||[]).length;if(!pages)pages=Math.max(1,Math.round(words/500));
+      this.setState({ckBusy:'Checking it like an ATS…'});
+      let d=window.SKIMPORT?window.SKIMPORT.parse(raw):null;
+      if((!d||(window.SKIMPORT&&window.SKIMPORT.score(d)<2))&&words>40){try{const t=new Promise((_,rj)=>setTimeout(()=>rj(new Error('t')),25000));const o=await Promise.race([this.ai('Extract this CV into JSON with keys: name,title,location,phone,email,linkedin,summary,skills (array of {cat,list}),exp (array of {t,c,d,b} with b = bullets joined by \\n),edu (array of {deg,school,yrs}),langs,extra (array of {title,items}). Copy text exactly; use "" when missing. JSON only.\n\n'+raw.slice(0,20000)),t]);d=this.json(o);}catch(e){}}
+      d=Object.assign(blank(),d||{});['skills','exp','edu','extra'].forEach(k=>{if(!Array.isArray(d[k]))d[k]=[];});this.normalizeExp(d);
+      const r=this.ats({data:d},{jd:this.state.ckJd||'',pages});
+      const low=raw.toLowerCase();const has=re=>re.test(low);
+      const extra=[
+        ['Readable by ATS',words>=120,'The text can be read by applicant tracking systems.','Very little text could be read. It may be a scanned image or exported as a picture. Use a text-based PDF or Word file.'],
+        ['Standard section headings',['experience|employment|work history','education|qualification','skills|competenc'].every(p=>has(new RegExp('\\b('+p+')'))),'Experience, Education and Skills headings were found.','Use standard headings: Experience, Education, Skills.'],
+        ['Contact details found',!!(d.email||/@/.test(raw))&&!!(d.phone||/\+?\d[\d\s-]{7,}/.test(raw)),'Email and phone were detected.','ATS could not find both an email and a phone number.'],
+        ['File type',/\.(pdf|docx)$/i.test(file.name),'PDF or Word works well with ATS.','Use PDF or .docx.']];
+      const xc=extra.map(([label,ok,good,bad])=>({label,ok,tip:ok?good:bad}));
+      const checks=xc.concat(r.checks.filter(c=>!/^(Length|Professional email)/.test(c.label)||true));
+      let score=Math.round(checks.filter(c=>c.ok).length/checks.length*100);if(r.pct!=null)score=Math.round(score*.65+r.pct*.35);if(words<120)score=Math.min(score,25);
+      this.setState({ckBusy:'',ckRes:{score,checks,matched:r.matched||[],missing:r.missing||[],pct:r.pct,data:d,name:d.name||'',pages,words}});
+    }catch(e){console.error(e);this.setState({ckBusy:''});this.flash('Could not check that file. Please try again.');}}
   async extract(file){const buf=await file.arrayBuffer();
     if(/\.docx$/i.test(file.name)){const r=await window.mammoth.extractRawText({arrayBuffer:buf});return r.value;}
     if(/\.(txt|rtf)$/i.test(file.name)){let t=new TextDecoder().decode(buf);if(/\.rtf$/i.test(file.name))t=t.replace(/\\par[d]?/g,'\n').replace(/\{\*?\\[^{}]+\}|[{}]|\\[a-z]+-?\d* ?/gi,'');return t;}
@@ -777,7 +844,20 @@ class Component extends DCLogic {
       doLogout:async()=>{await SKP.logout();location.replace(/skilleaze\.com$|vercel\.app$/i.test(location.hostname)?'/':new URL('index.html',location.href).href);},
       waExpert:`https://wa.me/${WA}?text=${encodeURIComponent('Hi Skilleaze, I was using the CV Builder and would like an expert to write my CV.')}`,
       priceCv:PRICE[0],priceCover:PRICE[1],priceExpert:PRICE[2],
-      isHome:v==='home',isEdit:v==='edit'&&!!cv,isAts:v==='ats'&&!!cv,isCover:v==='cover'&&!!cv,isShare:v==='share',
+      isHome:v==='home',isEdit:v==='edit'&&!!cv,isChecker:v==='checker',goChecker:()=>{this.setState({view:'checker'});window.scrollTo(0,0);},navChecker:pill(v==='checker'),
+      ...(()=>{const r=s.ckRes;const sc=r?r.score:0;const col=sc>=80?'#1E7A4C':sc>=60?'#053BA0':sc>=40?'#B26A00':'#B3261E';
+        return {ckBusy:s.ckBusy||'',ckIdle:!s.ckBusy&&!r,ckHasRes:!!r&&!s.ckBusy,ckFileName:s.ckFile||'',
+          ckPick:e=>{const f=e.target.files&&e.target.files[0];e.target.value='';this.atsCheck(f);},
+          ckDrop:e=>{e.preventDefault();const f=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0];this.atsCheck(f);},ckOver:e=>e.preventDefault(),
+          ckJd:s.ckJd||'',ckSetJd:e=>this.setState({ckJd:e.target.value}),ckRecheck:()=>{this.setState({ckRes:null,ckFile:''});},
+          ckScore:String(sc),ckRing:'conic-gradient('+col+' '+(sc*3.6)+'deg,#E3E4E8 0)',ckCol:col,
+          ckGrade:sc>=80?'Strong: ready for most ATS':sc>=60?'Good, with a few fixes to make':sc>=40?'Needs work before you apply':'At risk of being filtered out',
+          ckPassN:r?r.checks.filter(c=>c.ok).length:0,ckTotal:r?r.checks.length:0,
+          ckFails:r?r.checks.filter(c=>!c.ok).map(c=>({label:c.label,tip:c.tip})):[],ckPasses:r?r.checks.filter(c=>c.ok).map(c=>({label:c.label,tip:c.tip})):[],ckHasFails:!!r&&r.checks.some(c=>!c.ok),
+          ckHasKw:!!r&&r.pct!=null,ckPct:r&&r.pct!=null?r.pct+'%':'',ckMissing:r?(r.missing||[]).slice(0,14).map(k=>({k})):[],ckHasMissing:!!r&&(r.missing||[]).length>0,
+          
+          ckMeta:r?(r.pages+(r.pages===1?' page':' pages')+' · '+r.words+' words'):''};})(),
+      isAts:v==='ats'&&!!cv,isCover:v==='cover'&&!!cv,isShare:v==='share',
       navHome:pill(v==='home'),navEdit:pill(v==='edit'),navAts:pill(v==='ats'),navCover:pill(v==='cover'),
       goHome:e=>{e&&e.preventDefault&&e.preventDefault();if(!this.state.cvs.length){location.replace(/skilleaze\.com$|vercel\.app$/i.test(location.hostname)?'/':new URL('index.html',location.href).href);return;}if(location.hash)history.replaceState(null,'',location.pathname);this.setState({view:'home'});},
       goEditCur:need(()=>this.setState({view:'edit'})),goAts:need(()=>this.setState({view:'ats'})),goCover:need(()=>this.setState({view:'cover'})),
