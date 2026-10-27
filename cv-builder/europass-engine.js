@@ -74,7 +74,7 @@ function build(S,C,F,fs,D,o){const w=mainW(S);const B=blocks(S,C,D,fs,o);const h
   return `<div style="width:${PGW}px;height:${PGH}px;background:#fff;font-family:${F};font-size:${fs}px;line-height:1.45;color:#222;box-sizing:border-box;overflow:hidden;position:relative;display:flex">${S.L===7?main+side:side+main}<div style="position:absolute;right:${PX}px;bottom:16px;font-size:9px;color:#8A96A6">${esc(D.nameCase||D.name)} · Page ${i+1} / ${pages.length}</div></div>`;});}
 function render(data,n,opt){opt=opt||{};const MG={compact:[34,30],default:[44,40],roomy:[56,50]}[opt.margin||'default']||[44,40];PX=MG[0];PY=MG[1];PGW=opt.paper==='letter'?816:794;PGH=opt.paper==='letter'?1056:1123;
  const S=DES[n]||DES[0];const F=FONTS[opt.font]||FONTS[S.f],C=opt.color||S.c[1];const D=Object.assign({},data);ED=!!D.edit;D.nameCase=String(D.name||'').toLowerCase().replace(/\b\w/g,c=>c.toUpperCase());let pg,fs;
- for(fs of [13,12.6,12.2]){pg=build(S,C,F,fs,D,{});if(pg.length<=(opt.max||2))break;}
+ for(fs of (opt.size>0?[+opt.size]:[13,12.6,12.2])){pg=build(S,C,F,fs,D,{});if(pg.length<=(opt.max||2))break;}
  return {pages:pg,fs,code:code(n),name:S.nm,font:opt.font||S.f,color:C,photo:true,w:PGW,h:PGH};}
 function letter(d,n,o,b){const S=DES[n]||DES[0];const o2=Object.assign({},o||{});if(!o2.color)o2.color=S.c[1];if(!o2.font)o2.font=S.f;return (window.SKCV_ATS||ATS).letter(d,n,o2,b);}
 if(ATS)window.SKCV_ATS=ATS;

@@ -128,7 +128,7 @@ function paginate(S,C,F,fs,photo){
  if(!pages.length)pages.push({html:shell(S,C,F,fs,0,'',photo),fill:0});
  return pages;}
 function render(data,n,opt){opt=opt||{};D=data;KEEP=!!opt.keep;const MG={compact:[34,30],default:[52,46],roomy:[66,58]}[opt.margin||'default']||[52,46];PX=MG[0];PY=MG[1];PGW=opt.paper==='letter'?816:794;PGH=opt.paper==='letter'?1056:1123;const S0=DES[n]||DES[0];const F=FONTS[opt.font]||FONTS[S0.f],C=opt.color||S0.c[1];let pg,fs,S=S0;
- const tries=[S0,{...S0,sk:'inline'}];outer:for(const T of tries){S=T;for(fs of (opt.tight?[14,13.6,13.3,13,12.6,12.2,11.8]:[14,13.6,13.3])){pg=paginate(S,C,F,fs,true);if(pg.length<=(opt.max||2))break outer;}}
+ const tries=[S0,{...S0,sk:'inline'}];outer:for(const T of tries){S=T;for(fs of (opt.size>0?[+opt.size]:opt.tight?[14,13.6,13.3,13,12.6,12.2,11.8]:[14,13.6,13.3])){pg=paginate(S,C,F,fs,true);if(pg.length<=(opt.max||2))break outer;}}
  return {pages:pg.map(x=>x.html),fs,code:'SKZ-'+String(n+1).padStart(2,'0')+' '+S0.k,name:S0.nm,font:opt.font||S0.f,color:C,photo:S0.hdr!=='left',w:PGW,h:PGH};}
 function letter(data,n,opt,body){opt=opt||{};const P=opt.paper==='letter'?[816,1056]:[794,1123];const M={compact:[44,52],default:[60,68],roomy:[72,82]}[opt.margin||'default']||[60,68];const S=DES[n]||DES[0];const F=FONTS[opt.font]||FONTS[S.f],C=opt.color||S.c[1];const v=n%4;const x=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]);
 const ct=(data.contact||[]).filter(Boolean).map(x).join(' &nbsp;·&nbsp; ');const al=v===1?'center':'left';
