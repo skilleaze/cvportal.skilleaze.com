@@ -15,6 +15,7 @@
 <meta name="apple-mobile-web-app-title" content="CV Portal">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="theme-color" content="#042D7C">
+<link href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400;0,700;1,400&family=Carlito:ital,wght@0,400;0,700;1,400&family=Caladea:ital,wght@0,400;0,700;1,400&family=Gelasio:ital,wght@0,400;0,700;1,400&family=Tinos:ital,wght@0,400;0,700;1,400&family=EB+Garamond:ital,wght@0,400;0,700;1,400&family=Merriweather:ital,wght@0,400;0,700;1,400&family=Montserrat:ital,wght@0,400;0,700;1,400&family=Raleway:ital,wght@0,400;0,700;1,400&family=Roboto:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:ital,wght@0,400;0,700;1,400&family=Open+Sans:ital,wght@0,400;0,700;1,400&family=Lato:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" data-skfonts="1">
 <script src="./support.js"></script>
 </head>
 <body>
@@ -23,15 +24,15 @@
 <title>Skilleaze Internal CV Portal · ATS CV</title><meta name="robots" content="noindex,nofollow">
 
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Lato:wght@400;700;900&family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
-<script src="./cv-builder/cv-engine.js?v=30"></script>
-<script src="./cv-builder/muneez.js"></script>
-<script src="./cv-builder/portal-config.js"></script>
-<script src="./cv-builder/portal-store.js"></script>
-<script src="./cv-builder/rich-text.js?v=font1"></script>
-<script src="./cv-builder/sk-ui.js"></script>
-<script src="./cv-builder/pdf-export.js?v=30"></script>
-<script src="./cv-builder/docx-dom.js?v=3"></script>
-<script src="./cv-builder/cv-import.js?v=27"></script>
+<script src="./cv-builder/cv-engine.js?v=28"></script>
+<script src="./cv-builder/muneez.js?v=28"></script>
+<script src="./cv-builder/portal-config.js?v=28"></script>
+<script src="./cv-builder/portal-store.js?v=28"></script>
+<script src="./cv-builder/rich-text.js?v=28"></script>
+<script src="./cv-builder/sk-ui.js?v=28"></script>
+<script src="./cv-builder/pdf-export.js?v=28"></script>
+<script src="./cv-builder/docx-dom.js?v=28"></script>
+<script src="./cv-builder/cv-import.js?v=28"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
 <script src="https://unpkg.com/docx@8.5.0/build/index.umd.js"></script>
@@ -273,7 +274,7 @@ textarea{resize:vertical}
 <div data-skb="prev" style="display:flex;flex-direction:column;align-items:center;gap:16px"></div>
 </div>
 
-<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:13px"><button onClick="{{ goAts }}" style="{{ scorePill }}">ATS score {{ atsScore }}</button><button onClick="{{ share }}" style="background:none;border:none;color:#2C3E50;font:inherit;font-weight:700;font-size:13px;cursor:pointer;text-decoration:underline">Share link</button><select value="{{ curFont }}" onChange="{{ pickFont }}" aria-label="Font" style="border:1px solid #D9DCE3;border-radius:999px;padding:6px 10px;font:inherit;font-size:13px;color:#2C3E50;background:#FFFFFF"><option value="Lato">Lato</option><option value="Open Sans">Open Sans</option><option value="Arial">Arial</option><option value="Georgia">Georgia</option></select><span style="margin-left:auto;display:flex;align-items:center;gap:4px;background:#F1F3F6;border-radius:999px;padding:2px"><button onClick="{{ zoomOut }}" aria-label="Zoom out" style="all:unset;cursor:pointer;width:26px;height:26px;display:flex;align-items:center;justify-content:center;border-radius:50%;font-weight:900;color:#042D7C" style-hover="background:#E3E4E8">−</button><span style="min-width:40px;text-align:center;font-weight:700;color:#2C3E50">{{ zoomLabel }}</span><button onClick="{{ zoomIn }}" aria-label="Zoom in" style="all:unset;cursor:pointer;width:26px;height:26px;display:flex;align-items:center;justify-content:center;border-radius:50%;font-weight:900;color:#042D7C" style-hover="background:#E3E4E8">+</button></span><span style="color:#5B6470">{{ pageInfo }}</span></div>
+<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:13px"><button onClick="{{ goAts }}" style="{{ scorePill }}">ATS score {{ atsScore }}</button><button onClick="{{ share }}" style="background:none;border:none;color:#2C3E50;font:inherit;font-weight:700;font-size:13px;cursor:pointer;text-decoration:underline">Share link</button><select value="{{ curFont }}" onChange="{{ pickFont }}" aria-label="Font" style="border:1px solid #D9DCE3;border-radius:999px;padding:6px 10px;font:inherit;font-size:13px;color:#2C3E50;background:#FFFFFF"><option value="Arial">Arial</option><option value="Calibri">Calibri</option><option value="Cambria">Cambria</option><option value="Garamond">Garamond</option><option value="Georgia">Georgia</option><option value="Lato">Lato</option><option value="Merriweather">Merriweather</option><option value="Montserrat">Montserrat</option><option value="Open Sans">Open Sans</option><option value="Raleway">Raleway</option><option value="Roboto">Roboto</option><option value="Source Sans 3">Source Sans 3</option><option value="Times New Roman">Times New Roman</option></select><span style="margin-left:auto;display:flex;align-items:center;gap:4px;background:#F1F3F6;border-radius:999px;padding:2px"><button onClick="{{ zoomOut }}" aria-label="Zoom out" style="all:unset;cursor:pointer;width:26px;height:26px;display:flex;align-items:center;justify-content:center;border-radius:50%;font-weight:900;color:#042D7C" style-hover="background:#E3E4E8">−</button><span style="min-width:40px;text-align:center;font-weight:700;color:#2C3E50">{{ zoomLabel }}</span><button onClick="{{ zoomIn }}" aria-label="Zoom in" style="all:unset;cursor:pointer;width:26px;height:26px;display:flex;align-items:center;justify-content:center;border-radius:50%;font-weight:900;color:#042D7C" style-hover="background:#E3E4E8">+</button></span><span style="color:#5B6470">{{ pageInfo }}</span></div>
 <div style="font-size:12px;color:#5B6470">Click any text, heading or the photo on the CV to edit it directly. Hover any entry to move, copy or delete it; jobs also get AI improve.</div>
 </section>
 </main>
@@ -396,7 +397,7 @@ textarea{resize:vertical}
 <div style="background:#FFFFFF;border:1px solid #E3E4E8;border-radius:20px;padding:12px;display:flex;flex-direction:column;gap:10px">
 <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><div style="display:flex;align-items:center;background:#F1F3F6;border-radius:999px;padding:3px"><button onClick="{{ cTplPrev }}" aria-label="Previous design" style="all:unset;cursor:pointer;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:50%;color:#042D7C;font-weight:900" style-hover="background:#E3E4E8">‹</button><span style="font-size:13px;font-weight:900;color:#042D7C;min-width:150px;text-align:center;white-space:nowrap">{{ cTplName }}</span><button onClick="{{ cTplNext }}" aria-label="Next design" style="all:unset;cursor:pointer;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:50%;color:#042D7C;font-weight:900" style-hover="background:#E3E4E8">›</button></div>
 <sc-if value="{{ cCustom }}"><button onClick="{{ cMatch }}" style="background:none;border:none;color:#053BA0;font:inherit;font-weight:700;font-size:13px;cursor:pointer;text-decoration:underline">Match my CV</button></sc-if>
-<select value="{{ cFont }}" onChange="{{ cPickFont }}" aria-label="Font" style="margin-left:auto;border:1px solid #D9DCE3;border-radius:999px;padding:7px 10px;font:inherit;font-size:13px;color:#2C3E50;background:#FFFFFF"><option value="Lato">Lato</option><option value="Open Sans">Open Sans</option><option value="Arial">Arial</option><option value="Georgia">Georgia</option></select></div>
+<select value="{{ cFont }}" onChange="{{ cPickFont }}" aria-label="Font" style="margin-left:auto;border:1px solid #D9DCE3;border-radius:999px;padding:7px 10px;font:inherit;font-size:13px;color:#2C3E50;background:#FFFFFF"><option value="Arial">Arial</option><option value="Calibri">Calibri</option><option value="Cambria">Cambria</option><option value="Garamond">Garamond</option><option value="Georgia">Georgia</option><option value="Lato">Lato</option><option value="Merriweather">Merriweather</option><option value="Montserrat">Montserrat</option><option value="Open Sans">Open Sans</option><option value="Raleway">Raleway</option><option value="Roboto">Roboto</option><option value="Source Sans 3">Source Sans 3</option><option value="Times New Roman">Times New Roman</option></select></div>
 <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap"><sc-for list="{{ cColors }}" as="c" hint-placeholder-count="8"><button onClick="{{ c.pick }}" title="{{ c.name }}" aria-label="{{ c.name }}" style="{{ c.style }}"></button></sc-for><label title="Any colour" style="width:24px;height:24px;border-radius:50%;background:conic-gradient(#e53935,#fdd835,#43a047,#1e88e5,#8e24aa,#e53935);cursor:pointer;position:relative;overflow:hidden"><input type="color" value="{{ cCurColor }}" onChange="{{ cPickCustom }}" style="position:absolute;inset:0;opacity:0;cursor:pointer"></label><span style="font-size:12px;color:#5B6470;margin-left:auto">Simple letter styles that match your CV</span></div>
 </div>
 <div style="display:flex;justify-content:flex-end;gap:8px"><button onClick="{{ dlCover }}" style="background:#042D7C;color:#FFFFFF;border:none;border-radius:999px;padding:10px 20px;font:inherit;font-weight:900;font-size:13px;cursor:pointer" style-hover="background:#053BA0">Download · {{ priceCover }}</button></div>
