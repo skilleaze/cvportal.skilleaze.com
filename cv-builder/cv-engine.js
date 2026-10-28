@@ -2,7 +2,7 @@
 const cv=document.createElement('canvas').getContext('2d');
 function lines(segs,w){if(window.SKRT)segs=segs.map(([t,f])=>[window.SKRT.plain(t),f]);if(segs.length===1&&/\n/.test(segs[0][0]))return String(segs[0][0]).split('\n').reduce((a,p)=>a+lines([[p,segs[0][1]]],w),0);let n=1,x=0;for(const [t,f] of segs){cv.font=f;for(const wd of String(t).split(/\s+/).filter(Boolean)){const ww=cv.measureText(wd+' ').width,sw=cv.measureText(wd).width;if(x>0&&x+sw>w){n++;x=0;}x+=ww;}}return n;}
 const fnt=(F,fs,b)=>(b?'700 ':'400 ')+fs+'px '+F;
-const FONTS={Arial:"Arial,Helvetica,sans-serif",Georgia:"Georgia,'Times New Roman',serif",Lato:"'Lato',sans-serif",'Open Sans':"'Open Sans',sans-serif"};
+const FONTS={Arial:"Arimo,Arial,Helvetica,sans-serif",Calibri:"Carlito,Calibri,sans-serif",Cambria:"Caladea,Cambria,Georgia,serif",Georgia:"Gelasio,Georgia,'Times New Roman',serif",Garamond:"'EB Garamond',Garamond,serif",Lato:"'Lato',sans-serif",Merriweather:"'Merriweather',Georgia,serif",Montserrat:"'Montserrat',sans-serif",'Open Sans':"'Open Sans',sans-serif",Raleway:"'Raleway',sans-serif",Roboto:"'Roboto',Arial,sans-serif",'Source Sans 3':"'Source Sans 3',sans-serif",'Times New Roman':"Tinos,'Times New Roman',Times,serif"};
 const TINT='#F1F3F6';
 const HDRS=['photoR','photoL','photoband','bandR','centerPhoto','tintPhoto','splitPhoto','photoSq','sideDark','sideL','sideR'];
 const HN={photoR:'Photo Right',photoL:'Photo Left',photoband:'Photo Band',bandR:'Band, Photo Right',centerPhoto:'Centred Photo',tintPhoto:'Tinted Photo Header',splitPhoto:'Three-Column Header',photoSq:'Square Photo',sideDark:'Dark Sidebar',sideL:'Light Sidebar',sideR:'Right Panel'};
@@ -24,7 +24,7 @@ function HD(k,t,C,fs){const s=fs+.5,b=`margin:0 0 7px;font-size:${s}px;line-heig
  case 'tintbar':return [`<h2 style="${b}color:${C};background:${TINT};border-left:4px solid ${C};padding:4px 10px">${t}</h2>`,L+15];
  case 'marker':return [`<h2 style="${b}color:#111;display:flex;align-items:center;gap:9px"><span style="width:9px;height:9px;background:${C};flex-shrink:0"></span>${t}</h2>`,L+7];
  case 'pill':return [`<div style="margin:0 0 8px"><h2 style="${b}margin:0;font-size:${fs-.5}px;color:#FFFFFF;background:${C};display:inline-block;padding:4px 12px;border-radius:999px">${t}</h2></div>`,(fs-.5)*1.3+16];
- case 'thick':return [`<h2 style="${b}color:#111;padding-bottom:6px;background:linear-gradient(${C},${C}) left bottom/40px 3px no-repeat">${t}</h2>`,L+13];
+ case 'thick':return [`<h2 style="${b}color:#111;padding-bottom:6px;position:relative">${t}<span aria-hidden="true" style="position:absolute;left:0;bottom:0;width:40px;height:3px;background:${C}"></span></h2>`,L+13];
  case 'upper':return [`<h2 style="margin:0 0 6px;font-size:${fs}px;line-height:1.3;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:${C}">${t}</h2>`,fs*1.3+6];
  case 'caps':return [`<h2 style="margin:0 0 7px;font-size:${fs+3}px;line-height:1.3;font-weight:700;font-variant:small-caps;letter-spacing:.05em;color:${C};border-bottom:1px solid #9AA0A6;padding-bottom:3px">${t.toLowerCase()}</h2>`,(fs+3)*1.3+11];
  }}
@@ -38,11 +38,11 @@ function items(S,C,F,fs,W){
  const MK=[];const mk=k=>MK.push([k,out.length]);mk('summary');if(D.summary){sec(HT('summary','Professional Summary'));add(0,()=>`<div style="margin:0">${tf('summary',D.summary)}</div>`,()=>lines([[D.summary,fnt(F,fs)]],IW)*lh);}
  mk('skills');if(D.skills.length&&!(side&&IS('skills'))){sec(HT('skills','Core Skills'));
   if(S.sk==='grid2'){const cw=(IW-18)/2;for(let i=0;i<D.skills.length;i+=2){const pr=D.skills.slice(i,i+2);
-   add(i?6:0,()=>`<div style="display:grid;grid-template-columns:1fr 1fr;gap:18px">${pr.map(s=>`<div><div style="font-weight:700;color:${C}">${tf(s._i!=null&&'skills.'+s._i+'.cat',s[0])}</div><div>${tf(s._i!=null&&'skills.'+s._i+'.list',s[1])}</div></div>`).join('')}</div>`,()=>Math.max(...pr.map(s=>(lines([[s[0],fnt(F,fs,1)]],cw)+lines([[s[1],fnt(F,fs)]],cw))*lh)));}}
-  else D.skills.forEach((s,i)=>add(i?3:0,()=>`<div><strong style="color:#111">${tf(s._i!=null&&'skills.'+s._i+'.cat',s[0])}:</strong> ${tf(s._i!=null&&'skills.'+s._i+'.list',s[1])}</div>`,()=>lines([[s[0]+':',fnt(F,fs,1)],[s[1],fnt(F,fs)]],IW)*lh));}
+   add(i?6:0,()=>`<div style="display:grid;grid-template-columns:${pr.length>1?'1fr 1fr':'1fr'};gap:18px;text-align:left">${pr.map(s=>`<div><div style="font-weight:700;color:${C}">${tf(s._i!=null&&'skills.'+s._i+'.cat',s[0])}</div><div>${tf(s._i!=null&&'skills.'+s._i+'.list',s[1])}</div></div>`).join('')}</div>`,()=>{const W2=pr.length>1?cw:IW;return Math.max(...pr.map(s=>(lines([[s[0],fnt(F,fs,1)]],W2)+lines([[s[1],fnt(F,fs)]],W2))*lh));});}}
+  else D.skills.forEach((s,i)=>add(i?3:0,()=>`<div style="text-align:left"><strong style="color:#111">${tf(s._i!=null&&'skills.'+s._i+'.cat',s[0])}:</strong> ${tf(s._i!=null&&'skills.'+s._i+'.list',s[1])}</div>`,()=>lines([[s[0]+':',fnt(F,fs,1)],[s[1],fnt(F,fs)]],IW)*lh));}
  mk('exp');if(D.exp.length)sec(HT('exp','Work Experience'));
  const dt=e=>`<span style="font-size:${fs-.5}px;color:#333;white-space:nowrap">${tf('exp.'+e._i+'.d',e.d)}</span>`;
- const ul=(b,p)=>`<ul${D.edit&&p?` data-f="${p}" data-ul="1"`:''} style="margin:0;padding-left:18px">${b.map(x=>`<li style="margin:0 0 2px">${esc(x)}</li>`).join('')}</ul>`;
+ const ul=(b,p)=>`<ul${D.edit&&p?` data-f="${p}" data-ul="1"`:''} style="margin:0;padding-left:18px;list-style:disc outside">${b.map(x=>`<li style="margin:0 0 2px;display:list-item;list-style:disc outside">${esc(x)}</li>`).join('')}</ul>`;
  const bh=(b,w)=>b.reduce((a,x)=>a+lines([[x,fnt(F,fs)]],w-18)*lh+2,0);
  const stdHead=(e,w)=>[`<div style="display:flex;justify-content:space-between;gap:12px;align-items:baseline"><span style="font-weight:700;font-size:${fs+1}px;line-height:1.42;color:#111">${tf('exp.'+e._i+'.t',e.t)}</span>${dt(e)}</div><div style="font-size:${fs}px;color:#333;margin:1px 0 4px">${tf('exp.'+e._i+'.c',e.c)}</div>`,lines([[e.t,fnt(F,fs+1,1)]],w-140)*(fs+1)*1.42+lines([[e.c,fnt(F,fs)]],w)*lh+5];
  const coHead=(e,w)=>[`<div style="display:flex;justify-content:space-between;gap:12px;align-items:baseline"><span style="font-weight:700;font-size:${fs+1}px;line-height:1.42;color:${C}">${tf('exp.'+e._i+'.c',e.c)}</span>${dt(e)}</div><div style="font-size:${fs}px;font-weight:700;font-style:italic;color:#111;margin:1px 0 4px">${tf('exp.'+e._i+'.t',e.t)}</div>`,lines([[e.c,fnt(F,fs+1,1)]],w-140)*(fs+1)*1.42+lh+5];

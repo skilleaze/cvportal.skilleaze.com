@@ -5,7 +5,8 @@ const PX=15; // twips per CSS px
 const hp=px=>Math.max(2,Math.round(px*1.5)); // half-points
 const tw=px=>Math.round(px*PX);
 const hex=c=>{const m=/rgba?\(([^)]+)\)/.exec(c||'');if(!m)return null;const p=m[1].split(',').map(x=>parseFloat(x));if(p.length>3&&p[3]<0.08)return null;return p.slice(0,3).map(v=>Math.max(0,Math.min(255,Math.round(v))).toString(16).padStart(2,'0')).join('').toUpperCase();};
-const fam=cs=>String(cs.fontFamily||'Calibri').split(',')[0].replace(/['"]/g,'').trim()||'Calibri';
+const WFONT={arimo:'Arial',carlito:'Calibri',caladea:'Cambria',gelasio:'Georgia',tinos:'Times New Roman','eb garamond':'Garamond'};
+const fam=cs=>{const f=String(cs.fontFamily||'Calibri').split(',')[0].replace(/['"]/g,'').trim()||'Calibri';return WFONT[f.toLowerCase()]||f;};
 const inlineish=cs=>/^inline/.test(cs.display)||cs.display==='contents';
 function visible(el){const cs=getComputedStyle(el);if(cs.display==='none'||cs.visibility==='hidden'||parseFloat(cs.opacity)<0.05)return false;const r=el.getBoundingClientRect();if(el.tagName==='IMG')return r.width>2&&r.height>2;return r.width>0&&r.height>0;}
 function hasText(el){return /\S/.test(el.textContent||'')||!!el.querySelector('img');}
@@ -41,7 +42,7 @@ function paraProps(X,el,ctx,extra){const cs=getComputedStyle(el);const r=el.getB
   const fs=parseFloat(cs.fontSize)||14;let lh=parseFloat(cs.lineHeight);if(!lh)lh=fs*1.25;
   const before=Math.max(0,r.top-ctx.last)+pt;
   const o={spacing:{before:tw(before),after:tw(pb),line:tw(lh),lineRule:X.LineRuleType?X.LineRuleType.EXACT:'exact'},
-    indent:{left:tw(r.left+pl-ctx.left),right:tw(ctx.right-(r.right-pr))}};
+    indent:{left:Math.max(0,tw(r.left+pl-ctx.left)),right:Math.max(0,tw(ctx.right-(r.right-pr)))}};
   const ta=cs.textAlign;if(ta==='center')o.alignment=X.AlignmentType.CENTER;else if(ta==='right'||ta==='end')o.alignment=X.AlignmentType.RIGHT;else if(ta==='justify')o.alignment=X.AlignmentType.JUSTIFIED;
   const bg=hex(cs.backgroundColor);if(bg&&bg!==ctx.bg)o.shading={type:X.ShadingType.CLEAR,color:'auto',fill:bg};
   const bd={};for(const [s,k] of [['Bottom','bottom'],['Top','top'],['Left','left'],['Right','right']]){const w=parseFloat(cs['border'+s+'Width'])||0;const c=hex(cs['border'+s+'Color']);if(w>=0.5&&c&&cs['border'+s+'Style']!=='none')bd[k]={style:X.BorderStyle.SINGLE,size:Math.max(2,Math.round(w*6)),color:c,space:Math.round(((k==='bottom'?pb:k==='top'?pt:k==='left'?pl:pr))*0.75)};}
@@ -59,26 +60,28 @@ async function cellOf(X,el,width,ctxBg,opt){const cs=getComputedStyle(el);const 
   if(bg&&bg!==ctxBg)c.shading={type:X.ShadingType.CLEAR,color:'auto',fill:bg};
   if(opt&&opt.vcenter)c.verticalAlign=X.VerticalAlign.CENTER;return new X.TableCell(c);}
 async function tableOf(X,cont,rows,ctx,opt){const cr=cont.getBoundingClientRect();const L=Math.min(...rows.flatMap(R=>R.items.map(i=>i.getBoundingClientRect().left))),Rr=Math.max(...rows.flatMap(R=>R.items.map(i=>i.getBoundingClientRect().right)));
-  const W=Math.max(10,Rr-L);const trs=[];let colW=null;
+  const W=Math.max(10,Math.min(Rr-L,ctx.right-Math.max(L,ctx.left)));const trs=[];let colW=null;
   for(const R of rows){const its=R.items;const cells=[];
     for(let i=0;i<its.length;i++){const a=its[i].getBoundingClientRect();const nx=i+1<its.length?its[i+1].getBoundingClientRect().left:Rr;const w=Math.max(8,nx-a.left);cells.push(await cellOf(X,its[i],w,ctx.bg,{vcenter:opt&&opt.vcenter}));}
     if(!colW)colW=its.map((it,i)=>{const a=it.getBoundingClientRect();const nx=i+1<its.length?its[i+1].getBoundingClientRect().left:Rr;return tw(Math.max(8,nx-a.left));});
     const row={children:cells,cantSplit:false};if(opt&&opt.minH)row.height={value:tw(opt.minH),rule:X.HeightRule.ATLEAST};trs.push(new X.TableRow(row));}
   const before=Math.max(0,rows[0].top-ctx.last);ctx.last=Math.max(...rows.map(R=>R.bottom));
-  const t=new X.Table({rows:trs,width:{size:tw(W),type:X.WidthType.DXA},columnWidths:rows.length===1?colW:undefined,layout:X.TableLayoutType.FIXED,borders:NOB(X),indent:{size:tw(L-ctx.left),type:X.WidthType.DXA},margins:{top:0,bottom:0,left:0,right:0}});
+  const t=new X.Table({rows:trs,width:{size:tw(W),type:X.WidthType.DXA},columnWidths:rows.length===1?colW:undefined,layout:X.TableLayoutType.FIXED,borders:NOB(X),indent:{size:Math.max(0,tw(L-ctx.left)),type:X.WidthType.DXA},margins:{top:0,bottom:0,left:0,right:0}});
   const out=[];if(before>3)out.push(new X.Paragraph({children:[],spacing:{before:0,after:0,line:tw(before),lineRule:X.LineRuleType?X.LineRuleType.EXACT:'exact'}}));out.push(t);return out;}
 async function listItems(X,ul,ctx){const out=[];const ord=ul.tagName==='OL';
   for(const li of [...ul.children].filter(visible)){const cs=getComputedStyle(li);const rs=trimEnd(await runs(X,li,[],null));if(!rs.length)continue;
     const pp=paraProps(X,li,ctx);const left=pp.indent.left;pp.indent={left,hanging:Math.round((parseFloat(cs.fontSize)||14)*0.9*PX),right:pp.indent.right};
-    const none=cs.listStyleType==='none';
-    out.push(new X.Paragraph(Object.assign({children:rs},pp,none?{}:{numbering:{reference:ord?'skdo':'skdb',level:0}})));}
+    const none=cs.listStyleType==='none';const k=out.length+1;
+    if(!none){const fz=parseFloat(cs.fontSize)||14;const ul2=li.parentElement.getBoundingClientRect();const hang=Math.max(8,Math.min(30,li.getBoundingClientRect().left-ul2.left))||14;pp.indent={left:pp.indent.left,hanging:tw(hang),right:pp.indent.right};
+      rs.unshift(new X.TextRun({text:'\t'}));rs.unshift(new X.TextRun({text:ord?(k+'.'):'\u2022',font:ord?fam(cs):'Arial',size:hp(fz),color:hex(cs.color)||'000000'}));pp.tabStops=[{type:X.TabStopType.LEFT,position:pp.indent.left}];}
+    out.push(new X.Paragraph(Object.assign({children:rs},pp)));}
   return out;}
 async function conv(X,el,ctx,inCell){const out=[];
   if(el.tagName==='IMG'){const ir=await imgRun(X,el);if(ir){const r=el.getBoundingClientRect();out.push(new X.Paragraph({children:[ir],spacing:{before:tw(Math.max(0,r.top-ctx.last)),after:0},indent:{left:tw(r.left-ctx.left)}}));ctx.last=r.bottom;}return out;}
   const kids=blockKids(el);
   if(!kids.length){if(hasText(el)){const p=await leafPara(X,el,ctx);if(p)out.push(p);}return out;}
   // loose inline text alongside blocks -> wrap
-  const looseText=[...el.childNodes].some(n=>n.nodeType===3&&/\S/.test(n.nodeValue));
+  const looseText=[...el.childNodes].some(n=>(n.nodeType===3&&/\S/.test(n.nodeValue))||(n.nodeType===1&&n.tagName!=='IMG'&&n.tagName!=='BR'&&visible(n)&&inlineish(getComputedStyle(n))&&/\S/.test(n.textContent||'')));
   if(looseText&&kids.length){const p=await leafPara(X,el,ctx);if(p)out.push(p);return out;}
   const rows=rowsOf(kids);
   for(const R of rows){
@@ -133,6 +136,6 @@ async function sections(X,pages,opt){opt=opt||{};const W=opt.w||794,H=opt.h||112
   finally{host.remove();}
   return secs;}
 function hasOwnText(el){return [...el.childNodes].some(n=>n.nodeType===3&&/\S/.test(n.nodeValue));}
-function numbering(X){return {config:[{reference:'skdb',levels:[{level:0,format:X.LevelFormat.BULLET,text:'\u2022',alignment:X.AlignmentType.LEFT,style:{paragraph:{indent:{left:360,hanging:220}}}}]},{reference:'skdo',levels:[{level:0,format:X.LevelFormat.DECIMAL,text:'%1.',alignment:X.AlignmentType.LEFT,style:{paragraph:{indent:{left:360,hanging:260}}}}]}]};}
+function numbering(X){return {config:[{reference:'skdb',levels:[{level:0,format:X.LevelFormat.BULLET,text:'\u2022',alignment:X.AlignmentType.LEFT,style:{paragraph:{indent:{left:360,hanging:220}},run:{font:'Arial'}}}]},{reference:'skdo',levels:[{level:0,format:X.LevelFormat.DECIMAL,text:'%1.',alignment:X.AlignmentType.LEFT,style:{paragraph:{indent:{left:360,hanging:260}}}}]}]};}
 window.SKDOCX={sections,numbering};
 })();

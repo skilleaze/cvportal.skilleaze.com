@@ -1,7 +1,7 @@
 (function(){
 const ATS=window.SKCV&&!window.SKCV.ep?window.SKCV:null;
 const esc=t=>{t=String(t??'');return window.SKRT&&window.SKRT.isRich(t)?window.SKRT.clean(t):t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');};
-const FONTS={Arial:"Arial,Helvetica,sans-serif",Georgia:"Georgia,'Times New Roman',serif",Lato:"'Lato',sans-serif",'Open Sans':"'Open Sans',sans-serif"};
+const FONTS={Arial:"Arimo,Arial,Helvetica,sans-serif",Calibri:"Carlito,Calibri,sans-serif",Cambria:"Caladea,Cambria,Georgia,serif",Georgia:"Gelasio,Georgia,'Times New Roman',serif",Garamond:"'EB Garamond',Garamond,serif",Lato:"'Lato',sans-serif",Merriweather:"'Merriweather',Georgia,serif",Montserrat:"'Montserrat',sans-serif",'Open Sans':"'Open Sans',sans-serif",Raleway:"'Raleway',sans-serif",Roboto:"'Roboto',Arial,sans-serif",'Source Sans 3':"'Source Sans 3',sans-serif",'Times New Roman':"Tinos,'Times New Roman',Times,serif"};
 const CL=[['Europass Blue','#0B4F8A'],['Navy','#1F3A5F'],['Black','#1C1C1C'],['Charcoal','#3B4450'],['Dark Blue','#1E4D8C'],['Maroon','#6E2633'],['Forest','#2E5E4E'],['Teal','#1F5F6B']];
 const EB=CL[0];
 const DES=[

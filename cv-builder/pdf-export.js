@@ -5,13 +5,15 @@
 if(window.SKPDF)return;
 const FONT_CDN='https://cdn.jsdelivr.net/fontsource/fonts/';
 // metric-compatible open fonts so text widths match the browser preview exactly
-const FAM={lato:'lato','open sans':'open-sans',arial:'arimo',helvetica:'arimo','sans-serif':'arimo',georgia:'gelasio','times new roman':'tinos',times:'tinos',serif:'tinos'};
+const FAM={lato:'lato','open sans':'open-sans',arimo:'arimo',arial:'arimo',helvetica:'arimo',carlito:'carlito',calibri:'carlito',caladea:'caladea',cambria:'caladea',gelasio:'gelasio',georgia:'gelasio',tinos:'tinos','times new roman':'tinos',times:'tinos','eb garamond':'eb-garamond',garamond:'eb-garamond',merriweather:'merriweather',montserrat:'montserrat',raleway:'raleway',roboto:'roboto','source sans 3':'source-sans-3',tahoma:'arimo',verdana:'arimo','trebuchet ms':'arimo','sans-serif':'arimo',serif:'tinos'};
 const loaded={};let jsLoad=null;
 function loadJs(){if(window.jspdf&&window.jspdf.jsPDF)return Promise.resolve();if(jsLoad)return jsLoad;
   jsLoad=new Promise((ok,no)=>{const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js';s.onload=ok;s.onerror=()=>no(new Error('PDF library failed to load'));document.head.appendChild(s);});return jsLoad;}
 function b64(buf){let s='';const a=new Uint8Array(buf);for(let i=0;i<a.length;i+=0x8000)s+=String.fromCharCode.apply(null,a.subarray(i,i+0x8000));return btoa(s);}
 async function fontFile(slug,w,it){const k=slug+w+it;if(k in loaded)return loaded[k];
-  loaded[k]=fetch(FONT_CDN+slug+'@latest/latin-'+w+'-'+(it?'italic':'normal')+'.ttf').then(r=>r.ok?r.arrayBuffer():null).then(b=>b?b64(b):null).catch(()=>null);return loaded[k];}
+  const path=slug+'@latest/latin-'+w+'-'+(it?'italic':'normal')+'.ttf';const get=u=>fetch(u).then(r=>r.ok?r.arrayBuffer():null).then(b=>b&&b.byteLength>1000?b64(b):null).catch(()=>null);
+  loaded[k]=(async()=>{for(const u of [FONT_CDN+path,FONT_CDN+path,'https://unpkg.com/@fontsource/'+path.replace('@latest/','/files/')]){const d=await get(u);if(d)return d;}return null;})();
+  loaded[k].then(d=>{if(!d)delete loaded[k];});return loaded[k];}
 function famSlug(ff){const list=String(ff||'').split(',').map(x=>x.trim().replace(/^['"]|['"]$/g,'').toLowerCase());for(const f of list)if(FAM[f])return FAM[f];return 'arimo';}
 function rgba(c){const m=/rgba?\(([^)]+)\)/.exec(c||'');if(!m)return null;const p=m[1].split(/[\s,\/]+/).filter(Boolean).map(Number);const a=p.length>3?p[3]:1;if(a<=0.01)return null;
   // flatten onto white so the PDF needs no transparency
@@ -48,10 +50,10 @@ async function drawPage(doc,page,fonts){
   for(const el of all){if(el.closest('svg')&&el.tagName.toLowerCase()!=='svg')continue;const cs=getComputedStyle(el);if(cs.display==='none'||cs.visibility==='hidden'||parseFloat(cs.opacity)===0)continue;
     const r=el.getBoundingClientRect();if(r.width<0.5||r.height<0.5)continue;if(r.bottom<=P.top||r.top>=P.bottom)continue;
     const rr=cs.borderTopLeftRadius||'0';const rad=/%/.test(rr)?parseFloat(rr)/100*Math.min(r.width,r.height):(parseFloat(rr)||0);const bg=rgba(cs.backgroundColor);
-    if(bg&&el!==page&&el.tagName.toLowerCase()!=='img'){doc.setFillColor(...bg);if(rad>=Math.min(r.width,r.height)/2-0.5)doc.ellipse(X(r.left+r.width/2),Y(r.top+r.height/2),r.width/2*K,r.height/2*K,'F');else if(rad>0)doc.roundedRect(X(r.left),Y(r.top),r.width*K,r.height*K,Math.min(rad,r.width/2,r.height/2)*K,Math.min(rad,r.width/2,r.height/2)*K,'F');else doc.rect(X(r.left),Y(r.top),r.width*K,r.height*K,'F');}
+    if(bg&&el!==page&&el.tagName.toLowerCase()!=='img'){doc.setFillColor(...bg);if(rad>=Math.min(r.width,r.height)/2-0.5&&Math.abs(r.width-r.height)<=1.5)doc.ellipse(X(r.left+r.width/2),Y(r.top+r.height/2),r.width/2*K,r.height/2*K,'F');else if(rad>0){const q=Math.min(rad,r.width/2,r.height/2)*K;doc.roundedRect(X(r.left),Y(r.top),r.width*K,r.height*K,q,q,'F');}else doc.rect(X(r.left),Y(r.top),r.width*K,r.height*K,'F');}
     const sides=[['Top',r.left,r.top,r.right,r.top],['Bottom',r.left,r.bottom,r.right,r.bottom],['Left',r.left,r.top,r.left,r.bottom],['Right',r.right,r.top,r.right,r.bottom]];
-    const isCirc=rad>=Math.min(r.width,r.height)/2-0.5;
-    if(rad>0&&['Top','Right','Bottom','Left'].every(s=>parseFloat(cs['border'+s+'Width'])>0&&cs['border'+s+'Style']!=='none')){const c=rgba(cs.borderTopColor);const bw=parseFloat(cs.borderTopWidth);if(c&&isCirc){doc.setFillColor(...c);doc.ellipse(X(r.left+r.width/2),Y(r.top+r.height/2),r.width/2*K,r.height/2*K,'F');}else if(c){doc.setDrawColor(...c);doc.setLineWidth(bw*K);doc.roundedRect(X(r.left+bw/2),Y(r.top+bw/2),(r.width-bw)*K,(r.height-bw)*K,Math.min(rad,r.width/2)*K,Math.min(rad,r.height/2)*K,'S');}}
+    const isCirc=rad>=Math.min(r.width,r.height)/2-0.5&&Math.abs(r.width-r.height)<=1.5;
+    if(rad>0&&['Top','Right','Bottom','Left'].every(s=>parseFloat(cs['border'+s+'Width'])>0&&cs['border'+s+'Style']!=='none')){const c=rgba(cs.borderTopColor);const bw=parseFloat(cs.borderTopWidth);if(c&&isCirc){doc.setFillColor(...c);doc.ellipse(X(r.left+r.width/2),Y(r.top+r.height/2),r.width/2*K,r.height/2*K,'F');}else if(c){doc.setDrawColor(...c);doc.setLineWidth(bw*K);doc.roundedRect(X(r.left+bw/2),Y(r.top+bw/2),(r.width-bw)*K,(r.height-bw)*K,Math.min(rad,r.width/2,r.height/2)*K,Math.min(rad,r.width/2,r.height/2)*K,'S');}}
     else for(const [s,x1,y1,x2,y2] of sides){const bw=parseFloat(cs['border'+s+'Width']);if(!(bw>0)||cs['border'+s+'Style']==='none')continue;const c=rgba(cs['border'+s+'Color']);if(!c)continue;doc.setFillColor(...c);
       if(s==='Top')doc.rect(X(x1),Y(y1),(x2-x1)*K,bw*K,'F');else if(s==='Bottom')doc.rect(X(x1),Y(y1-bw),(x2-x1)*K,bw*K,'F');else if(s==='Left')doc.rect(X(x1),Y(y1),bw*K,(y2-y1)*K,'F');else doc.rect(X(x1-bw),Y(y1),bw*K,(y2-y1)*K,'F');}
     const tag=el.tagName.toLowerCase();
@@ -73,12 +75,12 @@ async function drawPage(doc,page,fonts){
         let i0=m.index;for(let i=m.index;i<m.index+m[0].length;i++){rng.setStart(n,i);rng.setEnd(n,i+1);const cr=rng.getClientRects()[0];if(!cr)continue;const last=words[words.length-1];if(last&&last._n===n&&last._i===i-1&&Math.abs(last.r.top-cr.top)<2){last.t+=raw[i];last.r={left:last.r.left,top:last.r.top,bottom:last.r.bottom,right:cr.right,width:cr.right-last.r.left,height:last.r.height};last._i=i;}else words.push({t:raw[i],r:cr,_n:n,_i:i});}}}
     // group into lines
     const lines=[];for(const w of words){const L=lines[lines.length-1];if(L&&Math.abs(L.top-w.r.top)<fsz*0.35)L.w.push(w);else lines.push({top:w.r.top,w:[w]});}
-    for(const L of lines){const f=L.w[0].r,l=L.w[L.w.length-1].r;const base=Y(f.bottom)-((f.height-fsz*1.0)/2+fsz*0.22)*K;const str=T(L.w.map(w=>w.t).join(' '));
+    const lead=/^\s/.test(raw);for(let li=0;li<lines.length;li++){const L=lines[li];if(li===0&&lead){const sp=doc.getTextWidth(' ');doc.text(' ',X(L.w[0].r.left)-sp,Y(L.w[0].r.bottom)-((L.w[0].r.height-fsz)/2+fsz*0.22)*K,{baseline:'alphabetic'});}const f=L.w[0].r,l=L.w[L.w.length-1].r;const base=Y(f.bottom)-((f.height-fsz*1.0)/2+fsz*0.22)*K;const str=T(L.w.map(w=>w.t).join(' '));
       const want=(l.right-f.left)*K;const got=doc.getTextWidth(str)+ls*K*Math.max(0,str.length-1);
       const ratio=got>0?want/got:1;
-      if(L.w.length===1||Math.abs(got-want)<=Math.max(1.2,want*0.02))doc.text(str,X(f.left),base,{charSpace:ls*K,baseline:'alphabetic'});
-      else if(ratio>0.8&&ratio<1.25&&!ls){/* one text run per line, scaled to the exact preview width: same look, clean word spacing for ATS */doc.text(str,X(f.left),base,{baseline:'alphabetic',horizontalScale:ratio});}
-      else L.w.forEach((w,wi)=>{const bw=Y(w.r.bottom)-((w.r.height-fsz)/2+fsz*0.22)*K;doc.text(T(w.t)+(wi<L.w.length-1?' ':''),X(w.r.left),bw,{charSpace:ls*K,baseline:'alphabetic'});});}
+      if(L.w.length===1||Math.abs(got-want)<=Math.max(0.6,want*0.006)||(got>0&&want/got>=0.8&&want/got<=1.12&&!/justify/.test(cs.textAlign||''))){const o={charSpace:ls*K,baseline:'alphabetic'};if(got>0&&Math.abs(got-want)>0.3)o.horizontalScale=Math.max(0.8,Math.min(1.12,want/got));doc.text(str,X(f.left),base,o);}
+      
+      else L.w.forEach((w,wi)=>{const bw=Y(w.r.bottom)-((w.r.height-fsz)/2+fsz*0.22)*K;const tt=T(w.t);const gw=doc.getTextWidth(tt)+ls*K*Math.max(0,tt.length-1);const ww=w.r.width*K;const o={charSpace:ls*K,baseline:'alphabetic'};if(gw>ww*1.01&&gw>0)o.horizontalScale=Math.max(0.8,ww/gw);doc.text(tt+(wi<L.w.length-1?' ':''),X(w.r.left),bw,o);});}
   }
   // 3. clickable links (LinkedIn, website, email)
   for(const a of page.querySelectorAll('a[href]')){const u=a.getAttribute('href');if(!/^(https?:|mailto:|tel:)/i.test(u))continue;for(const q of a.getClientRects()){if(q.width<1||q.bottom<=P.top||q.top>=P.bottom)continue;try{doc.link(X(q.left),Y(q.top),q.width*K,q.height*K,{url:u});}catch(e){}}}
@@ -91,6 +93,8 @@ async function make(pagesHtml,opt){opt=opt||{};await loadJs();const letter=opt.p
   document.body.appendChild(host);
   try{
     const imgs=[...host.querySelectorAll('img')];await Promise.race([Promise.all([document.fonts?document.fonts.ready:1,...imgs.map(i=>i.complete?1:new Promise(r=>{i.onload=i.onerror=r;}))]),new Promise(r=>setTimeout(r,5000))]);
+    if(document.fonts&&document.fonts.load){const want=new Set();host.querySelectorAll('*').forEach(e=>{if(!e.firstChild||![...e.childNodes].some(n=>n.nodeType===3&&/\S/.test(n.nodeValue)))return;const c=getComputedStyle(e);const fam=String(c.fontFamily).split(',')[0].trim();if(fam)want.add((c.fontStyle==='italic'?'italic ':'')+((parseInt(c.fontWeight)||400)>=600?700:400)+' 16px '+(/^["']/.test(fam)?fam:'"'+fam+'"'));});
+      await Promise.race([Promise.all([...want].map(f=>document.fonts.load(f).catch(()=>0))),new Promise(r=>setTimeout(r,4000))]);await new Promise(r=>{let d=0;const f=()=>{if(!d){d=1;r();}};try{requestAnimationFrame(()=>requestAnimationFrame(f));}catch(e){}setTimeout(f,120);});}
     const doc=new window.jspdf.jsPDF({unit:'pt',format:letter?'letter':'a4',orientation:'portrait',compress:true,putOnlyUsedFonts:true});
     doc.setProperties({title:opt.title||'CV',creator:'Skilleaze',author:opt.author||''});
     const fonts={};const pgs=[...host.querySelectorAll('[data-pdfpg]')];
