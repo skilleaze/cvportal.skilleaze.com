@@ -28,6 +28,9 @@ async function runs(X,node,out,st){
       if(n.tagName==='BR'){const r=new X.TextRun({break:1});r._br=1;out.push(r);continue;}
       if(n.tagName==='IMG'){const ir=await imgRun(X,n);if(ir)out.push(ir);continue;}
       const cs=getComputedStyle(n);
+      if(n.tagName==='A'&&n.getAttribute('href')&&X.ExternalHyperlink){const inner=await runs(X,n,[],st);const kids=inner.filter(r=>!r._br);if(kids.length){const u=n.getAttribute('href');kids.forEach(r=>{});out.push(new X.ExternalHyperlink({link:u,children:kids}));}continue;}
+      if(n.tagName==='UL'||n.tagName==='OL'){const ord=n.tagName==='OL';let k=0;for(const li of [...n.children].filter(visible)){k++;if(out.length&&!out[out.length-1]._br){const br=new X.TextRun({break:1});br._br=1;out.push(br);}const lcs=getComputedStyle(li);if(lcs.listStyleType!=='none')out.push(new X.TextRun({text:(ord?k+'. ':'\u2022 '),font:fam(lcs),size:hp(parseFloat(lcs.fontSize)||14),color:hex(lcs.color)||'000000'}));await runs(X,li,out,st);}const br=new X.TextRun({break:1});br._br=1;out.push(br);continue;}
+      if(!inlineish(cs)&&out.length&&!out[out.length-1]._br&&/\S/.test(n.textContent||'')){const br=new X.TextRun({break:1});br._br=1;out.push(br);}
       if(st&&st.tabs&&!inlineish(cs)){/* flex leaf child separated by tab */}
       await runs(X,n,out,st);}
   }

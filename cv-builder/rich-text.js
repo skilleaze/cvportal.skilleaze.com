@@ -7,6 +7,8 @@ const escT=t=>String(t??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/
 const escA=t=>escT(t).replace(/"/g,'&quot;');
 const COLOR=/^(#[0-9a-f]{3,8}|rgb\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\))$/i;
 const ALIGN=/^(left|center|right|justify)$/;
+const FONTOK=/^(arial|calibri|carlito|cambria|garamond|eb garamond|cormorant garamond|georgia|helvetica|lato|tahoma|times new roman|times|trebuchet ms|verdana|sans-serif|serif)$/i;
+function fam(v){const p=String(v||'').split(',').map(x=>x.replace(/["']/g,'').trim()).filter(Boolean);if(!p.length||!p.every(x=>FONTOK.test(x)))return '';return p.map(x=>/\s/.test(x)?"'"+x+"'":x).join(', ');}
 function hex(c){c=String(c||'').trim();const m=/rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/i.exec(c);if(m)return '#'+[m[1],m[2],m[3]].map(n=>(+n).toString(16).padStart(2,'0')).join('');return COLOR.test(c)?c:'';}
 function walk(node,out,top){
   for(const n of node.childNodes){
@@ -19,11 +21,11 @@ function walk(node,out,top){
     if(t==='a'){const href=n.getAttribute('href')||'';if(/^(https?:|mailto:|tel:)/i.test(href)&&h)out.push('<a href="'+escA(href)+'">'+h+'</a>');else out.push(h);continue;}
     if(t==='ul'||t==='ol'){if(h)out.push('<'+t+' style="margin:4px 0;padding-left:20px">'+h+'</'+t+'>');continue;}
     if(t==='li'){out.push('<li style="margin:0 0 2px">'+h+'</li>');continue;}
-    let col='',w='',st='',dec='',al='';
-    if(t==='font')col=hex(n.getAttribute('color'));
-    if(n.style){col=col||hex(n.style.color);w=n.style.fontWeight;st=n.style.fontStyle;dec=n.style.textDecorationLine||n.style.textDecoration||'';al=n.style.textAlign;}
+    let col='',w='',st='',dec='',al='',ff='';
+    if(t==='font'){col=hex(n.getAttribute('color'));ff=fam(n.getAttribute('face'));}
+    if(n.style){col=col||hex(n.style.color);w=n.style.fontWeight;st=n.style.fontStyle;dec=n.style.textDecorationLine||n.style.textDecoration||'';al=n.style.textAlign;ff=ff||fam(n.style.fontFamily);}
     let x=h;if(w==='bold'||+w>=600)x='<b>'+x+'</b>';if(st==='italic')x='<i>'+x+'</i>';if(/underline/.test(dec))x='<u>'+x+'</u>';
-    if(col&&x)x='<span style="color:'+col+'">'+x+'</span>';
+    if((col||ff)&&x)x='<span style="'+(col?'color:'+col+';':'')+(ff?'font-family:'+ff:'')+'">'+x+'</span>';
     if(t==='div'||t==='p'){if(ALIGN.test(al||'')&&x)x='<span style="display:block;text-align:'+al+'">'+x+'</span>';out.push((out.length&&!/<br>$/.test(out[out.length-1])?'<br>':'')+x);continue;}
     if(ALIGN.test(al||'')&&t==='span'&&/display:\s*block/.test(n.getAttribute('style')||''))x='<span style="display:block;text-align:'+al+'">'+x+'</span>';
     out.push(x);
@@ -49,8 +51,8 @@ const I={clear:'<path d="m7 21-4.3-4.3a1 1 0 0 1 0-1.4l9.6-9.6a1 1 0 0 1 1.4 0l5
  color:'<path d="m5 16 7-13 7 13"/><path d="M7.5 11.5h9"/>',left:'<path d="M3 6h18M3 12h12M3 18h16"/>',center:'<path d="M3 6h18M6 12h12M4 18h16"/>',right:'<path d="M3 6h18M9 12h12M5 18h16"/>',justify:'<path d="M3 6h18M3 12h18M3 18h18"/>',
  ul:'<path d="M9 6h12M9 12h12M9 18h12"/><circle cx="4" cy="6" r="1.2"/><circle cx="4" cy="12" r="1.2"/><circle cx="4" cy="18" r="1.2"/>',ol:'<path d="M10 6h11M10 12h11M10 18h11"/><path d="M4 4v4M3 8h2M3 12.5a1 1 0 0 1 2 0c0 .8-2 1.5-2 2.5h2M3 17h1.5a1 1 0 0 1 0 2H3"/>',
  link:'<path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/>',unlink:'<path d="M18.8 13.2 21 11a5 5 0 0 0-7-7l-2.2 2.2M5.2 10.8 3 13a5 5 0 0 0 7 7l2.2-2.2M8 2v3M2 8h3M16 22v-3M22 16h-3"/>'};
-const TIP={undo:'Undo',redo:'Redo',b:'Bold',i:'Italic',u:'Underline',color:'Text colour',left:'Align left',center:'Align centre',right:'Align right',justify:'Justify',ul:'Bullet list',ol:'Numbered list',link:'Add link',unlink:'Remove link',clear:'Clear formatting'};
-const GROUPS=[['undo','redo'],['b','i','u','color'],['left','center','right','justify'],['ul','ol'],['link','unlink','clear']];
+const TIP={font:'Font',undo:'Undo',redo:'Redo',b:'Bold',i:'Italic',u:'Underline',color:'Text colour',left:'Align left',center:'Align centre',right:'Align right',justify:'Justify',ul:'Bullet list',ol:'Numbered list',link:'Add link',unlink:'Remove link',clear:'Clear formatting'};
+const GROUPS=[['undo','redo'],['font'],['b','i','u','color'],['left','center','right','justify'],['ul','ol'],['link','unlink','clear']];
 let bar=null,pal=null,cur=null,accent='#042D7C';
 function css(){if(document.getElementById('skrt-css'))return;const s=document.createElement('style');s.id='skrt-css';s.textContent=`
 .skrt{position:fixed;z-index:2147482000;display:flex;align-items:center;gap:2px;background:#FFFFFF;border:1px solid #E3E4E8;border-radius:14px;box-shadow:0 14px 36px rgba(4,45,124,.16);padding:5px;font-family:Lato,system-ui,sans-serif;max-width:calc(100vw - 16px);overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
@@ -58,6 +60,10 @@ function css(){if(document.getElementById('skrt-css'))return;const s=document.cr
 .skrt button{all:unset;box-sizing:border-box;flex:none;width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;color:#2C3E50;cursor:pointer;position:relative}
 .skrt button:hover{background:#F1F3F6;color:#042D7C}.skrt button.on{background:#EEF2FA;color:#042D7C}.skrt button[disabled]{opacity:.3;cursor:default;background:none}
 .skrt button:focus-visible{outline:2px solid #042D7C;outline-offset:1px}
+.skrt button.fn{width:auto;min-width:118px;max-width:150px;padding:0 8px 0 10px;gap:6px;justify-content:space-between;font-size:13px;font-weight:700;border:1px solid #E3E4E8}.skrt button.fn .fl{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.skrt-fn{position:fixed;z-index:2147482001;background:#fff;border:1px solid #E3E4E8;border-radius:14px;box-shadow:0 14px 36px rgba(4,45,124,.16);padding:6px;display:flex;flex-direction:column;gap:2px;min-width:210px;max-height:340px;overflow:auto}
+.skrt-fn .ttl{font-size:11px;font-weight:900;letter-spacing:.1em;color:#5B6470;padding:8px 10px 4px;font-family:Lato,system-ui,sans-serif}
+.skrt-fn button{all:unset;cursor:pointer;padding:9px 10px;border-radius:9px;font-size:15px;color:#2C3E50;display:flex;justify-content:space-between;gap:10px}.skrt-fn button:hover{background:#F1F3F6}.skrt-fn button.on{background:#EEF2FA;color:#042D7C;font-weight:700}
 .skrt i{flex:none;width:1px;height:20px;background:#E3E4E8;margin:0 4px}
 .skrt .sw{position:absolute;left:9px;right:9px;bottom:5px;height:3px;border-radius:2px}
 .skrt-pal{position:fixed;z-index:2147482001;background:#fff;border:1px solid #E3E4E8;border-radius:14px;box-shadow:0 14px 36px rgba(4,45,124,.16);padding:10px;display:grid;grid-template-columns:repeat(4,30px);gap:8px}
@@ -70,13 +76,14 @@ function css(){if(document.getElementById('skrt-css'))return;const s=document.cr
 @media (max-width:640px){.skrt{left:8px!important;right:8px;top:auto!important;bottom:calc(76px + env(safe-area-inset-bottom));justify-content:flex-start}}`;document.head.appendChild(s);}
 const svg=d=>`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
 function build(){css();bar=document.createElement('div');bar.className='skrt';bar.setAttribute('role','toolbar');bar.setAttribute('aria-label','Text formatting');
-  bar.innerHTML=GROUPS.map(g=>g.map(k=>`<button type="button" data-k="${k}" title="${TIP[k]}" aria-label="${TIP[k]}">${svg(I[k])}${k==='color'?'<span class="sw"></span>':''}</button>`).join('')).join('<i></i>');
+  bar.innerHTML=GROUPS.map(g=>g.map(k=>k==='font'?`<button type="button" class="fn" data-k="font" title="Font" aria-label="Font" aria-haspopup="listbox"><span class="fl">Font</span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>`:`<button type="button" data-k="${k}" title="${TIP[k]}" aria-label="${TIP[k]}">${svg(I[k])}${k==='color'?'<span class="sw"></span>':''}</button>`).join('')).join('<i></i>');
   bar.insertAdjacentHTML('beforeend','<span class="hint">Click any text on the CV to format it</span>');bar.style.display='none';document.body.appendChild(bar);
   bar.addEventListener('mousedown',e=>e.preventDefault());bar.addEventListener('touchstart',e=>{if(e.target.closest('button'))e.preventDefault();},{passive:false});
   bar.addEventListener('click',e=>{const b=e.target.closest('button[data-k]');if(!b||b.disabled||!cur)return;run(b.dataset.k,b);});
   bar.addEventListener('touchend',e=>{const b=e.target.closest('button[data-k]');if(!b||b.disabled||!cur)return;e.preventDefault();run(b.dataset.k,b);});}
 function run(k,btn){const n=cur;if(!n)return;n.focus({preventScroll:true});
   if(k==='color'){openPal(btn);return;}
+  if(k==='font'){if(pal){closePal();return;}openFont(btn);return;}
   if(['left','center','right','justify'].includes(k)){n.dataset.al=k==='left'?'':k;n.style.textAlign=k==='left'?'':k;n.style.display=k==='left'&&!n.dataset.wasBlock?'':'block';sync();return;}
   if(k==='link'){const sel=getSelection();if(!sel||sel.isCollapsed){alert('Select the text you want to link first.');return;}const r=sel.getRangeAt(0).cloneRange();let u=prompt('Link address (https://…, mailto: or tel:)','https://');if(!u)return;u=u.trim();if(!/^(https?:|mailto:|tel:)/i.test(u))u=(/@/.test(u)?'mailto:':'https://')+u.replace(/^\/+/,'');sel.removeAllRanges();sel.addRange(r);document.execCommand('createLink',false,u);sync();return;}
   const C={undo:'undo',redo:'redo',b:'bold',i:'italic',u:'underline',ul:'insertUnorderedList',ol:'insertOrderedList',unlink:'unlink',clear:'removeFormat'}[k];
@@ -86,18 +93,30 @@ function openPal(btn){closePal();pal=document.createElement('div');pal.className
   document.body.appendChild(pal);const r=btn.getBoundingClientRect();pal.style.left=Math.min(innerWidth-pal.offsetWidth-8,Math.max(8,r.left-10))+'px';pal.style.top=(r.bottom+6+pal.offsetHeight>innerHeight?r.top-pal.offsetHeight-6:r.bottom+6)+'px';
   pal.addEventListener('mousedown',e=>e.preventDefault());pal.addEventListener('click',e=>{const b=e.target.closest('[data-c]');if(!b)return;cur&&cur.focus({preventScroll:true});try{document.execCommand('styleWithCSS',false,true);}catch(x){}
     document.execCommand('foreColor',false,b.dataset.c||getComputedStyle(cur).color);try{document.execCommand('styleWithCSS',false,false);}catch(x){}closePal();sync();});}
+const FONTS=[['Template font',''],['Arial','Arial, Helvetica, sans-serif'],['Calibri','Calibri, Carlito, sans-serif'],['Cambria','Cambria, Georgia, serif'],['Garamond','Garamond, "EB Garamond", "Cormorant Garamond", serif'],['Georgia','Georgia, serif'],['Helvetica','Helvetica, Arial, sans-serif'],['Lato','Lato, sans-serif'],['Tahoma','Tahoma, Verdana, sans-serif'],['Times New Roman','"Times New Roman", Times, serif'],['Trebuchet MS','"Trebuchet MS", sans-serif'],['Verdana','Verdana, sans-serif']];
+function curFont(){let v='';try{v=document.queryCommandValue('fontName')||'';}catch(e){}v=String(v).split(',')[0].replace(/["']/g,'').trim();const tf=cur?String(getComputedStyle(cur).fontFamily).split(',')[0].replace(/["']/g,'').trim():'';return {v,tf};}
+function openFont(btn){closePal();pal=document.createElement('div');pal.className='skrt-fn';pal.setAttribute('role','listbox');const {v,tf}=curFont();
+  pal.innerHTML='<div class="ttl">FONT</div>'+FONTS.map(([l,c])=>{const on=c?l.toLowerCase()===v.toLowerCase()&&v.toLowerCase()!==tf.toLowerCase():!v||v.toLowerCase()===tf.toLowerCase();return `<button type="button" role="option" data-f="${c.replace(/"/g,'&quot;')}" class="${on?'on':''}" style="font-family:${(c||'inherit').replace(/"/g,"'")}">${l}${on?'<span>✓</span>':''}</button>`;}).join('');
+  document.body.appendChild(pal);const r=btn.getBoundingClientRect();pal.style.left=Math.min(innerWidth-pal.offsetWidth-8,Math.max(8,r.left))+'px';pal.style.top=(r.bottom+6+pal.offsetHeight>innerHeight?Math.max(8,r.top-pal.offsetHeight-6):r.bottom+6)+'px';
+  pal.addEventListener('mousedown',e=>e.preventDefault());pal.addEventListener('click',e=>{const b=e.target.closest('[data-f]');if(!b||!cur)return;cur.focus({preventScroll:true});const fam=b.dataset.f;const sel=getSelection();
+    if(!sel||!sel.rangeCount||sel.isCollapsed||!cur.contains(sel.anchorNode)){const rg=document.createRange();rg.selectNodeContents(cur);sel.removeAllRanges();sel.addRange(rg);}
+    const all=sel.toString().trim()===cur.textContent.trim();
+    if(!fam){if(all){cur.querySelectorAll('[style*="font-family"]').forEach(x=>x.style.fontFamily='');cur.querySelectorAll('font[face]').forEach(x=>x.removeAttribute('face'));}else{try{document.execCommand('styleWithCSS',false,true);}catch(x){}document.execCommand('fontName',false,getComputedStyle(cur).fontFamily);}}
+    else{try{document.execCommand('styleWithCSS',false,true);}catch(x){}document.execCommand('fontName',false,fam);}
+    try{document.execCommand('styleWithCSS',false,false);}catch(x){}cur.dispatchEvent(new Event('input',{bubbles:true}));closePal();sync();});}
 function closePal(){if(pal){pal.remove();pal=null;}}
 function sync(){if(!bar||!cur)return;const q=c=>{try{return document.queryCommandState(c);}catch(e){return false;}};
   const st={b:q('bold'),i:q('italic'),u:q('underline'),ul:q('insertUnorderedList'),ol:q('insertOrderedList')};const al=cur.dataset.al||'left';
   bar.querySelectorAll('button[data-k]').forEach(b=>{const k=b.dataset.k;b.classList.toggle('on',!!st[k]||k===al);});
-  let col='';try{col=document.queryCommandValue('foreColor');}catch(e){}const sw=bar.querySelector('.sw');if(sw)sw.style.background=col||'#2C3E50';}
+  let col='';try{col=document.queryCommandValue('foreColor');}catch(e){}const sw=bar.querySelector('.sw');if(sw)sw.style.background=col||'#2C3E50';
+  const fl=bar.querySelector('.fn .fl');if(fl){const {v,tf}=curFont();const k=FONTS.find(([l])=>l.toLowerCase()===(v||tf).toLowerCase());fl.textContent=k?k[0]:(v||tf||'Font');fl.style.fontFamily=k&&k[1]?k[1]:'';}}
 function place(){if(!bar||!cur||bar.classList.contains('dock'))return;if(innerWidth<=640){bar.style.top='';bar.style.left='';return;}const r=cur.getBoundingClientRect();const bw=bar.offsetWidth,bh=bar.offsetHeight;
   let y=r.top-bh-10;if(y<70)y=r.bottom+10;const x=Math.min(innerWidth-bw-8,Math.max(8,r.left+r.width/2-bw/2));bar.style.top=y+'px';bar.style.left=x+'px';}
 function show(n,opt){if(!bar)build();dock();cur=n;bar.querySelectorAll('button[data-k]').forEach(b=>b.disabled=false);bar.classList.add('live');const ht=bar.querySelector('.hint');if(ht)ht.textContent='Formatting: '+(n.dataset.f?String(n.dataset.f).split('.')[0].replace(/^exp$/,'experience').replace(/^edu$/,'education'):'text');accent=(opt&&opt.accent)||accent;const multi=!!(opt&&opt.multi),list=!!(opt&&opt.lists);
   bar.querySelectorAll('[data-k=ul],[data-k=ol]').forEach(b=>b.disabled=!list);bar.querySelectorAll('[data-k=left],[data-k=center],[data-k=right],[data-k=justify]').forEach(b=>b.disabled=!!(opt&&opt.noAlign));
   bar.style.display='flex';place();sync();}
 function hide(n){if(cur&&n&&cur!==n)return;cur=null;closePal();if(!bar)return;if(bar.classList.contains('dock')){idle();return;}bar.style.display='none';}
-function idle(){if(!bar)return;bar.classList.remove('live');bar.querySelectorAll('button[data-k]').forEach(b=>{b.disabled=true;b.classList.remove('on');});const ht=bar.querySelector('.hint');if(ht)ht.textContent='Click any text on the CV to format it';}
+function idle(){if(!bar)return;bar.classList.remove('live');const fl=bar.querySelector('.fn .fl');if(fl){fl.textContent='Font';fl.style.fontFamily='';}bar.querySelectorAll('button[data-k]').forEach(b=>{b.disabled=true;b.classList.remove('on');});const ht=bar.querySelector('.hint');if(ht)ht.textContent='Click any text on the CV to format it';}
 function dock(){const h=document.querySelector('[data-skrt-dock]');const want=h&&innerWidth>640?h:null;if(want){if(!bar)build();if(bar.parentNode!==want){want.appendChild(bar);bar.classList.add('dock');bar.style.top='';bar.style.left='';bar.style.display='flex';if(!cur)idle();}}else if(bar&&bar.classList.contains('dock')){bar.classList.remove('dock');document.body.appendChild(bar);bar.querySelectorAll('button[data-k]').forEach(b=>b.disabled=false);if(!cur)bar.style.display='none';else place();}}
 setInterval(dock,400);addEventListener('resize',dock);
 document.addEventListener('selectionchange',()=>{if(cur&&document.activeElement===cur)sync();});
