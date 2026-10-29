@@ -73,7 +73,7 @@ async function listItems(X,ul,ctx){const out=[];const ord=ul.tagName==='OL';
     const pp=paraProps(X,li,ctx);const left=pp.indent.left;pp.indent={left,hanging:Math.round((parseFloat(cs.fontSize)||14)*0.9*PX),right:pp.indent.right};
     const none=cs.listStyleType==='none';const k=out.length+1;
     if(!none){const fz=parseFloat(cs.fontSize)||14;const ul2=li.parentElement.getBoundingClientRect();const hang=Math.max(8,Math.min(30,li.getBoundingClientRect().left-ul2.left))||14;pp.indent={left:pp.indent.left,hanging:tw(hang),right:pp.indent.right};
-      rs.unshift(new X.TextRun({text:'\t'}));rs.unshift(new X.TextRun({text:ord?(k+'.'):'\u2022',font:ord?fam(cs):'Arial',size:hp(fz),color:hex(cs.color)||'000000'}));pp.tabStops=[{type:X.TabStopType.LEFT,position:pp.indent.left}];}
+      pp.numbering=ord?{reference:'skdo',level:0,instance:(ctx.__ol=(ctx.__ol||0)+(k===1?1:0))}:{reference:'skdb',level:0};}
     out.push(new X.Paragraph(Object.assign({children:rs},pp)));}
   return out;}
 async function conv(X,el,ctx,inCell){const out=[];
@@ -136,6 +136,6 @@ async function sections(X,pages,opt){opt=opt||{};const W=opt.w||794,H=opt.h||112
   finally{host.remove();}
   return secs;}
 function hasOwnText(el){return [...el.childNodes].some(n=>n.nodeType===3&&/\S/.test(n.nodeValue));}
-function numbering(X){return {config:[{reference:'skdb',levels:[{level:0,format:X.LevelFormat.BULLET,text:'\u2022',alignment:X.AlignmentType.LEFT,style:{paragraph:{indent:{left:360,hanging:220}},run:{font:'Arial'}}}]},{reference:'skdo',levels:[{level:0,format:X.LevelFormat.DECIMAL,text:'%1.',alignment:X.AlignmentType.LEFT,style:{paragraph:{indent:{left:360,hanging:260}}}}]}]};}
+function numbering(X){return {config:[{reference:'skdb',levels:[{level:0,format:X.LevelFormat.BULLET,text:'\u2022',alignment:X.AlignmentType.LEFT,style:{paragraph:{indent:{left:360,hanging:220}},run:{font:'Arial',bold:false,italics:false}}}]},{reference:'skdo',levels:[{level:0,format:X.LevelFormat.DECIMAL,text:'%1.',alignment:X.AlignmentType.LEFT,style:{paragraph:{indent:{left:360,hanging:260}}}}]}]};}
 window.SKDOCX={sections,numbering};
 })();
