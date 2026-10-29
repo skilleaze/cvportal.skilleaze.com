@@ -96,7 +96,7 @@ function asideH(F,afs,W,photo){const lh=afs*1.4,hh=afs*1.3+12.5;let t=92+(photo?
 const GEO={plain:[690,92],bar:[690,92],edge:[676,92],frame:[678,104],sideL:[472,92],sideR:[472,92],sideDark:[462,92]};
 let KEEP=false;const IS=k=>((D.col||{})[k]||(k==='skills'?'main':'side'))==='side'&&!(D.hide||[]).includes(k);let PX=52,PY=46,PGW=794,PGH=1123;const GW=S=>GEO[S.sh][0]+(PGW-794)+2*(52-PX);
 const HT=(k,t)=>tf('heads.'+k,(D.heads&&D.heads[k])||t);
-const LK=t=>{let u=String(t||'').trim();if(!u)return '';if(!/^https?:\/\//i.test(u))u='https://'+u.replace(/^\/+/,'');return `<a href="${u.replace(/"/g,'&quot;')}" data-sklink="1" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">LinkedIn</a>`;};const tf=(p,t)=>D.edit&&p?`<span data-f="${p}">${esc(t)}</span>`:(p==='linkedin'?LK(t):esc(t));
+const LK=t=>{let u=String(t||'').trim();if(!u)return '';if(!/^https?:\/\//i.test(u))u='https://'+u.replace(/^\/+/,'');return `<a href="${u.replace(/"/g,'&quot;')}" data-sklink="1" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">${esc(String(t||'').trim())}</a>`;};const tf=(p,t)=>D.edit&&p?`<span data-f="${p}">${esc(t)}</span>`:(p==='linkedin'?LK(t):esc(t));
 function shell(S,C,F,fs,p,flow,photo){
  const base=`width:${PGW}px;height:${PGH}px;background:#FFFFFF;font-family:${F};color:#222;font-size:${fs}px;line-height:1.42;box-sizing:border-box;overflow:hidden;position:relative`;
  const fl=`<div style="flex:1;min-height:0;overflow:hidden">${flow}</div>`;

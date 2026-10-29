@@ -66,8 +66,8 @@ async function drawPage(doc,page,fonts){
   const tw=document.createTreeWalker(page,NodeFilter.SHOW_TEXT);let n;const rng=document.createRange();
   while((n=tw.nextNode())){const raw=n.nodeValue;if(!raw||!raw.trim())continue;const el=n.parentElement;if(!el||el.closest('svg'))continue;const cs=getComputedStyle(el);if(cs.display==='none'||cs.visibility==='hidden')continue;
     const col=rgba(cs.color);if(!col)continue;const fsz=parseFloat(cs.fontSize);const slug=famSlug(cs.fontFamily);const bold=isBold(cs.fontWeight);const it=cs.fontStyle==='italic';
-    const fname=await ensureFont(doc,fonts,slug,bold,it);if(fname)doc.setFont(fname,'normal');else doc.setFont(stdFont(slug),bold&&it?'bolditalic':bold?'bold':it?'italic':'normal');
-    doc.setFontSize(fsz*K);doc.setTextColor(...col);const ls=cs.letterSpacing==='normal'?0:(parseFloat(cs.letterSpacing)||0);
+    const f0=String(cs.fontFamily).split(',')[0].trim().replace(/^["']|["']$/g,'');let webOk=true;try{webOk=!document.fonts||document.fonts.check((it?'italic ':'')+(bold?'700':'400')+' 16px "'+f0+'"');}catch(e){}const fname=webOk?await ensureFont(doc,fonts,slug,bold,it):null;if(fname)doc.setFont(fname,'normal');else doc.setFont(stdFont(slug),bold&&it?'bolditalic':bold?'bold':it?'italic':'normal');
+    doc.setFontSize(fsz*K);doc.setTextColor(...col);const ls0=cs.letterSpacing==='normal'?0:(parseFloat(cs.letterSpacing)||0);const ls=Math.max(-0.05*fsz,Math.min(ls0,0.06*fsz));const HS=ls0>ls+0.01?1.3:1.12;
     const tf=cs.textTransform;const T=s=>tf==='uppercase'?s.toUpperCase():tf==='lowercase'?s.toLowerCase():tf==='capitalize'?s.replace(/\b\w/g,c=>c.toUpperCase()):s;
     // collect words with their boxes
     const words=[];const re=/\S+/g;let m;while((m=re.exec(raw))){rng.setStart(n,m.index);rng.setEnd(n,m.index+m[0].length);const rs=[...rng.getClientRects()].filter(x=>x.width>0);if(!rs.length)continue;
@@ -75,12 +75,12 @@ async function drawPage(doc,page,fonts){
         let i0=m.index;for(let i=m.index;i<m.index+m[0].length;i++){rng.setStart(n,i);rng.setEnd(n,i+1);const cr=rng.getClientRects()[0];if(!cr)continue;const last=words[words.length-1];if(last&&last._n===n&&last._i===i-1&&Math.abs(last.r.top-cr.top)<2){last.t+=raw[i];last.r={left:last.r.left,top:last.r.top,bottom:last.r.bottom,right:cr.right,width:cr.right-last.r.left,height:last.r.height};last._i=i;}else words.push({t:raw[i],r:cr,_n:n,_i:i});}}}
     // group into lines
     const lines=[];for(const w of words){const L=lines[lines.length-1];if(L&&Math.abs(L.top-w.r.top)<fsz*0.35)L.w.push(w);else lines.push({top:w.r.top,w:[w]});}
-    const lead=/^\s/.test(raw);for(let li=0;li<lines.length;li++){const L=lines[li];if(li===0&&lead){const sp=doc.getTextWidth(' ');doc.text(' ',X(L.w[0].r.left)-sp,Y(L.w[0].r.bottom)-((L.w[0].r.height-fsz)/2+fsz*0.22)*K,{baseline:'alphabetic'});}const f=L.w[0].r,l=L.w[L.w.length-1].r;const base=Y(f.bottom)-((f.height-fsz*1.0)/2+fsz*0.22)*K;const str=T(L.w.map(w=>w.t).join(' '));
+    const lead=/^\s/.test(raw),trail=/\s$/.test(raw);for(let li=0;li<lines.length;li++){const L=lines[li];if(li===lines.length-1&&trail){const q=L.w[L.w.length-1].r;doc.text(' ',X(q.right),Y(q.bottom)-((q.height-fsz)/2+fsz*0.22)*K,{baseline:'alphabetic'});}if(li===0&&lead){const sp=doc.getTextWidth(' ');doc.text(' ',X(L.w[0].r.left)-sp,Y(L.w[0].r.bottom)-((L.w[0].r.height-fsz)/2+fsz*0.22)*K,{baseline:'alphabetic'});}const f=L.w[0].r,l=L.w[L.w.length-1].r;const base=Y(f.bottom)-((f.height-fsz*1.0)/2+fsz*0.22)*K;const str=T(L.w.map(w=>w.t).join(' '));
       const want=(l.right-f.left)*K;const got=doc.getTextWidth(str)+ls*K*Math.max(0,str.length-1);
       const ratio=got>0?want/got:1;
-      if(L.w.length===1||Math.abs(got-want)<=Math.max(0.6,want*0.006)||(got>0&&want/got>=0.8&&want/got<=1.12&&!/justify/.test(cs.textAlign||''))){const o={charSpace:ls*K,baseline:'alphabetic'};if(got>0&&Math.abs(got-want)>0.3)o.horizontalScale=Math.max(0.8,Math.min(1.12,want/got));doc.text(str,X(f.left),base,o);}
+      if(L.w.length===1||Math.abs(got-want)<=Math.max(0.6,want*0.006)||(got>0&&want/got>=0.8&&want/got<=HS&&!/justify/.test(cs.textAlign||''))){const o={charSpace:ls*K,baseline:'alphabetic'};if(got>0&&Math.abs(got-want)>0.3)o.horizontalScale=Math.max(0.8,Math.min(HS,want/got));doc.text(str,X(f.left),base,o);}
       
-      else L.w.forEach((w,wi)=>{const bw=Y(w.r.bottom)-((w.r.height-fsz)/2+fsz*0.22)*K;const tt=T(w.t);const gw=doc.getTextWidth(tt)+ls*K*Math.max(0,tt.length-1);const ww=w.r.width*K;const o={charSpace:ls*K,baseline:'alphabetic'};if(gw>ww*1.01&&gw>0)o.horizontalScale=Math.max(0.8,ww/gw);doc.text(tt+(wi<L.w.length-1?' ':''),X(w.r.left),bw,o);});}
+      else L.w.forEach((w,wi)=>{const bw=Y(w.r.bottom)-((w.r.height-fsz)/2+fsz*0.22)*K;const tt=T(w.t);const gw=doc.getTextWidth(tt)+ls*K*Math.max(0,tt.length-1);const ww=w.r.width*K;const o={charSpace:ls*K,baseline:'alphabetic'};if(gw>0&&Math.abs(gw-ww)>0.3)o.horizontalScale=Math.max(0.8,Math.min(HS,ww/gw));doc.text(tt+(wi<L.w.length-1?' ':''),X(w.r.left),bw,o);});}
   }
   // 3. clickable links (LinkedIn, website, email)
   for(const a of page.querySelectorAll('a[href]')){const u=a.getAttribute('href');if(!/^(https?:|mailto:|tel:)/i.test(u))continue;for(const q of a.getClientRects()){if(q.width<1||q.bottom<=P.top||q.top>=P.bottom)continue;try{doc.link(X(q.left),Y(q.top),q.width*K,q.height*K,{url:u});}catch(e){}}}
