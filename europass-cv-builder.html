@@ -24,8 +24,8 @@
 <title>Skilleaze Internal CV Portal · Europass CV</title><meta name="robots" content="noindex,nofollow">
 
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Lato:wght@400;700;900&family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
-<script src="./cv-builder/cv-engine.js?v=30"></script>
-<script src="./cv-builder/europass-engine.js?v=30"></script>
+<script src="./cv-builder/cv-engine.js?v=32"></script>
+<script src="./cv-builder/europass-engine.js?v=32"></script>
 <script src="./cv-builder/muneez.js?v=30"></script>
 <script src="./cv-builder/portal-config.js?v=30"></script>
 <script src="./cv-builder/portal-store.js?v=30"></script>
@@ -545,7 +545,7 @@ class Component extends DCLogic {
     el.insertAdjacentHTML('afterbegin','<style data-ed>[data-f]{outline:1.5px dashed transparent;outline-offset:2px;border-radius:2px;cursor:text;transition:outline-color .15s}[data-f]:hover{outline-color:#9DB3E0}[data-f]:focus{outline:2px solid #042D7C;background:rgba(4,45,124,.06)}[data-ul]:focus{background:rgba(4,45,124,.04)}</style>');
     el.style.position='relative';
     const get=p=>{const a=p.split('.');let o=this.cvObj().data;for(const k of a)o=o==null?'':o[k];return o==null?'':String(o);};
-    el.querySelectorAll('[data-f]').forEach(n=>{n.contentEditable='true';n.spellcheck=true;
+    el.querySelectorAll('[data-lkedit]').forEach(n=>{if(n._lk)return;n._lk=1;n.addEventListener('click',ev=>{ev.preventDefault();ev.stopPropagation();const c=this.cvObj();const cur=(c&&c.data&&c.data.linkedin)||'';const v=window.prompt('LinkedIn profile link',cur);if(v==null)return;this.upd(x=>{x.linkedin=String(v).trim();});});});el.querySelectorAll('[data-f]').forEach(n=>{n.contentEditable='true';n.spellcheck=true;
       n.addEventListener('focus',()=>{if(!window.SKRT)return;const c=this.cvObj();const acc=(c&&c.color)||((window.SKCV.DES[(c&&c.tpl)||0]||{}).c||[])[1];SKRT.show(n,{lists:n.dataset.f==='summary',noAlign:!!n.dataset.ul,accent:acc});});
       if(!n.dataset.ul){n.addEventListener('focus',()=>{if(window.SKRT)SKRT.toEdit(n,get(n.dataset.f));else n.textContent=get(n.dataset.f);});n.addEventListener('keydown',ev=>{if(ev.key==='Enter'&&n.dataset.f!=='summary'){ev.preventDefault();n.blur();}});}
       n.addEventListener('blur',()=>{window.SKRT&&SKRT.hide(n);const p=n.dataset.f;let v;if(n.dataset.ul){v=[...el.querySelectorAll(`[data-f="${p}"] li`)].map(li=>window.SKRT?SKRT.fromEdit(li,false):li.textContent.trim()).filter(Boolean).join('\n');}else v=window.SKRT?SKRT.fromEdit(n,p==='summary'):n.innerText.replace(/\n+/g,p==='summary'?'\n':' ').trim();
