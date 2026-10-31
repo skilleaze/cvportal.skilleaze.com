@@ -24,11 +24,11 @@
 <title>Skilleaze Internal CV Portal · ATS CV</title><meta name="robots" content="noindex,nofollow">
 
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Lato:wght@400;700;900&family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
-<script src="./cv-builder/cv-engine.js?v=32"></script>
+<script src="./cv-builder/cv-engine.js?v=33"></script>
 <script src="./cv-builder/muneez.js?v=30"></script>
 <script src="./cv-builder/portal-config.js?v=30"></script>
 <script src="./cv-builder/portal-store.js?v=30"></script>
-<script src="./cv-builder/rich-text.js?v=30"></script>
+<script src="./cv-builder/rich-text.js?v=33"></script>
 <script src="./cv-builder/sk-ui.js?v=30"></script>
 <script src="./cv-builder/pdf-export.js?v=30"></script>
 <script src="./cv-builder/docx-dom.js?v=30"></script>
@@ -306,7 +306,11 @@ textarea{resize:vertical}
 </div>
 </div>
 </sc-if>
-<sc-if value="{{ ckBusy }}"><div style="background:#FFFFFF;border:1px solid #E3E4E8;border-radius:24px;padding:clamp(20px,3vw,28px);box-sizing:border-box;display:flex;align-items:center;gap:16px;color:#042D7C;font-weight:900;font-size:16px"><div style="width:30px;height:30px;border-radius:50%;border:3px solid #E3E4E8;border-top-color:#042D7C;animation:skb-spin .8s linear infinite;flex:none"></div>{{ ckBusy }}</div></sc-if>
+<sc-if value="{{ ckBusy }}"><div style="background:#FFFFFF;border:1px solid #E3E4E8;border-radius:24px;padding:clamp(22px,3.4vw,34px);box-sizing:border-box;display:flex;flex-direction:column;gap:18px;max-width:640px">
+<div style="display:flex;flex-direction:column;gap:4px"><div style="font-size:12px;font-weight:900;letter-spacing:.12em;color:#053BA0">ANALYSING</div><div style="font-weight:900;font-size:18px;color:#042D7C;overflow-wrap:anywhere">{{ ckFileName }}</div></div>
+<div style="display:flex;flex-direction:column;gap:14px"><sc-for list="{{ ckSteps }}" as="t" hint-placeholder-count="5"><div style="{{ t.style }}"><span style="{{ t.dot }}">{{ t.ic }}</span><span>{{ t.l }}</span></div></sc-for></div>
+<div style="font-size:13px;color:#8A919C">A full check takes about 10–30 seconds.</div>
+</div></sc-if>
 <sc-if value="{{ ckHasRes }}">
 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,max(calc((100% - 20px) / 2),calc((760px - 100%) * 999))),1fr));gap:20px;align-items:start">
 <section style="background:#FFFFFF;border:1px solid #E3E4E8;border-radius:24px;padding:clamp(20px,3vw,28px);box-sizing:border-box;display:flex;flex-direction:column;align-items:flex-start;gap:16px">
@@ -321,6 +325,7 @@ textarea{resize:vertical}
 <button onClick="{{ ckRecheck }}" style="all:unset;cursor:pointer;font-size:14px;font-weight:900;color:#042D7C;text-decoration:underline">Check another CV</button>
 </section>
 <section style="background:#FFFFFF;border:1px solid #E3E4E8;border-radius:24px;padding:clamp(20px,3vw,28px);box-sizing:border-box;display:flex;flex-direction:column;gap:6px">
+<sc-if value="{{ ckAi }}"><div style="display:flex;flex-direction:column;gap:10px;background:#F7F9FC;border-radius:16px;padding:16px;margin-bottom:8px"><div style="display:flex;align-items:center;gap:8px;font-size:12px;font-weight:900;letter-spacing:.12em;color:#053BA0"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.8L20 11l-6.1 2.2L12 19l-1.9-5.8L4 11l6.1-2.2z"></path></svg>RECRUITER REVIEW</div><div style="font-size:14px;line-height:1.6;color:#2C3E50">{{ ckSummary }}</div><sc-if value="{{ ckHasStr }}"><div style="display:flex;gap:6px;flex-wrap:wrap"><sc-for list="{{ ckStrengths }}" as="g" hint-placeholder-count="0"><span style="font-size:12px;font-weight:700;color:#1E7A4C;background:#E6F4EC;border-radius:999px;padding:5px 10px">{{ g.t }}</span></sc-for></div></sc-if></div></sc-if><sc-if value="{{ ckNoAi }}"><div style="font-size:12px;color:#8A919C;margin-bottom:6px">AI review was unavailable, so this score uses the standard ATS checks only.</div></sc-if>
 <sc-if value="{{ ckHasFails }}"><div style="font-size:12px;font-weight:900;letter-spacing:.12em;color:#053BA0;color:#B3261E">TO FIX</div>
 <sc-for list="{{ ckFails }}" as="c" hint-placeholder-count="0"><div style="display:flex;gap:10px;padding:12px 0;border-bottom:1px solid #EEF0F3"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B3261E" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" style="flex:none;margin-top:2px"><path d="M18 6 6 18M6 6l12 12"></path></svg><div style="display:flex;flex-direction:column;gap:2px;min-width:0"><div style="font-weight:900;font-size:14px;color:#2C3E50">{{ c.label }}</div><div style="font-size:13px;color:#5B6470;line-height:1.45">{{ c.tip }}</div></div></div></sc-for></sc-if>
 <div style="font-size:12px;font-weight:900;letter-spacing:.12em;color:#053BA0;color:#1E7A4C;margin-top:10px">PASSED</div>
@@ -540,7 +545,7 @@ class Component extends DCLogic {
      edu:(d.edu||[]).map((e,i)=>Object.assign([e.deg||'',e.school||'',FD(e.yrs||'')],{_i:i})).filter(e=>e[0]||e[1]),langs:(d.langs||'').trim(),
      extra:(d.extra||[]).map(x=>({title:x.title,items:(x.items||'').split('\n').map(s=>s.trim()).filter(Boolean)})),photo:d.photo||'',heads:d.heads||{}};}
   pageHtml(pages,w,z){const PW=this.pw||794,PH=this.ph||1123;const s=Math.min(1,(w-4)/PW)*(z||1);return pages.map(p=>`<div style="width:${PW*s}px;height:${PH*s}px;overflow:hidden;background:#fff;border-radius:4px;box-shadow:0 6px 24px rgba(20,30,60,.12);flex-shrink:0"><div style="transform:scale(${s});transform-origin:0 0;width:${PW}px;height:${PH}px">${p}</div></div>`).join('');}
-  render1(cv,ed){const D=this.toD(cv.data);D.order=cv.order;D.hide=cv.hide;D.edit=!!ed;D.photoMode=cv.photoMode;D.photoShape=cv.photoShape;D.col=cv.col;const r=window.SKCV.render(D,cv.tpl||0,{color:cv.color||undefined,font:cv.font||undefined,margin:cv.margin,paper:cv.paper,size:cv.fsize||undefined,max:cv.fitN||2,tight:!!cv.tight,keep:!!cv.keep});this.pw=r.w||794;this.ph=r.h||1123;if(!ed)this.lastFs=r.fs;return r;}
+  render1(cv,ed){const D=this.toD(cv.data);D.order=cv.order;D.hide=cv.hide;D.edit=!!ed;D.photoMode=cv.photoMode;D.photoShape=cv.photoShape;D.col=cv.col;window.__SKLST=cv.lst||{};const r=window.SKCV.render(D,cv.tpl||0,{color:cv.color||undefined,font:cv.font||undefined,margin:cv.margin,paper:cv.paper,size:cv.fsize||undefined,max:cv.fitN||2,tight:!!cv.tight,keep:!!cv.keep});this.pw=r.w||794;this.ph=r.h||1123;if(!ed)this.lastFs=r.fs;return r;}
   paint(){
     if(!window.SKCV)return;const v=this.state.view;
     if(v==='home'&&this.els.hero&&!this.els.hero.childElementCount&&window.SKCV_MUNEEZ){const el=this.els.hero;const w=el.clientWidth/3-8;const s2=w/794;el.innerHTML=[0,10,2].map(n=>`<div style="height:${1123*s2}px;overflow:hidden;border-radius:6px;background:#fff;box-shadow:0 8px 24px rgba(20,30,60,.12)"><div style="transform:scale(${s2});transform-origin:0 0;width:794px;height:1123px">${window.SKCV.render(window.SKCV_MUNEEZ,n,{}).pages[0]}</div></div>`).join('');}
@@ -611,10 +616,11 @@ class Component extends DCLogic {
     el.style.position='relative';
     const get=p=>{const a=p.split('.');let o=this.cvObj().data;for(const k of a)o=o==null?'':o[k];return o==null?'':String(o);};
     el.querySelectorAll('[data-lkedit]').forEach(n=>{if(n._lk)return;n._lk=1;n.addEventListener('click',ev=>{ev.preventDefault();ev.stopPropagation();const c=this.cvObj();const cur=(c&&c.data&&c.data.linkedin)||'';const v=window.prompt('LinkedIn profile link',cur);if(v==null)return;this.upd(x=>{x.linkedin=String(v).trim();});});});el.querySelectorAll('[data-f]').forEach(n=>{n.contentEditable='true';n.spellcheck=true;
-      n.addEventListener('focus',()=>{if(!window.SKRT)return;const c=this.cvObj();const acc=(c&&c.color)||((window.SKCV.DES[(c&&c.tpl)||0]||{}).c||[])[1];SKRT.show(n,{lists:n.dataset.f==='summary',noAlign:!!n.dataset.ul,accent:acc});});
-      if(!n.dataset.ul){n.addEventListener('focus',()=>{if(window.SKRT)SKRT.toEdit(n,get(n.dataset.f));else n.textContent=get(n.dataset.f);});n.addEventListener('keydown',ev=>{if(ev.key==='Enter'&&n.dataset.f!=='summary'){ev.preventDefault();n.blur();}});}
-      n.addEventListener('blur',()=>{window.SKRT&&SKRT.hide(n);const p=n.dataset.f;let v;if(n.dataset.ul){v=[...el.querySelectorAll(`[data-f="${p}"] li`)].map(li=>window.SKRT?SKRT.fromEdit(li,false):li.textContent.trim()).filter(Boolean).join('\n');}else v=window.SKRT?SKRT.fromEdit(n,p==='summary'):n.innerText.replace(/\n+/g,p==='summary'?'\n':' ').trim();
+      n.addEventListener('focus',()=>{if(!window.SKRT)return;const c=this.cvObj();const acc=(c&&c.color)||((window.SKCV.DES[(c&&c.tpl)||0]||{}).c||[])[1];SKRT.show(n,{lists:true,noAlign:false,accent:acc});});
+      if(!n.dataset.ul){n.addEventListener('focus',()=>{if(window.SKRT)SKRT.toEdit(n,get(n.dataset.f));else n.textContent=get(n.dataset.f);});n.addEventListener('keydown',ev=>{if(ev.key!=='Enter')return;const sl=getSelection();const an=sl&&sl.anchorNode;const inLi=an&&(an.nodeType===1?an:an.parentElement)&&(an.nodeType===1?an:an.parentElement).closest('li');if(inLi&&n.contains(inLi))return;if(n.dataset.f!=='summary'&&!ev.shiftKey){ev.preventDefault();n.blur();}});}
+      if(n.dataset.ul)n.addEventListener('skrt-list',ev=>{const p=n.dataset.f;const c0=this.cvObj();const now=((c0&&c0.lst)||{})[p]||'ul';const nx=now===ev.detail?'none':ev.detail;n.blur();setTimeout(()=>{this.lastKey='';this.save(cv=>{cv.lst=Object.assign({},cv.lst||{},{[p]:nx});});},30);});n.addEventListener('blur',()=>{window.SKRT&&SKRT.hide(n);const p=n.dataset.f;let v;if(n.dataset.ul){v=[...el.querySelectorAll(`[data-f="${p}"] li`)].map(li=>window.SKRT?SKRT.fromEdit(li,false):li.textContent.trim()).filter(Boolean).join('\n');}else v=window.SKRT?SKRT.fromEdit(n,p==='summary'||/<(ul|ol|li|br)\b/i.test(n.innerHTML)):n.innerText.replace(/\n+/g,p==='summary'?'\n':' ').trim();
         if(v===get(p))return;const a=p.split('.');this.lastKey='';this.upd(x=>{let o=x;for(let k=0;k<a.length-1;k++)o=o[a[k]]??(o[a[k]]={});o[a[a.length-1]]=v;});});});
+    if(!el.querySelector('[data-pen]')){const fs=[...el.querySelectorAll('[data-f]')];el.querySelectorAll('h2,h3,[data-sh]').forEach(h=>{if(h.closest('[data-pen-skip]'))return;const tgt=fs.find(f=>!h.contains(f)&&(h.compareDocumentPosition(f)&4)&&!f.closest('h2,h3,[data-sh]'));if(!tgt)return;if(getComputedStyle(h).position==='static')h.style.position='relative';const b=document.createElement('button');b.type='button';b.setAttribute('data-pen','1');b.title='Edit this section';b.setAttribute('aria-label','Edit this section');b.contentEditable='false';b.style.cssText='all:unset;position:absolute;right:-2px;top:50%;transform:translateY(-50%);width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:inherit;opacity:.5;background:rgba(127,127,127,.12);transition:opacity .15s,background .15s;z-index:3';b.innerHTML='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>';b.onmouseenter=()=>{b.style.opacity='1';};b.onmouseleave=()=>{b.style.opacity='.5';};b.onmousedown=ev=>ev.preventDefault();b.onclick=ev=>{ev.preventDefault();ev.stopPropagation();tgt.focus();try{const r=document.createRange();r.selectNodeContents(tgt);r.collapse(false);const s=getSelection();s.removeAllRanges();s.addRange(r);}catch(x){}const top=tgt.getBoundingClientRect().top;if(top<80||top>innerHeight-120)window.scrollBy({top:top-160,behavior:'smooth'});};h.appendChild(b);});}
     el.querySelectorAll('[data-photo]').forEach(n=>{n.style.cursor='pointer';n.title='Change photo';n.onclick=()=>{const inp=document.createElement('input');inp.type='file';inp.accept='image/*';inp.onchange=ev=>{this.lastKey='';this._onPhoto&&this._onPhoto(ev);};inp.click();};});
     let bar=el.querySelector('[data-bar]');if(!bar){el.insertAdjacentHTML('beforeend','<div data-bar style="position:absolute;display:none;z-index:5;background:#042D7C;border-radius:12px;padding:4px;gap:2px;box-shadow:0 8px 24px rgba(4,45,124,.25)"></div>');bar=el.querySelector('[data-bar]');}
     const ic=(d,t,act)=>`<button data-act="${act}" title="${t}" style="all:unset;cursor:pointer;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:8px;color:#fff" onmouseover="this.style.background='rgba(255,255,255,.15)'" onmouseout="this.style.background='none'"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${d}</svg></button>`;
@@ -770,14 +776,15 @@ class Component extends DCLogic {
       D.extra.forEach(x=>{if(!x.items.length)return;ch.push(H(x.title||'Additional'));x.items.forEach(b=>ch.push(P(T(b),{bullet:{level:0}})));});}
     const doc=new X.Document({creator:'Skilleaze',numbering:window.SKRT?SKRT.numbering:undefined,title:(D.name||'CV')+(kind==='cover'?' Cover Letter':' CV'),sections:[{properties:{page:{size:this.ph===1056?{width:12240,height:15840}:{width:11906,height:16838},margin:{top:900,bottom:900,left:1000,right:1000}}},children:ch}]});const blob=await X.Packer.toBlob(doc);
     const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=(D.name||'CV').replace(/\s+/g,'_')+(kind==='cover'?'_Cover_Letter':'_CV')+'.docx';document.body.appendChild(a);a.click();setTimeout(()=>{a.remove();URL.revokeObjectURL(a.href);},4000);}
-  async atsCheck(file){if(!file)return;this.setState({ckRes:null,ckBusy:'Reading your CV…',ckFile:file.name});
+  ckStep(i){this.setState({ckStep:i});}
+  async atsCheck(file){if(!file)return;const t0=Date.now();this.setState({ckRes:null,ckBusy:'Analysing your CV',ckStep:0,ckFile:file.name});const wait=ms=>new Promise(r=>setTimeout(r,ms));
     try{let pages=0,text='';if(/\.pdf$/i.test(file.name)){try{const L=window.pdfjsLib;L.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';const pdf=await L.getDocument({data:await file.arrayBuffer()}).promise;pages=pdf.numPages;}catch(e){}}
       try{text=await this.extract(file);}catch(e){this.setState({ckBusy:''});this.flash(/doc/.test(e.message)?'Save the file as .docx or PDF, then upload it again.':'That file could not be read. Try a PDF or Word file.');return;}
       const raw=String(text||'');const words=(raw.match(/\S+/g)||[]).length;if(!pages)pages=Math.max(1,Math.round(words/500));
-      this.setState({ckBusy:'Checking it like an ATS…'});
+      await wait(900);this.ckStep(1);
       let d=window.SKIMPORT?window.SKIMPORT.parse(raw):null;
       if((!d||(window.SKIMPORT&&window.SKIMPORT.score(d)<2))&&words>40){try{const t=new Promise((_,rj)=>setTimeout(()=>rj(new Error('t')),25000));const o=await Promise.race([this.ai('Extract this CV into JSON with keys: name,title,location,phone,email,linkedin,summary,skills (array of {cat,list}),exp (array of {t,c,d,b} with b = bullets joined by \\n),edu (array of {deg,school,yrs}),langs,extra (array of {title,items}). Copy text exactly; use "" when missing. JSON only.\n\n'+raw.slice(0,20000)),t]);d=this.json(o);}catch(e){}}
-      d=Object.assign(blank(),d||{});['skills','exp','edu','extra'].forEach(k=>{if(!Array.isArray(d[k]))d[k]=[];});this.normalizeExp(d);
+      await wait(700);this.ckStep(2);d=Object.assign(blank(),d||{});['skills','exp','edu','extra'].forEach(k=>{if(!Array.isArray(d[k]))d[k]=[];});this.normalizeExp(d);
       const r=this.ats({data:d},{jd:this.state.ckJd||'',pages});
       const low=raw.toLowerCase();const has=re=>re.test(low);
       const extra=[
@@ -787,8 +794,17 @@ class Component extends DCLogic {
         ['File type',/\.(pdf|docx)$/i.test(file.name),'PDF or Word works well with ATS.','Use PDF or .docx.']];
       const xc=extra.map(([label,ok,good,bad])=>({label,ok,tip:ok?good:bad}));
       const checks=xc.concat(r.checks.filter(c=>!/^(Length|Professional email)/.test(c.label)||true));
-      let score=Math.round(checks.filter(c=>c.ok).length/checks.length*100);if(r.pct!=null)score=Math.round(score*.65+r.pct*.35);if(words<120)score=Math.min(score,25);
-      this.setState({ckBusy:'',ckRes:{score,checks,matched:r.matched||[],missing:r.missing||[],pct:r.pct,data:d,name:d.name||'',pages,words}});
+      let rule=Math.round(checks.filter(c=>c.ok).length/checks.length*100);if(r.pct!=null)rule=Math.round(rule*.65+r.pct*.35);
+      await wait(600);this.ckStep(3);
+      let ai=null;if(words>=60){try{const jd=String(this.state.ckJd||'').trim();const tm=new Promise((_,rj)=>setTimeout(()=>rj(new Error('t')),45000));
+        const o=await Promise.race([this.ai('You are a senior recruiter and ATS (applicant tracking system) expert. Review this CV the way an ATS and a recruiter would'+(jd?' for the job description below':'')+'. Judge: parse-ability and layout, section structure, contact details, job titles and dates, quality of achievement bullets (numbers, impact, action verbs), keyword relevance'+(jd?' to the job':' for the candidate\'s target role')+', length, spelling and consistency. Be strict and specific to THIS CV; quote real details from it. Return JSON only: {"score": integer 0-100, "verdict": one short sentence, "summary": 2-3 sentences of honest feedback, "strengths": [up to 4 short strings], "issues": [up to 7 objects {"label": short title, "tip": one specific fix that refers to this CV}], "missingKeywords": [up to 10 important keywords or skills missing'+(jd?' for this job':' for their target role')+']}. Never invent experience.\n\n'+(jd?'JOB DESCRIPTION:\n'+jd.slice(0,5000)+'\n\n':'')+'CV TEXT:\n'+raw.slice(0,16000)),tm]);ai=this.json(o);}catch(e){ai=null;}}
+      this.ckStep(4);
+      let score=rule,aiOk=!!(ai&&isFinite(+ai.score));if(aiOk)score=Math.round((+ai.score)*.6+rule*.4);if(words<120)score=Math.min(score,25);score=Math.max(0,Math.min(100,score));
+      const aiIssues=aiOk&&Array.isArray(ai.issues)?ai.issues.filter(x=>x&&x.label).slice(0,7).map(x=>({label:String(x.label),tip:String(x.tip||''),ok:false,ai:true})):[];
+      const seen=new Set(aiIssues.map(x=>x.label.toLowerCase()));const allChecks=aiIssues.concat(checks.filter(c=>!seen.has(c.label.toLowerCase())));
+      const missing=[...new Set([...(aiOk&&Array.isArray(ai.missingKeywords)?ai.missingKeywords.map(String):[]),...(r.missing||[])])].slice(0,14);
+      const left=Math.max(0,5200-(Date.now()-t0));await wait(left);
+      this.setState({ckBusy:'',ckStep:0,ckRes:{score,checks:allChecks,matched:r.matched||[],missing,pct:r.pct,data:d,name:d.name||'',pages,words,ai:aiOk,verdict:aiOk?String(ai.verdict||''):'',summary:aiOk?String(ai.summary||''):'',strengths:aiOk&&Array.isArray(ai.strengths)?ai.strengths.slice(0,4).map(String):[]}});
     }catch(e){console.error(e);this.setState({ckBusy:''});this.flash('Could not check that file. Please try again.');}}
   async extract(file){const buf=await file.arrayBuffer();
     if(/\.docx$/i.test(file.name)){const r=await window.mammoth.extractRawText({arrayBuffer:buf});return r.value;}
@@ -852,7 +868,9 @@ class Component extends DCLogic {
           ckDrop:e=>{e.preventDefault();const f=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0];this.atsCheck(f);},ckOver:e=>e.preventDefault(),
           ckJd:s.ckJd||'',ckSetJd:e=>this.setState({ckJd:e.target.value}),ckRecheck:()=>{this.setState({ckRes:null,ckFile:''});},
           ckScore:String(sc),ckRing:'conic-gradient('+col+' '+(sc*3.6)+'deg,#E3E4E8 0)',ckCol:col,
-          ckGrade:sc>=80?'Strong: ready for most ATS':sc>=60?'Good, with a few fixes to make':sc>=40?'Needs work before you apply':'At risk of being filtered out',
+          ckAi:!!(r&&r.ai),ckNoAi:!!r&&!r.ai,ckSummary:r&&r.summary||'',ckVerdict:r&&r.verdict||'',ckStrengths:r?(r.strengths||[]).map(t=>({t})):[],ckHasStr:!!(r&&(r.strengths||[]).length),
+          ckSteps:['Reading the file','Finding sections and contact details','Checking layout, dates and bullets','Reviewing it like a recruiter (AI)','Scoring and writing your report'].map((l,i)=>{const st=s.ckStep||0;const done=i<st,now=i===st;return {l,ic:done?'✓':now?'':String(i+1),now,done,style:'display:flex;align-items:center;gap:12px;font-size:15px;font-weight:'+(now?'900':'700')+';color:'+(done?'#1E7A4C':now?'#042D7C':'#8A919C'),dot:'width:28px;height:28px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;box-sizing:border-box;'+(done?'background:#E6F4EC;color:#1E7A4C':now?'border:3px solid #E3E4E8;border-top-color:#042D7C;animation:skb-spin .8s linear infinite':'background:#F1F3F6;color:#8A919C')};}),
+          ckGrade:r&&r.verdict?r.verdict:sc>=80?'Strong: ready for most ATS':sc>=60?'Good, with a few fixes to make':sc>=40?'Needs work before you apply':'At risk of being filtered out',
           ckPassN:r?r.checks.filter(c=>c.ok).length:0,ckTotal:r?r.checks.length:0,
           ckFails:r?r.checks.filter(c=>!c.ok).map(c=>({label:c.label,tip:c.tip})):[],ckPasses:r?r.checks.filter(c=>c.ok).map(c=>({label:c.label,tip:c.tip})):[],ckHasFails:!!r&&r.checks.some(c=>!c.ok),
           ckHasKw:!!r&&r.pct!=null,ckPct:r&&r.pct!=null?r.pct+'%':'',ckMissing:r?(r.missing||[]).slice(0,14).map(k=>({k})):[],ckHasMissing:!!r&&(r.missing||[]).length>0,
