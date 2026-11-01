@@ -62,8 +62,10 @@ async function cellOf(X,el,width,ctxBg,opt){const cs=getComputedStyle(el);const 
 async function tableOf(X,cont,rows,ctx,opt){const cr=cont.getBoundingClientRect();const L=Math.min(...rows.flatMap(R=>R.items.map(i=>i.getBoundingClientRect().left))),Rr=Math.max(...rows.flatMap(R=>R.items.map(i=>i.getBoundingClientRect().right)));
   const W=Math.max(10,Math.min(Rr-L,ctx.right-Math.max(L,ctx.left)));const trs=[];let colW=null;
   for(const R of rows){const its=R.items;const cells=[];
-    for(let i=0;i<its.length;i++){const a=its[i].getBoundingClientRect();const nx=i+1<its.length?its[i+1].getBoundingClientRect().left:Rr;const w=Math.max(8,nx-a.left);cells.push(await cellOf(X,its[i],w,ctx.bg,{vcenter:opt&&opt.vcenter}));}
-    if(!colW)colW=its.map((it,i)=>{const a=it.getBoundingClientRect();const nx=i+1<its.length?its[i+1].getBoundingClientRect().left:Rr;return tw(Math.max(8,nx-a.left));});
+    const ws=its.map((it,i)=>{const a=it.getBoundingClientRect();const nx=i+1<its.length?its[i+1].getBoundingClientRect().left:Rr;return Math.max(8,nx-a.left);});
+    if(ws.length>1){const big=ws.indexOf(Math.max(...ws));ws.forEach((w,i)=>{if(i!==big&&w<160){const add=Math.min(18,ws[big]*0.08);ws[i]+=add;ws[big]-=add;}});}
+    for(let i=0;i<its.length;i++)cells.push(await cellOf(X,its[i],ws[i],ctx.bg,{vcenter:opt&&opt.vcenter}));
+    if(!colW)colW=ws.map(w=>tw(w));
     const row={children:cells,cantSplit:false};if(opt&&opt.minH)row.height={value:tw(opt.minH),rule:X.HeightRule.ATLEAST};trs.push(new X.TableRow(row));}
   const before=Math.max(0,rows[0].top-ctx.last);ctx.last=Math.max(...rows.map(R=>R.bottom));
   const t=new X.Table({rows:trs,width:{size:tw(W),type:X.WidthType.DXA},columnWidths:rows.length===1?colW:undefined,layout:X.TableLayoutType.FIXED,borders:NOB(X),indent:{size:Math.max(0,tw(L-ctx.left)),type:X.WidthType.DXA},margins:{top:0,bottom:0,left:0,right:0}});
@@ -72,7 +74,7 @@ async function listItems(X,ul,ctx){const out=[];const ord=ul.tagName==='OL';
   for(const li of [...ul.children].filter(visible)){const cs=getComputedStyle(li);const rs=trimEnd(await runs(X,li,[],null));if(!rs.length)continue;
     const pp=paraProps(X,li,ctx);const left=pp.indent.left;pp.indent={left,hanging:Math.round((parseFloat(cs.fontSize)||14)*0.9*PX),right:pp.indent.right};
     const none=cs.listStyleType==='none';const k=out.length+1;
-    if(!none){const fz=parseFloat(cs.fontSize)||14;const ul2=li.parentElement.getBoundingClientRect();const hang=Math.max(8,Math.min(30,li.getBoundingClientRect().left-ul2.left))||14;pp.indent={left:pp.indent.left,hanging:tw(hang),right:pp.indent.right};
+    if(!none){const fz=parseFloat(cs.fontSize)||14;const ul2=li.parentElement.getBoundingClientRect();const hang=Math.max(8,Math.min(30,li.getBoundingClientRect().left-ul2.left))||14;const liL=tw(Math.max(0,li.getBoundingClientRect().left-ctx.left));pp.indent={left:Math.max(liL,tw(hang)),hanging:tw(hang),right:pp.indent.right};
       pp.numbering=ord?{reference:'skdo',level:0,instance:(ctx.__ol=(ctx.__ol||0)+(k===1?1:0))}:{reference:'skdb',level:0};}
     out.push(new X.Paragraph(Object.assign({children:rs},pp)));}
   return out;}
@@ -90,11 +92,11 @@ async function conv(X,el,ctx,inCell){const out=[];
       if(allLeaf&&R.items.length<=4){// one paragraph with tab stops
         const rs=[];const tabs=[];const base=R.items[0];
         for(let i=0;i<R.items.length;i++){const it=R.items[i];const r=it.getBoundingClientRect();const cs=getComputedStyle(it);
-          if(i>0){const right=Math.abs(r.right-ctx.right)<6&&(cs.textAlign==='right'||r.left>ctx.left+(ctx.right-ctx.left)*0.5||i===R.items.length-1&&Math.abs(r.right-ctx.right)<6);
-            tabs.push(right?{type:X.TabStopType.RIGHT,position:tw(r.right-ctx.left)}:{type:X.TabStopType.LEFT,position:tw(r.left-ctx.left)});rs.push(new X.TextRun({text:'\t'}));}
+          if(i>0){const rowR=el.getBoundingClientRect().right,last=i===R.items.length-1;const right=(last&&Math.abs(r.right-rowR)<8)||(Math.abs(r.right-ctx.right)<6&&(cs.textAlign==='right'||r.left>ctx.left+(ctx.right-ctx.left)*0.5));const rp=Math.min(ctx.right,last?Math.max(r.right,rowR):r.right);
+            tabs.push(right?{type:X.TabStopType.RIGHT,position:tw(rp-ctx.left)}:{type:X.TabStopType.LEFT,position:tw(r.left-ctx.left)});rs.push(X.Tab?new X.TextRun({children:[new X.Tab()]}):new X.TextRun({text:'\t'}));}
           rs.push(...trimEnd(await runs(X,it,[],null)));}
         const top=R.top;const fake={getBoundingClientRect:()=>({top,bottom:R.bottom,left:base.getBoundingClientRect().left,right:ctx.right})};
-        const pp=paraProps(X,base,Object.assign({},ctx));pp.indent={left:0,right:0};pp.spacing.before=tw(Math.max(0,top-ctx.last));ctx.last=R.bottom;
+        const pp=paraProps(X,base,Object.assign({},ctx));pp.indent={left:tw(Math.max(0,el.getBoundingClientRect().left-ctx.left)),right:0};pp.spacing.before=tw(Math.max(0,top-ctx.last));ctx.last=R.bottom;
         out.push(new X.Paragraph(Object.assign({children:rs,tabStops:tabs},pp)));continue;}
       const big=!inCell&&(R.bottom-R.top)>600;
       out.push(...await tableOf(X,el,[R],ctx,{minH:big?(R.bottom-R.top)*0.96:0,vcenter:false}));continue;}
@@ -114,11 +116,19 @@ async function conv(X,el,ctx,inCell){const out=[];
     const inner=await conv(X,k,c2,inCell);out.push(...inner);ctx.last=Math.max(c2.last,r.bottom-(parseFloat(cs.paddingBottom)||0));
   }
   return out;}
+function heads(host){host.querySelectorAll('h2,h3,div').forEach(h=>{const cs=getComputedStyle(h);if(cs.display!=='flex')return;const k=[...h.children];if(k.length<2)return;const f=k[0],l=k[k.length-1];const ln=e=>e.tagName==='SPAN'&&!(e.textContent||'').trim()&&!e.children.length&&e.getBoundingClientRect().height<=3&&e.getBoundingClientRect().width>20;if(!ln(f)||!ln(l))return;const col=getComputedStyle(f).backgroundColor;f.remove();l.remove();h.style.display='block';h.style.textAlign='center';h.style.borderBottom='1px solid '+col;h.style.paddingBottom='3px';});}
+function avatars(host){host.querySelectorAll('div,span').forEach(el=>{if(el.querySelector('img,div,span'))return;const t=(el.textContent||'').trim();if(!t||t.length>4)return;const r=el.getBoundingClientRect();if(r.width<28||r.width>240||Math.abs(r.width-r.height)>4)return;const cs=getComputedStyle(el);const rad=parseFloat(cs.borderTopLeftRadius)||0;if(!(rad>=r.width*0.3||/%/.test(cs.borderTopLeftRadius)&&parseFloat(cs.borderTopLeftRadius)>=30))return;
+  const S=3,c=document.createElement('canvas');c.width=Math.round(r.width*S);c.height=Math.round(r.height*S);const x=c.getContext('2d');x.scale(S,S);const w=r.width,h=r.height,bw=parseFloat(cs.borderTopWidth)||0,rr=Math.min(/%/.test(cs.borderTopLeftRadius)?w*rad/100:rad,w/2);
+  const path=()=>{x.beginPath();x.moveTo(rr,0);x.arcTo(w,0,w,h,rr);x.arcTo(w,h,0,h,rr);x.arcTo(0,h,0,0,rr);x.arcTo(0,0,w,0,rr);x.closePath();};
+  path();x.fillStyle=cs.backgroundColor&&!/rgba\(0, 0, 0, 0\)|transparent/.test(cs.backgroundColor)?cs.backgroundColor:'rgba(0,0,0,0)';x.fill();if(bw>0){x.save();x.translate(bw/2,bw/2);const ow=w,oh=h;x.scale((ow-bw)/ow,(oh-bw)/oh);path();x.restore();x.lineWidth=bw;x.strokeStyle=cs.borderTopColor;x.stroke();}
+  x.fillStyle=cs.color;x.font=(cs.fontStyle||'')+' '+(cs.fontWeight||'700')+' '+cs.fontSize+' '+cs.fontFamily;x.textAlign='center';x.textBaseline='middle';x.fillText(t,w/2,h/2+1);
+  const im=document.createElement('img');im.src=c.toDataURL('image/png');im.alt=t;im.style.cssText='display:block;width:'+w+'px;height:'+h+'px;margin:'+cs.margin+';flex:none';el.replaceWith(im);});}
 async function sections(X,pages,opt){opt=opt||{};const W=opt.w||794,H=opt.h||1123;
   const host=document.createElement('div');host.setAttribute('aria-hidden','true');host.style.cssText='position:fixed;left:-20000px;top:0;width:'+W+'px;pointer-events:none;z-index:-1';document.body.appendChild(host);
   const secs=[];
   try{for(const html of pages){host.innerHTML='<div style="width:'+W+'px;height:'+H+'px;position:relative;overflow:hidden;background:#fff">'+html+'</div>';
       const imgs=[...host.querySelectorAll('img')];await Promise.race([Promise.all([document.fonts?document.fonts.ready:1,...imgs.map(i=>i.complete?1:new Promise(r=>{i.onload=i.onerror=r;}))]),new Promise(r=>setTimeout(r,2500))]);
+      avatars(host);heads(host);
       const wrap=host.firstElementChild;let root=wrap.firstElementChild||wrap;while(root.children.length===1&&blockKids(root).length===1&&!hasOwnText(root)&&!hex(getComputedStyle(root).backgroundColor)&&root.firstElementChild&&root.firstElementChild.getBoundingClientRect().width>=W-2)root=root.firstElementChild;
       const pr=wrap.getBoundingClientRect();const cs=getComputedStyle(root);const rr=root.getBoundingClientRect();
       const pl=(parseFloat(cs.paddingLeft)||0)+(rr.left-pr.left),prr=(parseFloat(cs.paddingRight)||0)+(pr.right-rr.right),pt=(parseFloat(cs.paddingTop)||0)+(rr.top-pr.top),pb=parseFloat(cs.paddingBottom)||0;
