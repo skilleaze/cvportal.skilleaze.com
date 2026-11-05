@@ -96,7 +96,7 @@ async function make(pagesHtml,opt){opt=opt||{};await loadJs();const letter=opt.p
     if(document.fonts&&document.fonts.load){const want=new Set();host.querySelectorAll('*').forEach(e=>{if(!e.firstChild||![...e.childNodes].some(n=>n.nodeType===3&&/\S/.test(n.nodeValue)))return;const c=getComputedStyle(e);const fam=String(c.fontFamily).split(',')[0].trim();if(fam)want.add((c.fontStyle==='italic'?'italic ':'')+((parseInt(c.fontWeight)||400)>=600?700:400)+' 16px '+(/^["']/.test(fam)?fam:'"'+fam+'"'));});
       await Promise.race([Promise.all([...want].map(f=>document.fonts.load(f).catch(()=>0))),new Promise(r=>setTimeout(r,4000))]);await new Promise(r=>{let d=0;const f=()=>{if(!d){d=1;r();}};try{requestAnimationFrame(()=>requestAnimationFrame(f));}catch(e){}setTimeout(f,120);});}
     const doc=new window.jspdf.jsPDF({unit:'pt',format:letter?'letter':'a4',orientation:'portrait',compress:true,putOnlyUsedFonts:true});
-    doc.setProperties({title:opt.title||'CV',creator:'Skilleaze',author:opt.author||''});
+    doc.setProperties({title:opt.title||'CV',creator:'Skilleaze',author:opt.author||'',subject:'Built with Skilleaze',keywords:'skz-built-v1'});
     const fonts={};const pgs=[...host.querySelectorAll('[data-pdfpg]')];
     for(let i=0;i<pgs.length;i++){if(i)doc.addPage(letter?'letter':'a4','portrait');await drawPage(doc,pgs[i],fonts);}
     return doc.output('blob');
