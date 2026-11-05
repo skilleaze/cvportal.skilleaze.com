@@ -17,6 +17,7 @@
 <meta name="theme-color" content="#042D7C">
 <link href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400;0,700;1,400&family=Carlito:ital,wght@0,400;0,700;1,400&family=Caladea:ital,wght@0,400;0,700;1,400&family=Gelasio:ital,wght@0,400;0,700;1,400&family=Tinos:ital,wght@0,400;0,700;1,400&family=EB+Garamond:ital,wght@0,400;0,700;1,400&family=Merriweather:ital,wght@0,400;0,700;1,400&family=Montserrat:ital,wght@0,400;0,700;1,400&family=Raleway:ital,wght@0,400;0,700;1,400&family=Roboto:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:ital,wght@0,400;0,700;1,400&family=Open+Sans:ital,wght@0,400;0,700;1,400&family=Lato:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" data-skfonts="1">
 <script src="./support.js"></script>
+<style>@keyframes ck-scan{from{transform:translateY(-46px)}to{transform:translateY(200px)}}@keyframes ck-hl{0%,100%{background:#E3E8F2}45%,60%{background:#AFC4FF}}@media (prefers-reduced-motion:reduce){[style*="ck-scan"],[style*="ck-hl"]{animation:none!important}}</style>
 </head>
 <body>
 <x-dc>
@@ -31,7 +32,7 @@
 <script src="./cv-builder/rich-text.js?v=38"></script>
 <script src="./cv-builder/photo-crop.js?v=38"></script>
 <script src="./cv-builder/sk-ui.js?v=38"></script>
-<script src="./cv-builder/pdf-export.js?v=40"></script>
+<script src="./cv-builder/pdf-export.js?v=151"></script>
 <script src="./cv-builder/docx-dom.js?v=38"></script>
 <script src="./cv-builder/cv-import.js?v=38"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -311,7 +312,16 @@ textarea{resize:vertical}
 </sc-if>
 <sc-if value="{{ ckBusy }}"><div style="background:#FFFFFF;border:1px solid #E3E4E8;border-radius:24px;padding:clamp(22px,3.4vw,34px);box-sizing:border-box;display:flex;flex-direction:column;gap:18px;max-width:640px">
 <div style="display:flex;flex-direction:column;gap:4px"><div style="font-size:12px;font-weight:900;letter-spacing:.12em;color:#053BA0">ANALYSING</div><div style="font-weight:900;font-size:18px;color:#042D7C;overflow-wrap:anywhere">{{ ckFileName }}</div></div>
-<div style="display:flex;flex-direction:column;gap:14px"><sc-for list="{{ ckSteps }}" as="t" hint-placeholder-count="5"><div style="{{ t.style }}"><span style="{{ t.dot }}">{{ t.ic }}</span><span>{{ t.l }}</span></div></sc-for></div>
+<div style="display:flex;gap:26px;align-items:center;flex-wrap:wrap"><div aria-hidden="true" style="position:relative;flex:none;width:150px;height:200px;border-radius:12px;background:#FFFFFF;border:1px solid rgba(4,45,124,0.12);box-shadow:0 14px 34px rgba(4,45,124,.12);overflow:hidden;padding:16px 14px;box-sizing:border-box;display:flex;flex-direction:column;gap:7px">
+<div style="height:9px;width:62%;border-radius:4px;background:#042D7C;opacity:.85"></div><div style="height:6px;width:44%;border-radius:3px;background:#9DB3E0"></div>
+<div style="height:3px"></div><div style="height:5px;width:30%;border-radius:3px;background:#2F5BEA"></div>
+<div style="height:4px;width:100%;border-radius:2px;background:#E3E8F2"></div><div style="height:4px;width:92%;border-radius:2px;background:#E3E8F2"></div><div style="height:4px;width:96%;border-radius:2px;background:#E3E8F2"></div>
+<div style="height:3px"></div><div style="height:5px;width:36%;border-radius:3px;background:#2F5BEA"></div>
+<div style="height:4px;width:88%;border-radius:2px;background:#E3E8F2;animation:ck-hl 2.4s ease-in-out infinite"></div><div style="height:4px;width:97%;border-radius:2px;background:#E3E8F2"></div><div style="height:4px;width:80%;border-radius:2px;background:#E3E8F2;animation:ck-hl 2.4s ease-in-out .8s infinite"></div><div style="height:4px;width:93%;border-radius:2px;background:#E3E8F2"></div>
+<div style="height:3px"></div><div style="height:5px;width:26%;border-radius:3px;background:#2F5BEA"></div>
+<div style="display:flex;gap:4px;flex-wrap:wrap"><span style="height:8px;width:30px;border-radius:4px;background:#DCE6FF;animation:ck-hl 2.4s ease-in-out 1.4s infinite"></span><span style="height:8px;width:24px;border-radius:4px;background:#DCE6FF"></span><span style="height:8px;width:34px;border-radius:4px;background:#DCE6FF;animation:ck-hl 2.4s ease-in-out 2s infinite"></span></div>
+<div style="position:absolute;left:0;right:0;top:0;height:46px;background:linear-gradient(180deg,rgba(47,91,234,0) 0%,rgba(47,91,234,.16) 70%,rgba(47,91,234,.9) 100%);animation:ck-scan 2.2s cubic-bezier(.45,0,.55,1) infinite alternate"></div>
+</div><div style="display:flex;flex-direction:column;gap:14px;flex:1 1 220px;min-width:0"><sc-for list="{{ ckSteps }}" as="t" hint-placeholder-count="5"><div style="{{ t.style }}"><span style="{{ t.dot }}">{{ t.ic }}</span><span>{{ t.l }}</span></div></sc-for></div></div>
 <div style="font-size:13px;color:#8A919C">A full check takes about 10–30 seconds.</div>
 </div></sc-if>
 <sc-if value="{{ ckHasRes }}">
@@ -320,7 +330,7 @@ textarea{resize:vertical}
 <div style="font-size:12px;font-weight:900;letter-spacing:.12em;color:#053BA0">YOUR ATS SCORE</div>
 <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap">
 <div style="width:132px;height:132px;border-radius:50%;background:{{ ckRing }};display:flex;align-items:center;justify-content:center;flex:none"><div style="width:106px;height:106px;border-radius:50%;background:#FFFFFF;display:flex;flex-direction:column;align-items:center;justify-content:center"><div style="font-weight:900;font-size:38px;line-height:1;color:{{ ckCol }}">{{ ckScore }}</div><div style="font-size:12px;color:#8A919C;font-weight:700">out of 100</div></div></div>
-<div style="display:flex;flex-direction:column;gap:6px;min-width:0;flex:1 1 180px"><div style="font-weight:900;font-size:18px;color:#2C3E50;line-height:1.3">{{ ckGrade }}</div><div style="font-size:14px;color:#5B6470">{{ ckPassN }} of {{ ckTotal }} checks passed</div><div style="font-size:12px;color:#8A919C;overflow-wrap:anywhere">{{ ckFileName }} · {{ ckMeta }}</div></div>
+<div style="display:flex;flex-direction:column;gap:6px;min-width:0;flex:1 1 180px"><div style="font-weight:900;font-size:18px;color:#2C3E50;line-height:1.3">{{ ckGrade }}</div><div style="font-size:14px;color:#5B6470">{{ ckPassN }} of {{ ckTotal }} checks passed</div><sc-if value="{{ ckBuilt }}"><span style="align-self:flex-start;display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:900;letter-spacing:.04em;color:#1F6B45;background:rgba(127,224,176,.18);border-radius:999px;padding:5px 11px">✓ Built with Skilleaze</span></sc-if><div style="font-size:12px;color:#8A919C;overflow-wrap:anywhere">{{ ckFileName }} · {{ ckMeta }}</div></div>
 </div>
 <sc-if value="{{ ckHasKw }}"><div style="width:100%;border-top:1px solid #EEF0F3;padding-top:14px;display:flex;flex-direction:column;gap:10px"><div style="display:flex;justify-content:space-between;gap:10px;font-size:14px"><span style="font-weight:900;color:#042D7C">Keyword match for the job</span><strong style="color:#042D7C">{{ ckPct }}</strong></div>
 <sc-if value="{{ ckHasMissing }}"><div style="font-size:13px;color:#5B6470">Missing from your CV:</div><div style="display:flex;gap:6px;flex-wrap:wrap"><sc-for list="{{ ckMissing }}" as="m" hint-placeholder-count="0"><span style="font-size:12px;font-weight:700;color:#B3261E;background:#FCEDEC;border-radius:999px;padding:5px 10px">{{ m.k }}</span></sc-for></div></sc-if></div></sc-if>
@@ -795,33 +805,43 @@ class Component extends DCLogic {
     const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=(D.name||'CV').replace(/\s+/g,'_')+(kind==='cover'?'_Cover_Letter':'_CV')+'.docx';document.body.appendChild(a);a.click();setTimeout(()=>{a.remove();URL.revokeObjectURL(a.href);},4000);}
   ckStep(i){this.setState({ckStep:i});}
   async atsCheck(file){if(!file)return;const t0=Date.now();this.setState({ckRes:null,ckBusy:'Analysing your CV',ckStep:0,ckFile:file.name});const wait=ms=>new Promise(r=>setTimeout(r,ms));
-    try{let pages=0,text='';if(/\.pdf$/i.test(file.name)){try{const L=window.pdfjsLib;L.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';const pdf=await L.getDocument({data:await file.arrayBuffer()}).promise;pages=pdf.numPages;}catch(e){}}
+    try{let pages=0,text='',built=false;if(/\.pdf$/i.test(file.name)){try{const L=window.pdfjsLib;L.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';const pdf=await L.getDocument({data:await file.arrayBuffer()}).promise;pages=pdf.numPages;try{const md=await pdf.getMetadata();const inf=(md&&md.info)||{};built=/skz-built/i.test(String(inf.Keywords||''))||(/Skilleaze/i.test(String(inf.Creator||''))&&/Built with Skilleaze/i.test(String(inf.Subject||'')));}catch(e){}}catch(e){}}
       try{text=await this.extract(file);}catch(e){this.setState({ckBusy:''});this.flash(/doc/.test(e.message)?'Save the file as .docx or PDF, then upload it again.':'That file could not be read. Try a PDF or Word file.');return;}
       const raw=String(text||'');const words=(raw.match(/\S+/g)||[]).length;if(!pages)pages=Math.max(1,Math.round(words/500));
-      await wait(900);this.ckStep(1);
+      await wait(1600);this.ckStep(1);
       let d=window.SKIMPORT?window.SKIMPORT.parse(raw):null;
       if((!d||(window.SKIMPORT&&window.SKIMPORT.score(d)<2))&&words>40){try{const t=new Promise((_,rj)=>setTimeout(()=>rj(new Error('t')),25000));const o=await Promise.race([this.ai('Extract this CV into JSON with keys: name,title,location,phone,email,linkedin,summary,skills (array of {cat,list}),exp (array of {t,c,d,b} with b = bullets joined by \\n),edu (array of {deg,school,yrs}),langs,extra (array of {title,items}). Copy text exactly; use "" when missing. JSON only.\n\n'+raw.slice(0,20000)),t]);d=this.json(o);}catch(e){}}
-      await wait(700);this.ckStep(2);d=Object.assign(blank(),d||{});['skills','exp','edu','extra'].forEach(k=>{if(!Array.isArray(d[k]))d[k]=[];});this.normalizeExp(d);
+      await wait(1500);this.ckStep(2);d=Object.assign(blank(),d||{});['skills','exp','edu','extra'].forEach(k=>{if(!Array.isArray(d[k]))d[k]=[];});this.normalizeExp(d);
       const r=this.ats({data:d},{jd:this.state.ckJd||'',pages});
       const low=raw.toLowerCase();const has=re=>re.test(low);
+      const bulL=(d.exp||[]).flatMap(x=>String(x.b||'').split(/\n+/)).map(t=>t.replace(/^[\s•\-*·]+/,'').trim()).filter(t=>t.length>12);const bulN=bulL.length,bulText=bulL.join(' ');
+      const qShare=bulN?bulL.filter(t=>/\d/.test(t)).length/bulN:0;const VB=/^(led|built|increased|reduced|managed|delivered|developed|designed|created|launched|improved|achieved|drove|grew|cut|saved|negotiated|implemented|coordinated|trained|handled|generated|streamlined|optimi[sz]ed|oversaw|executed|established|resolved|prepared|supported|analy[sz]ed|planned|organi[sz]ed|conducted|maintained|processed|supervised|mentored|won|secured|spearheaded|automated|boosted|expanded|directed|owned|ran|set up|introduced|redesigned|restructured)\b/i;
+      const vShare=bulN?bulL.filter(t=>VB.test(t)).length/bulN:0;const expN=(d.exp||[]).filter(x=>x.t||x.c).length;const expDated=(d.exp||[]).filter(x=>(x.t||x.c)&&/\d{4}|present|current/i.test(String(x.d||''))).length;const sumW=(String(d.summary||'').match(/\S+/g)||[]).length;
       const extra=[
         ['Readable by ATS',words>=120,'The text can be read by applicant tracking systems.','Very little text could be read. It may be a scanned image or exported as a picture. Use a text-based PDF or Word file.'],
         ['Standard section headings',['experience|employment|work history','education|qualification','skills|competenc'].every(p=>has(new RegExp('\\b('+p+')'))),'Experience, Education and Skills headings were found.','Use standard headings: Experience, Education, Skills.'],
         ['Contact details found',!!(d.email||/@/.test(raw))&&!!(d.phone||/\+?\d[\d\s-]{7,}/.test(raw)),'Email and phone were detected.','ATS could not find both an email and a phone number.'],
-        ['File type',/\.(pdf|docx)$/i.test(file.name),'PDF or Word works well with ATS.','Use PDF or .docx.']];
+        ['File type',/\.(pdf|docx)$/i.test(file.name),'PDF or Word works well with ATS.','Use PDF or .docx.'],
+        ['Results with numbers',qShare>=0.3,'Many of your bullets show results with numbers.','Only '+Math.round(qShare*100)+'% of your bullets have numbers. Add results like %, amounts, team size or time saved.'],
+        ['Strong action verbs',vShare>=0.5,'Most bullets start with a strong action verb.','Start bullets with verbs like Led, Built, Increased, Reduced, Managed.'],
+        ['Dates on every role',expN>0&&expDated===expN,'Every role has dates.',expN?'Add start and end dates to every role ('+(expN-expDated)+' missing).':'No work experience with dates was found.'],
+        ['Professional summary',sumW>=25&&sumW<=120,'Your summary is a good length.',sumW?'Keep the summary between 25 and 120 words (now '+sumW+').':'Add a 3–4 line professional summary at the top.'],
+        ['Bullet points under each role',expN>0&&bulN>=expN*2,'Each role has clear bullet points.','Use at least 2–3 bullet points under each role.'],
+        ['Right length',pages<=2&&words>=250&&words<=1100,'Length suits most recruiters.',pages>2?'Keep it to 1–2 pages (now '+pages+').':words<250?'Add more detail about your roles and results.':'Trim it down; aim for 1–2 pages.'],
+        ['No first-person words',!/(^|[\s.,;])(i|my|me)\s/i.test(String(d.summary||'')+' '+bulText),'No "I" or "my" in the text.','Remove "I", "me" and "my" from your summary and bullets.']];
       const xc=extra.map(([label,ok,good,bad])=>({label,ok,tip:ok?good:bad}));
       const checks=xc.concat(r.checks.filter(c=>!/^(Length|Professional email)/.test(c.label)||true));
       let rule=Math.round(checks.filter(c=>c.ok).length/checks.length*100);if(r.pct!=null)rule=Math.round(rule*.65+r.pct*.35);
-      await wait(600);this.ckStep(3);
+      await wait(1400);this.ckStep(3);
       let ai=null;if(words>=60){try{const jd=String(this.state.ckJd||'').trim();const tm=new Promise((_,rj)=>setTimeout(()=>rj(new Error('t')),45000));
         const o=await Promise.race([this.ai('You are a senior recruiter and ATS (applicant tracking system) expert. Review this CV the way an ATS and a recruiter would'+(jd?' for the job description below':'')+'. Judge: parse-ability and layout, section structure, contact details, job titles and dates, quality of achievement bullets (numbers, impact, action verbs), keyword relevance'+(jd?' to the job':' for the candidate\'s target role')+', length, spelling and consistency. Be strict and specific to THIS CV; quote real details from it. Return JSON only: {"score": integer 0-100, "verdict": one short sentence, "summary": 2-3 sentences of honest feedback, "strengths": [up to 4 short strings], "issues": [up to 7 objects {"label": short title, "tip": one specific fix that refers to this CV}], "missingKeywords": [up to 10 important keywords or skills missing'+(jd?' for this job':' for their target role')+']}. Never invent experience.\n\n'+(jd?'JOB DESCRIPTION:\n'+jd.slice(0,5000)+'\n\n':'')+'CV TEXT:\n'+raw.slice(0,16000)),tm]);ai=this.json(o);}catch(e){ai=null;}}
-      this.ckStep(4);
+      this.ckStep(4);await wait(1200);
       let score=rule,aiOk=!!(ai&&isFinite(+ai.score));if(aiOk)score=Math.round((+ai.score)*.6+rule*.4);if(words<120)score=Math.min(score,25);score=Math.max(0,Math.min(100,score));
       const aiIssues=aiOk&&Array.isArray(ai.issues)?ai.issues.filter(x=>x&&x.label).slice(0,7).map(x=>({label:String(x.label),tip:String(x.tip||''),ok:false,ai:true})):[];
       const seen=new Set(aiIssues.map(x=>x.label.toLowerCase()));const allChecks=aiIssues.concat(checks.filter(c=>!seen.has(c.label.toLowerCase())));
       const missing=[...new Set([...(aiOk&&Array.isArray(ai.missingKeywords)?ai.missingKeywords.map(String):[]),...(r.missing||[])])].slice(0,14);
-      const left=Math.max(0,5200-(Date.now()-t0));await wait(left);
-      this.setState({ckBusy:'',ckStep:0,ckRes:{score,checks:allChecks,matched:r.matched||[],missing,pct:r.pct,data:d,name:d.name||'',pages,words,ai:aiOk,verdict:aiOk?String(ai.verdict||''):'',summary:aiOk?String(ai.summary||''):'',strengths:aiOk&&Array.isArray(ai.strengths)?ai.strengths.slice(0,4).map(String):[]}});
+      const left=Math.max(0,9000-(Date.now()-t0));await wait(left);
+      this.setState({ckBusy:'',ckStep:0,ckRes:{built,score,checks:allChecks,matched:r.matched||[],missing,pct:r.pct,data:d,name:d.name||'',pages,words,ai:aiOk,verdict:aiOk?String(ai.verdict||''):'',summary:aiOk?String(ai.summary||''):'',strengths:aiOk&&Array.isArray(ai.strengths)?ai.strengths.slice(0,4).map(String):[]}});
     }catch(e){console.error(e);this.setState({ckBusy:''});this.flash('Could not check that file. Please try again.');}}
   async extract(file){const buf=await file.arrayBuffer();
     if(/\.docx$/i.test(file.name)){let html='';try{html=(await window.mammoth.convertToHtml({arrayBuffer:buf})).value;}catch(e){}if(!html){const r=await window.mammoth.extractRawText({arrayBuffer:buf});return r.value;}const d=document.createElement('div');d.innerHTML=html.replace(/<\/(td|th)>/gi,' \t </$1>').replace(/<br\s*\/?>/gi,'\n');d.querySelectorAll('p,h1,h2,h3,h4,h5,h6,li,tr,div').forEach(n=>n.insertAdjacentText('afterend','\n'));d.querySelectorAll('li').forEach(n=>n.insertAdjacentText('afterbegin','• '));return d.textContent.replace(/[ \u00a0]*\t[ \u00a0\t]*/g,'  |  ').replace(/(\s*\|\s*)+\n/g,'\n').replace(/\n\s*\|\s*/g,'\n').replace(/\n{3,}/g,'\n\n').trim();}
@@ -905,7 +925,7 @@ class Component extends DCLogic {
           ckFails:r?r.checks.filter(c=>!c.ok).map(c=>({label:c.label,tip:c.tip})):[],ckPasses:r?r.checks.filter(c=>c.ok).map(c=>({label:c.label,tip:c.tip})):[],ckHasFails:!!r&&r.checks.some(c=>!c.ok),
           ckHasKw:!!r&&r.pct!=null,ckPct:r&&r.pct!=null?r.pct+'%':'',ckMissing:r?(r.missing||[]).slice(0,14).map(k=>({k})):[],ckHasMissing:!!r&&(r.missing||[]).length>0,
           
-          ckMeta:r?(r.pages+(r.pages===1?' page':' pages')+' · '+r.words+' words'):''};})(),
+          ckBuilt:!!(r&&r.built),ckMeta:r?(r.pages+(r.pages===1?' page':' pages')+' · '+r.words+' words'):''};})(),
       isAts:v==='ats'&&!!cv,isCover:v==='cover'&&!!cv,isShare:v==='share',
       navHome:pill(v==='home'),navEdit:pill(v==='edit'),navAts:pill(v==='ats'),navCover:pill(v==='cover'),
       goHome:e=>{e&&e.preventDefault&&e.preventDefault();if(!this.state.cvs.length){location.replace(/skilleaze\.com$|vercel\.app$/i.test(location.hostname)?'/':new URL('index.html',location.href).href);return;}if(location.hash)history.replaceState(null,'',location.pathname);this.setState({view:'home'});},
