@@ -24,8 +24,8 @@
 <title>Skilleaze Internal CV Portal · Europass CV</title><meta name="robots" content="noindex,nofollow">
 
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Lato:wght@400;700;900&family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
-<script src="./cv-builder/cv-engine.js?v=202"></script>
-<script src="./cv-builder/europass-engine.js?v=202"></script>
+<script src="./cv-builder/cv-engine.js?v=201"></script>
+<script src="./cv-builder/europass-engine.js?v=201"></script>
 <script src="./cv-builder/muneez.js?v=38"></script>
 <script src="./cv-builder/portal-config.js?v=38"></script>
 <script src="./cv-builder/portal-store.js?v=38"></script>
@@ -462,9 +462,9 @@ class Component extends DCLogic {
   componentDidMount(){if(!window.__skPhotoClick){window.__skPhotoClick=1;document.addEventListener('click',ev=>{const h=ev.target&&ev.target.closest&&ev.target.closest('[data-photo],[data-photo-slot]');if(!h)return;ev.preventDefault();ev.stopPropagation();const me=window.__skPhotoOwner;if(me)me._adjustPhoto();},true);}window.__skPhotoOwner=this;
     this._act=Date.now();this._sec=0;this._mk=()=>{this._act=Date.now();};['keydown','input','pointerdown','wheel','touchstart'].forEach(ev=>document.addEventListener(ev,this._mk,{passive:true,capture:true}));
     this._tick=setInterval(()=>{if(document.visibilityState==='visible'&&Date.now()-this._act<90000&&!this.state.ro&&this.authed&&this.cvObj())this._sec+=5;if(this._sec>=60)this.pushCv(true);},5000);
-    this._vis=()=>{if(document.visibilityState==='hidden'&&this._sec>0)this.pushCv(true,true);};document.addEventListener('visibilitychange',this._vis);
+    this._vis=()=>{if(document.visibilityState==='hidden'){try{const a=document.activeElement;if(a&&a.dataset&&a.dataset.f)a.blur();}catch(e){}setTimeout(()=>this.pushCv(true,true),0);}};document.addEventListener('visibilitychange',this._vis);window.addEventListener('pagehide',this._vis);
     this.authed=false;const gate=setInterval(async()=>{if(!window.SKP)return;clearInterval(gate);const me=await SKP.me();if(!me){location.replace(/skilleaze\.com$|vercel\.app$/i.test(location.hostname)?'/':new URL('index.html',location.href).href);return;}const q=new URLSearchParams(location.search);const code=q.get('code');const ro=me.role==='admin';if(ro&&!code){location.replace(/skilleaze\.com$|vercel\.app$/i.test(location.hostname)?'/':new URL('index.html',location.href).href);return;}this.setState({me,ro});if(ro){const st=document.createElement('style');st.textContent='main input,main textarea,main select,main [contenteditable]{pointer-events:none!important;background:#F4F5F7!important}';document.head.appendChild(st);}
-      if(code){try{const rec=await SKP.getCV(code);if(!rec||!rec.doc){this.flash('CV '+code+' not found.');}else{const doc=Object.assign({},rec.doc,{code:rec.code});this.setState(x=>{const cvs=x.cvs.filter(c=>c.code!==rec.code&&c.id!==doc.id);return {cvs:[doc,...cvs],cur:doc.id,view:'edit',synced:rec.code};});}}catch(e){this.flash(e.message);}}
+      if(code){try{const rec=await SKP.getCV(code);if(!rec||!rec.doc){this.flash('CV '+code+' not found.');}else{let doc=Object.assign({},rec.doc,{code:rec.code});const loc=this.state.cvs.find(c=>c.code===rec.code||c.id===doc.id);const newer=loc&&(+loc.updated||0)>(+doc.updated||0);if(newer)doc=Object.assign({},loc,{code:rec.code});this.setState(x=>{const cvs=x.cvs.filter(c=>c.code!==rec.code&&c.id!==doc.id);return {cvs:[doc,...cvs],cur:doc.id,view:'edit',synced:newer?'':rec.code};});if(newer)setTimeout(()=>this.pushCv(true,true),400);}}catch(e){this.flash(e.message);}}
       else if(q.get('new')&&!ro){this.create();}
       else if(q.get('import')&&!ro){this.setState({importOpen:true,importInto:null,impTab:'file'});}
       if(code||q.get('new')||q.get('import'))history.replaceState(null,'',location.pathname);this.authed=true;},60);
@@ -570,7 +570,7 @@ class Component extends DCLogic {
     if(D.exp.length){o.push((H('exp')||'WORK EXPERIENCE').toUpperCase());D.exp.forEach(e=>{o.push(e.t+'  '+e.d,e.c);e.b.forEach(b=>o.push('• '+b));o.push('');});}
     if(D.edu.length){o.push((H('edu')||'EDUCATION').toUpperCase());D.edu.forEach(e=>o.push(e[0]+' — '+e[1]+'  '+e[2]));o.push('');}if(D.langs)o.push((H('langs')||'LANGUAGES').toUpperCase(),D.langs,'');D.extra.forEach(x=>{if(x.items.length){o.push(String(x.title||'ADDITIONAL').toUpperCase(),...x.items.map(i=>'• '+i),'');}});return o.filter(v=>v!=null).join('\n').replace(/\n{3,}/g,'\n\n').trim();}
   save(fn){const id=this.state.cur;this.setState(s=>({cvs:s.cvs.map(c=>{if(c.id!==id)return c;const n=JSON.parse(JSON.stringify(c));fn(n);n.updated=Date.now();return n;})}));}
-  upd(fn){this.save(c=>fn(c.data));}
+  upd(fn){const id=this.state.cur;this.save(c=>{fn(c.data);if(c.src)delete c.src;});if(this.state.undo&&this.state.undo.id===id)this.setState({undo:null});}
   flash(t){this.setState({toast:t});clearTimeout(this.tt);this.tt=setTimeout(()=>this.setState({toast:''}),2800);}
   create(data,label){if(this.state.ro){this.flash('Admin accounts can view CVs but not create them.');return;}const id=uid();const cv={id,code:window.SKP?SKP.newCode('europass'):'',label:label||'My CV',tpl:0,color:null,font:null,updated:Date.now(),data:Object.assign(blank(),data||{}),cover:{company:'',role:'',to:'',tone:'Professional',jd:'',text:''}};
     this.setState(s=>({cvs:[cv,...s.cvs],cur:id,view:'edit',step:0,mode:'guided',pickerOpen:!data}));}
@@ -858,7 +858,7 @@ class Component extends DCLogic {
       pageInfo:s.pages?`${s.pages} page${s.pages>1?'s':''}`:'',
       share:()=>{const c={data:Object.assign({},d,{photo:''}),tpl:cv.tpl,color:cv.color,font:cv.font,margin:cv.margin,paper:cv.paper,order:cv.order,hide:cv.hide,photoMode:cv.photoMode,photoShape:cv.photoShape};const url=location.origin+location.pathname+'#cv='+b64e(JSON.stringify(c));
         (navigator.clipboard?navigator.clipboard.writeText(url):Promise.reject()).then(()=>this.flash('Share link copied. Anyone with it can view this CV.'),()=>{prompt('Copy your share link:',url);});},
-      dlCv:()=>this.setState({pay:{kind:'cv'}}),dlCover:()=>this.setState({pay:{kind:'cover'}}),
+      dlCv:()=>{try{const a=document.activeElement;if(a&&a.dataset&&a.dataset.f)a.blur();}catch(e){}setTimeout(()=>this.setState({pay:{kind:'cv'}}),60);},dlCover:()=>this.setState({pay:{kind:'cover'}}),
       prevRef:this.prevRef,pickRef:this.pickRef,coverRef:this.coverRef,shareRef:this.shareRef,
       ring:`width:124px;height:124px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:conic-gradient(${bad?'#B54848':mid?'#C9A13B':'#2E8A5C'} ${A.score*3.6}deg,#E9ECF1 0)`,
       atsVerdict:bad?'Needs work before you apply':mid?'Good, a few fixes will help':'Strong and ATS-ready',
