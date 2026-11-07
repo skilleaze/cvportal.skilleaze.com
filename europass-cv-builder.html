@@ -485,6 +485,7 @@ class Component extends DCLogic {
     if(!cv.code||this.state.cvs.some(c=>c.id!==cv.id&&c.code===cv.code)){const code=SKP.newCode('europass');this.setState(x=>({cvs:x.cvs.map(c=>c.id===cv.id?Object.assign({},c,{code}):c)}));return;}
     const j=JSON.stringify(cv);if(this._lastPush===j&&!(force&&this._sec>0))return;const D=cv.data||{};const sec=this._sec;
     try{await SKP.saveCV({code:cv.code,kind:'europass',customer:D.name||'',phone:D.phone||'',email:D.email||'',label:cv.label||'',doc:cv,seconds:sec});this._lastPush=j;this._sec=Math.max(0,this._sec-sec);this.setState({synced:cv.code,syncErr:false});}catch(e){this.setState({syncErr:true});this.flash('Not saved to portal: '+e.message);}},now?0:900);}
+  commitEdit(){try{const a=document.activeElement;if(a&&a.dataset&&a.dataset.f){a.dispatchEvent(new FocusEvent('blur'));a.blur();}}catch(e){}}
   cvObj(){return this.state.cvs.find(c=>c.id===this.state.cur)||null;}
   toD(d){const cf=(this.cvObj&&this.cvObj())||{};const FD=v=>this.fmtDate(v,cf.dateFmt,cf.dateSep);const ini=(d.name||'Your Name').split(/\s+/).map(w=>w[0]||'').join('').slice(0,2).toUpperCase();
     return {name:(d.name||'Your Name').toUpperCase(),ini,title:d.title||'',sub:d.sub||'',contact:['location','phone','email','website','linkedin'].map(k=>{const o=new String((d[k]||'').trim());o._k=k;return o;}).filter(o=>o.length),visa:d.extraLine||'',summary:(d.summary||'').trim(),
@@ -498,9 +499,10 @@ class Component extends DCLogic {
     if(window.SKCV_EP&&window.SKCV!==window.SKCV_EP)window.SKCV=window.SKCV_EP;if(!window.SKCV||!window.SKCV_EP){clearTimeout(this._epw);this._epw=setTimeout(()=>this.paint(),150);return;}const v=this.state.view;
     if(v==='home'&&this.els.hero&&window.SKCV_MUNEEZ&&window.SKCV_ATS&&this.els.hero.dataset.ep!=='1'){this.els.hero.dataset.ep='1';const el=this.els.hero;const w=el.clientWidth/3-8;const s2=w/794;el.innerHTML=[0,2,4].map(n=>`<div style="height:${1123*s2}px;overflow:hidden;border-radius:6px;background:#fff;box-shadow:0 8px 24px rgba(20,30,60,.12)"><div style="transform:scale(${s2});transform-origin:0 0;width:794px;height:1123px">${window.SKCV.render(window.SKCV_MUNEEZ,n,{}).pages[0]}</div></div>`).join('');}
     if(v==='edit'){const el=this.els.prev,cv=this.cvObj();if(!el||!cv)return;if(this.ro&&!el._ob){this.ro.observe(el.parentNode);el._ob=1;}
-      if(el.contains(document.activeElement)&&document.activeElement.dataset&&document.activeElement.dataset.f)return;
+      if(!el._fo){el._fo=1;el.addEventListener('focusout',()=>{setTimeout(()=>{this.sched();},80);});}
+      if(el.contains(document.activeElement)&&document.activeElement.dataset&&document.activeElement.dataset.f){clearTimeout(this.pt);this.lastKey='';return;}
       const key=JSON.stringify([cv.data,cv.tpl,cv.color,cv.font,cv.margin,cv.paper,cv.order,cv.hide,cv.photoMode,cv.photoShape,cv.dateFmt,cv.dateSep,cv.keep,cv.col,cv.coverAlign,cv.fsize,cv.nameSize,cv.titleSize,cv.lh,cv.gap,cv.fitN,cv.tight,cv.cover,this.state.zoom,Math.round(el.parentNode.clientWidth/24)*24]);if(key===this.lastKey&&el.childElementCount)return;this.lastKey=key;
-      clearTimeout(this.pt);this.pt=setTimeout(()=>{const r=this.render1(cv,true);this.pagesCache=this.render1(cv).pages;el.innerHTML=this.pageHtml(r.pages,Math.round(el.parentNode.clientWidth/24)*24-32,this.state.zoom);this.bindEdit(el);if(r.pages.length!==this.state.pages)this.setState({pages:r.pages.length});},120);}
+      clearTimeout(this.pt);this.pt=setTimeout(()=>{const fa=document.activeElement;if(el.contains(fa)&&fa.dataset&&fa.dataset.f){this.lastKey='';return;}const cvN=this.cvObj()||cv;const r=this.render1(cvN,true);this.pagesCache=this.render1(cvN).pages;el.innerHTML=this.pageHtml(r.pages,Math.round(el.parentNode.clientWidth/24)*24-32,this.state.zoom);this.bindEdit(el);if(r.pages.length!==this.state.pages)this.setState({pages:r.pages.length});},120);}
     if(v==='share'){const el=this.els.share;if(!el||!this.state.share)return;const key='s'+Math.round(el.parentNode.clientWidth/24)*24;if(key===this.lastKey)return;this.lastKey=key;if(this.ro&&!el._ob){this.ro.observe(el.parentNode);el._ob=1;}
       const sh=this.state.share;const r=this.render1(sh);el.innerHTML=this.pageHtml(r.pages,Math.round(el.parentNode.clientWidth/24)*24-32);}
     if(v==='cover'){const el=this.els.cover,cv=this.cvObj();if(!el||!cv)return;if(el.contains(document.activeElement)&&document.activeElement.dataset&&document.activeElement.dataset.cl)return;if(this.ro&&!el._ob){this.ro.observe(el.parentNode);el._ob=1;}
@@ -761,9 +763,9 @@ class Component extends DCLogic {
     const curColor=cv?(cv.color||(window.SKCV?window.SKCV.DES[cv.tpl||0].c[1]:'#1F3A5F')):'#1F3A5F';
     const COLS=[['Navy','#1F3A5F'],['Black','#1C1C1C'],['Charcoal','#3B4450'],['Dark Blue','#1E4D8C'],['Maroon','#6E2633'],['Forest','#2E5E4E'],['Slate','#44505C'],['Teal','#1F5F6B']];
     const paid=true;
-    const doDl=fmt=>async()=>{const k=s.pay.kind;const key=cv.id+':'+k;
+    const doDl=fmt=>async()=>{this.commitEdit();await new Promise(r=>setTimeout(r,150));const k=s.pay.kind;const key=cv.id+':'+k;
       
-      try{if(fmt==='pdf'){if(k==='cover')this.printHtml([this.coverPage(cv)],(d.name||'Cover')+' Cover Letter');else this.printHtml(this.render1(cv).pages,(d.name||'CV')+' CV');}else{this.setState({dlBusy:'Preparing Word file…'});await this.docx(k);this.setState({dlBusy:''});}}catch(err){console.error(err);this.setState({dlBusy:''});this.flash((fmt==='pdf'?'PDF':'Word')+' download failed. Please try again.');return;}
+      try{if(fmt==='pdf'){if(k==='cover')this.printHtml([this.coverPage(this.cvObj()||cv)],(d.name||'Cover')+' Cover Letter');else this.printHtml(this.render1(this.cvObj()||cv).pages,(d.name||'CV')+' CV');}else{this.setState({dlBusy:'Preparing Word file…'});await this.docx(k);this.setState({dlBusy:''});}}catch(err){console.error(err);this.setState({dlBusy:''});this.flash((fmt==='pdf'?'PDF':'Word')+' download failed. Please try again.');return;}
       try{if(cv.code&&SKP.logCV)SKP.logCV(cv.code,fmt==='pdf'?'download_pdf':'download_docx',k==='cover'?'cover letter':'cv');}catch(e){}
       this.setState({pay:null});};
     const SES=s.me;
