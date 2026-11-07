@@ -4,12 +4,7 @@
 <base href="./Skilleaze%20Europass%20CV%20Builder.dc.html">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=3">
-<link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32.png?v=3">
-<link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/favicon-16.png?v=3">
-<link rel="icon" type="image/png" sizes="192x192" href="/assets/icons/favicon-192.png?v=3">
-<link rel="shortcut icon" href="/favicon.ico?v=3">
-<link rel="manifest" href="/site.webmanifest?v=3">
+<link rel="manifest" href="/site.webmanifest?v=4">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="CV Portal">
@@ -17,6 +12,11 @@
 <meta name="theme-color" content="#042D7C">
 <link href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400;0,700;1,400&family=Carlito:ital,wght@0,400;0,700;1,400&family=Caladea:ital,wght@0,400;0,700;1,400&family=Gelasio:ital,wght@0,400;0,700;1,400&family=Tinos:ital,wght@0,400;0,700;1,400&family=EB+Garamond:ital,wght@0,400;0,700;1,400&family=Merriweather:ital,wght@0,400;0,700;1,400&family=Montserrat:ital,wght@0,400;0,700;1,400&family=Raleway:ital,wght@0,400;0,700;1,400&family=Roboto:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:ital,wght@0,400;0,700;1,400&family=Open+Sans:ital,wght@0,400;0,700;1,400&family=Lato:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" data-skfonts="1">
 <script src="./support.js"></script>
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32.png?v=4">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/favicon-16.png?v=4">
+<link rel="icon" type="image/png" sizes="192x192" href="/assets/icons/favicon-192.png?v=4">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=4">
+<link rel="shortcut icon" href="/favicon.ico?v=4">
 </head>
 <body>
 <x-dc>
@@ -24,8 +24,8 @@
 <title>Skilleaze Internal CV Portal · Europass CV</title><meta name="robots" content="noindex,nofollow">
 
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Lato:wght@400;700;900&family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
-<script src="./cv-builder/cv-engine.js?v=40"></script>
-<script src="./cv-builder/europass-engine.js?v=38"></script>
+<script src="./cv-builder/cv-engine.js?v=200"></script>
+<script src="./cv-builder/europass-engine.js?v=200"></script>
 <script src="./cv-builder/muneez.js?v=38"></script>
 <script src="./cv-builder/portal-config.js?v=38"></script>
 <script src="./cv-builder/portal-store.js?v=38"></script>
@@ -191,7 +191,7 @@ textarea{resize:vertical}
 <sc-for list="{{ skills }}" as="k" hint-placeholder-count="2">
 <div style="display:grid;grid-template-columns:minmax(0,160px) minmax(0,1fr) auto;gap:8px;align-items:center">
 <input value="{{ k.cat }}" onChange="{{ k.onCat }}" placeholder="Category" style="border:1px solid #D9DCE3;border-radius:12px;padding:10px 12px;font:inherit;font-size:14px;font-weight:700;color:#2C3E50;background:#FFFFFF;outline:none;min-width:0" style-focus="border-color:#042D7C">
-<input value="{{ k.list }}" onChange="{{ k.onList }}" placeholder="Skill, skill, skill" style="border:1px solid #D9DCE3;border-radius:12px;padding:10px 12px;font:inherit;font-size:14px;color:#2C3E50;background:#FFFFFF;outline:none;min-width:0" style-focus="border-color:#042D7C">
+<textarea value="{{ k.list }}" onChange="{{ k.onList }}" rows="2" placeholder="Skill, skill, skill" style="border:1px solid #D9DCE3;border-radius:12px;padding:10px 12px;font:inherit;font-size:14px;color:#2C3E50;background:#FFFFFF;outline:none;min-width:0;resize:vertical;line-height:1.45" style-focus="border-color:#042D7C"></textarea>
 <button onClick="{{ k.rm }}" aria-label="Remove" style="width:34px;height:34px;border-radius:50%;border:1px solid #E3E4E8;background:#FFFFFF;color:#8A2D2D;font-size:18px;cursor:pointer;line-height:1">×</button>
 </div>
 </sc-for>
@@ -762,9 +762,10 @@ class Component extends DCLogic {
     const seg=on=>`background:${on?'#FFFFFF':'transparent'};color:${on?'#042D7C':'#2C3E50'};border:none;border-radius:999px;padding:7px 14px;font:inherit;font-weight:900;font-size:13px;cursor:pointer;box-shadow:${on?'0 1px 4px rgba(0,0,0,.1)':'none'};white-space:nowrap`;
     const need=fn=>()=>{if(!cv){this.create();return;}fn();};
     const free=s.mode==='free',st=s.step;const show=i=>free||st===i;
-    const f=k=>e=>{const val=e.target.value;this.upd(x=>{x[k]=val;});};
+    const RWX=(old,val)=>{const R=window.SKRT;old=old==null?'':String(old);if(!R||!R.isRich(old))return val;if(R.plain(old)===val)return old;const m=/^<span style="display:block;text-align:(center|right|justify)">/.exec(old);if(!m)return val;const h=String(val).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');return '<span style="display:block;text-align:'+m[1]+'">'+h+'</span>';};const PV=v=>{const R=window.SKRT;return R&&R.isRich(v)?R.plain(v):(v==null?'':v);};
+    const f=k=>e=>{const val=e.target.value;this.upd(x=>{x[k]=RWX(x[k],val);});};
     const on={};['name','title','sub','location','phone','email','website','linkedin','extraLine','summary','langs'].forEach(k=>on[k]=f(k));
-    const lf=(arr,i,k)=>e=>{const val=e.target.value;this.upd(x=>{x[arr][i][k]=val;});};
+    const lf=(arr,i,k)=>e=>{const val=e.target.value;this.upd(x=>{x[arr][i][k]=RWX(x[arr][i][k],val);});};
     const A=cv?this.ats(cv):{score:0,checks:[],matched:[],missing:[],pct:null};
     const bad=A.score<60,mid=A.score<80;
     const tag=s.busy;
@@ -834,7 +835,7 @@ class Component extends DCLogic {
       stepNo:st+1,stepLabel:STEPS[st],freeMode:free,progress:`height:100%;width:${(st+1)/6*100}%;background:#042D7C;border-radius:999px;transition:width .3s`,steps:STEPS.map((l,i)=>({n:i+1,label:l,go:()=>this.setState({step:i}),style:`background:${i===st?'#042D7C':'#FFFFFF'};color:${i===st?'#FFFFFF':'#2C3E50'};border:1px solid ${i===st?'#042D7C':'#E3E4E8'};border-radius:999px;padding:7px 12px;font:inherit;font-weight:700;font-size:13px;cursor:pointer;white-space:nowrap`})),
       prevStep:()=>this.setState({step:Math.max(0,st-1)}),nextStep:()=>{if(st<5)this.setState({step:st+1});else this.setState({view:'ats'});},nextLabel:st<5?'Next':'Check ATS score',
       showContact:show(0),showSummary:show(1),showExp:show(2),showSkills:show(3),showEdu:show(4),showExtra:show(5),
-      d,on,
+      d:Object.assign({},d,{summary:PV(d.summary),title:PV(d.title),langs:PV(d.langs),extraLine:PV(d.extraLine)}),on,
       fillSample:()=>{if(d.name&&!confirm('Replace your details with the example?'))return;this.save(c=>{c.data=JSON.parse(JSON.stringify(SAMPLE));});},
       onPhoto:this._onPhoto=e=>{const file=e.target.files[0];if(!file)return;const shp=(this.cvObj()||{}).photoShape;if(window.SKPHOTO){SKPHOTO.fromFile(file,{shape:shp,onApply:(u,c,orig)=>{this.lastKey='';this.upd(x=>{x.photo=u;x.photoOrig=orig;x.photoCrop=c;});},onReplace:()=>this._pickPhoto()});return;}const rd=new FileReader();rd.onload=()=>{const img=new Image();img.onload=()=>{const z=320,cn=document.createElement('canvas');cn.width=cn.height=z;const m=Math.min(img.width,img.height);cn.getContext('2d').drawImage(img,(img.width-m)/2,(img.height-m)/2*.6,m,m,0,0,z,z);const u=cn.toDataURL('image/jpeg',.82);this.upd(x=>{x.photo=u;});};img.src=rd.result;};rd.readAsDataURL(file);},
       adjustPhoto:()=>this._adjustPhoto(),
@@ -842,16 +843,16 @@ class Component extends DCLogic {
       summaryWords:(d.summary.match(/\S+/g)||[]).length,
       aiSummaryLabel:tag==='sum'?'Writing…':'Write with AI',
       aiSummary:()=>this.run('sum',async()=>{const D=this.toD(d);const t=await this.ai(`Write a professional CV summary (3–4 sentences, 50–90 words, no first person, no clichés) for this candidate. Use ONLY facts given; do not invent numbers, employers or skills.\nTarget title: ${D.title}\nExperience: ${D.exp.map(e=>e.t+' at '+e.c+' ('+e.d+'): '+e.b.join('; ')).join('\n')}\nSkills: ${D.skills.map(s=>s.join(': ')).join('; ')}\nCurrent summary: ${D.summary}\nReturn only the summary text.`);this.upd(x=>{x.summary=t.trim().replace(/^"|"$/g,'');});}),
-      exps:d.exp.map((e,i)=>Object.assign({},e,{onT:lf('exp',i,'t'),onC:lf('exp',i,'c'),onD:lf('exp',i,'d'),onB:lf('exp',i,'b'),
+      exps:d.exp.map((e,i)=>Object.assign({},e,{t:PV(e.t),c:PV(e.c),b:PV(e.b),onT:lf('exp',i,'t'),onC:lf('exp',i,'c'),onD:lf('exp',i,'d'),onB:lf('exp',i,'b'),
         rm:()=>this.upd(x=>{x.exp.splice(i,1);}),up:()=>this.upd(x=>{if(i>0){const t=x.exp[i];x.exp[i]=x.exp[i-1];x.exp[i-1]=t;}}),
         aiLabel:tag==='exp'+i?'Improving…':(e.b?'Improve bullets with AI':'Suggest bullets with AI'),
         ai:()=>this.run('exp'+i,async()=>{const t=await this.ai(`Rewrite these CV bullet points for the role "${e.t}" at "${e.c}". Rules: start each with a strong past-tense action verb (present tense if the role is current: "${e.d}"), one line each, ATS-friendly plain text, keep every fact true, never invent numbers — if a result would benefit from a figure, add "[add number]". If no bullets are given, suggest 4 typical responsibilities phrased as achievements with "[add number]" placeholders. Return only the bullets, one per line, no symbols.\n\nBULLETS:\n${e.b||'(none)'}`);this.upd(x=>{x.exp[i].b=t.split('\n').map(l=>l.replace(/^[\s•\-–*\d.)]+/,'').trim()).filter(Boolean).join('\n');});})})),
       addExp:()=>this.upd(x=>{x.exp.push({t:'',c:'',d:'',b:''});}),
-      skills:d.skills.map((k,i)=>Object.assign({},k,{onCat:lf('skills',i,'cat'),onList:lf('skills',i,'list'),rm:()=>this.upd(x=>{x.skills.splice(i,1);})})),
+      skills:d.skills.map((k,i)=>Object.assign({},k,{cat:PV(k.cat),list:PV(k.list),onCat:lf('skills',i,'cat'),onList:lf('skills',i,'list'),rm:()=>this.upd(x=>{x.skills.splice(i,1);})})),
       addSkill:()=>this.upd(x=>{x.skills.push({cat:'',list:''});}),
       edus:d.edu.map((u,i)=>Object.assign({},u,{onDeg:lf('edu',i,'deg'),onSchool:lf('edu',i,'school'),onYrs:lf('edu',i,'yrs'),rm:()=>this.upd(x=>{x.edu.splice(i,1);})})),
       addEdu:()=>this.upd(x=>{x.edu.push({deg:'',school:'',yrs:''});}),
-      extras:(()=>{const DS=cv&&window.SKCV&&window.SKCV.DES&&window.SKCV.DES[cv.tpl||0];const sT=!!(DS&&String(DS.sh||'').startsWith('side'));return d.extra.map((x0,i)=>Object.assign({},x0,{onTitle:lf('extra',i,'title'),onItems:lf('extra',i,'items'),rm:()=>this.upd(x=>{x.extra.splice(i,1);}),canSide:sT,sideLbl:x0.side?'In sidebar ⇄':'In main column ⇄',sideToggle:()=>{this.lastKey='';this.upd(x=>{x.extra[i].side=!x.extra[i].side;});}}));})(),sideTpl:(()=>{const DS=cv&&window.SKCV&&window.SKCV.DES&&window.SKCV.DES[cv.tpl||0];return !!(DS&&String(DS.sh||'').startsWith('side'));})(),addSideSec:()=>{this.lastKey='';this.upd(x=>{x.extra.push({title:'',items:'',side:true});});},
+      extras:(()=>{const DS=cv&&window.SKCV&&window.SKCV.DES&&window.SKCV.DES[cv.tpl||0];const sT=!!(DS&&String(DS.sh||'').startsWith('side'));return d.extra.map((x0,i)=>Object.assign({},x0,{title:PV(x0.title),items:PV(x0.items),onTitle:lf('extra',i,'title'),onItems:lf('extra',i,'items'),rm:()=>this.upd(x=>{x.extra.splice(i,1);}),canSide:sT,sideLbl:x0.side?'In sidebar ⇄':'In main column ⇄',sideToggle:()=>{this.lastKey='';this.upd(x=>{x.extra[i].side=!x.extra[i].side;});}}));})(),sideTpl:(()=>{const DS=cv&&window.SKCV&&window.SKCV.DES&&window.SKCV.DES[cv.tpl||0];return !!(DS&&String(DS.sh||'').startsWith('side'));})(),addSideSec:()=>{this.lastKey='';this.upd(x=>{x.extra.push({title:'',items:'',side:true});});},
       extraPresets:['Internships','Projects','Certifications','Awards','Volunteering','Interests','References','Custom section'].map(l=>({label:l,add:()=>this.upd(x=>{x.extra.push({title:l==='Custom section'?'':l,items:''});})})),
       tplCode:cv&&window.SKCV?window.SKCV.code(cv.tpl||0):'Template',
       openPicker:()=>this.setState({pickerOpen:true}),closePicker:()=>this.setState({pickerOpen:false}),
