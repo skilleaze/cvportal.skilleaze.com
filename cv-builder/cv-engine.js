@@ -127,7 +127,7 @@ function paginate(S,C,F,fs,photo){
   const put=(h,mt,hh)=>{const a=(used?mt:0)+hh*K;if(used+a>av)return false;html+=`<div style="margin-top:${used?mt:0}px">${h}</div>`;used+=a;return true;};
   let placed=0;
   while(i<its.length){const it=its[i];
-   if(it.keep){const nx=its[i+1];const fh=nx.bullets?Math.min(nx.h(nx.bullets.slice(0,2),false),nx.h(nx.bullets.slice(0,1),false)+((nx.bullets.length>1&&nx.h(nx.bullets.slice(0,2),false)>av*0.5)?0:nx.h(nx.bullets.slice(0,2),false)-nx.h(nx.bullets.slice(0,1),false))):nx.h();if(placed>0&&used+(used?it.mt:0)+(it.h()+fh)*K>av)break;put(it.html(),it.mt,it.h());i++;placed++;continue;}
+   if(it.keep){const nx=its[i+1]||{h:()=>0};const fh=nx.bullets?Math.min(nx.h(nx.bullets.slice(0,2),false),nx.h(nx.bullets.slice(0,1),false)+((nx.bullets.length>1&&nx.h(nx.bullets.slice(0,2),false)>av*0.5)?0:nx.h(nx.bullets.slice(0,2),false)-nx.h(nx.bullets.slice(0,1),false))):nx.h();if(placed>0&&used+(used?it.mt:0)+(it.h()+fh)*K>av)break;put(it.html(),it.mt,it.h());i++;placed++;continue;}
    if(it.bullets){const rest=it.bullets.slice(bi),c=bi>0;
     if(put(it.html(rest,c),c?0:it.mt,it.h(rest,c))){i++;bi=0;placed++;continue;}
     if(KEEP&&!c&&placed>0)break;let done=false;for(let k=rest.length-1;k>=1;k--){if(k<2&&!c&&placed>0&&!(placed===1&&its[i-1]&&its[i-1].keep))break;if(put(it.html(rest.slice(0,k),c),c?0:it.mt,it.h(rest.slice(0,k),c))){bi+=k;done=true;break;}}
@@ -151,5 +151,5 @@ const tt=data.title?`<div style="font-size:14px;font-weight:700;color:#333;margi
 const cl=ct?`<div style="font-size:12px;color:#555;margin-top:6px">${ct}</div>`:'';
 const head=v===3?`<div style="border-left:4px solid ${C};padding-left:14px;margin-bottom:30px">${nm}${tt}${cl}</div>`:`<div style="text-align:${al};border-bottom:${v===2?'2px':'1px'} solid ${C};padding-bottom:14px;margin-bottom:30px">${nm}${tt}${cl}</div>`;
 return {html:`<div style="width:${P[0]}px;height:${P[1]}px;background:#fff;box-sizing:border-box;padding:${M[1]}px ${M[0]}px;font-family:${F};font-size:14px;line-height:1.6;color:#222;overflow:hidden">${head}${body}</div>`,w:P[0],h:P[1],color:C};}
-window.SKCV={DES,CL,FONTS,render,letter,code:n=>'SKZ-'+String(n+1).padStart(2,'0')+' '+DES[n].k};})();
+{const X={DES,CL,FONTS,render,letter,code:n=>'SKZ-'+String(n+1).padStart(2,'0')+' '+DES[n].k};window.SKCV_ATS=X;if(!(window.SKCV&&window.SKCV.ep))window.SKCV=X;}})();
 ;(function(){if(typeof document==='undefined'||document.getElementById('sk-ph-css'))return;const st=document.createElement('style');st.id='sk-ph-css';st.textContent='[data-f][data-ph]:empty::before{content:attr(data-ph);color:#9AA3AE;font-style:italic;pointer-events:none}[data-f][data-ph]:empty{outline:1px dashed #C9CED6;outline-offset:2px;border-radius:3px;cursor:text}';(document.head||document.documentElement).appendChild(st);})();
