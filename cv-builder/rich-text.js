@@ -1,9 +1,13 @@
 /* Skilleaze rich text: safe formatting inside CV fields (bold, italic, underline, colour, alignment, lists, links),
    the floating editing toolbar, and Word (DOCX) helpers. Plain text stays plain; formatted text is stored as a small safe HTML subset. */
 (function(){
-if(window.SKRT)return;
+if(window.SKRT&&window.SKRT.__full)return;
 const RICH=/<\/?(b|strong|i|em|u|a|span|font|ul|ol|li|br|div|p)\b/i;
 const escT=t=>String(t??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const fixAmp=s=>String(s??'').replace(/&amp;(?:amp;)+/g,'&amp;');
+const unAmp=s=>String(s??'').replace(/&(?:amp;)+/g,'&');
+const UNW=/^<span style="display:block;text-align:(left|center|right|justify)">([\s\S]*)<\/span>$/;
+function unwrap(v){v=String(v??'');let al='',m;while((m=UNW.exec(v))){al=al||m[1];v=m[2];}return [al,v];}
 const escA=t=>escT(t).replace(/"/g,'&quot;');
 const COLOR=/^(#[0-9a-f]{3,8}|rgb\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\))$/i;
 const ALIGN=/^(left|center|right|justify)$/;
@@ -31,19 +35,19 @@ function walk(node,out,top){
     out.push(x);
   }
 }
-function clean(html){const d=document.createElement('template');d.innerHTML=String(html??'');const out=[];walk(d.content,out,true);
+function clean(html){const d=document.createElement('template');d.innerHTML=fixAmp(html);const out=[];walk(d.content,out,true);
   return out.join('').replace(/^(<br>)+|(<br>)+$/g,'').replace(/(<br>){3,}/g,'<br><br>');}
 function isRich(s){return RICH.test(String(s??''));}
-function plain(s){s=String(s??'');if(!isRich(s))return s;const d=document.createElement('div');d.innerHTML=s.replace(/<br\s*\/?>/gi,'\n').replace(/<\/li>/gi,'\n');return d.textContent.replace(/\n{3,}/g,'\n\n').trim();}
+function plain(s){s=String(s??'');if(!isRich(s))return unAmp(s);s=fixAmp(s);const d=document.createElement('div');d.innerHTML=s.replace(/<br\s*\/?>/gi,'\n').replace(/<\/li>/gi,'\n');return d.textContent.replace(/\n{3,}/g,'\n\n').trim();}
 // value -> safe HTML for display (plain strings are escaped)
-function html(s){s=String(s??'');return isRich(s)?clean(s):escT(s);}
+function html(s){s=String(s??'');return isRich(s)?clean(s):escT(unAmp(s));}
 function hasFormat(h){return /<(b|i|u|a|span|ul|ol|li)\b/.test(h);}
 // prepare a field for editing: alignment wrapper moves onto the element itself
-function toEdit(n,v){v=String(v??'');let al='';const m=/^<span style="display:block;text-align:(left|center|right|justify)">([\s\S]*)<\/span>$/.exec(v);if(m){al=m[1];v=m[2];}
-  n.innerHTML=isRich(v)?clean(v):escT(v).replace(/\n/g,'<br>');if(al){n.style.textAlign=al;n.style.display='block';}n.dataset.al=al||'';}
-function fromEdit(n,multiline){let h=clean(n.innerHTML).replace(/&nbsp;/g,' ');const al=n.dataset.al||'';
-  if(!hasFormat(h)&&!al){const d=document.createElement('div');d.innerHTML=h.replace(/<br>/g,'\n');let t=d.textContent;t=multiline?t.replace(/\n{3,}/g,'\n\n'):t.replace(/\s*\n+\s*/g,' ');return t.replace(/[ \t]+/g,' ').trim();}
-  if(!multiline)h=h.replace(/<br>/g,' ');h=h.trim();return al&&al!=='left'?'<span style="display:block;text-align:'+al+'">'+h+'</span>':h;}
+function toEdit(n,v){v=String(v??'');const u=unwrap(v);const al=u[0];const wrapped=u[1]!==v;v=u[1];
+  n.innerHTML=(wrapped||isRich(v))?clean(v):escT(unAmp(v)).replace(/\n/g,'<br>');if(al&&al!=='left'){n.style.textAlign=al;if(getComputedStyle(n).display==='inline')n.style.display='block';}else{n.style.textAlign='';}n.dataset.al=al&&al!=='left'?al:'';}
+function fromEdit(n,multiline){let h=clean(n.innerHTML).replace(/&nbsp;/g,' ');h=unwrap(h)[1];const al=n.dataset.al||'';
+  if(!hasFormat(h)&&!(al&&al!=='left')){const d=document.createElement('div');d.innerHTML=h.replace(/<br>/g,'\n');let t=d.textContent;t=multiline?t.replace(/\n{3,}/g,'\n\n'):t.replace(/\s*\n+\s*/g,' ');return t.replace(/[ \t]+/g,' ').trim();}
+  if(!multiline)h=h.replace(/<br>/g,' ');h=h.trim();if(!plain(h).trim())return '';return al&&al!=='left'?'<span style="display:block;text-align:'+al+'">'+h+'</span>':h;}
 
 /* ---------- toolbar ---------- */
 const I={clear:'<path d="m7 21-4.3-4.3a1 1 0 0 1 0-1.4l9.6-9.6a1 1 0 0 1 1.4 0l5.6 5.6a1 1 0 0 1 0 1.4L13 21"/><path d="M22 21H7"/><path d="m5 11 9 9"/>',undo:'<path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/>',redo:'<path d="m15 14 5-5-5-5"/><path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13"/>',
@@ -84,7 +88,7 @@ function build(){css();bar=document.createElement('div');bar.className='skrt';ba
 function run(k,btn){const n=cur;if(!n)return;n.focus({preventScroll:true});
   if(k==='color'){openPal(btn);return;}
   if(k==='font'){if(pal){closePal();return;}openFont(btn);return;}
-  if(['left','center','right','justify'].includes(k)){n.dataset.al=k==='left'?'':k;n.style.textAlign=k==='left'?'':k;n.style.display=k==='left'&&!n.dataset.wasBlock?'':'block';sync();return;}
+  if(['left','center','right','justify'].includes(k)){n.dataset.al=k==='left'?'':k;n.style.textAlign=k==='left'?'':k;if(k!=='left'&&getComputedStyle(n).display==='inline')n.style.display='block';sync();return;}
   if(k==='link'){const sel=getSelection();if(!sel||sel.isCollapsed){alert('Select the text you want to link first.');return;}const r=sel.getRangeAt(0).cloneRange();let u=prompt('Link address (https://…, mailto: or tel:)','https://');if(!u)return;u=u.trim();if(!/^(https?:|mailto:|tel:)/i.test(u))u=(/@/.test(u)?'mailto:':'https://')+u.replace(/^\/+/,'');sel.removeAllRanges();sel.addRange(r);document.execCommand('createLink',false,u);sync();return;}
   if((k==='ul'||k==='ol')&&cur){listify(k);sync();return;}const C={undo:'undo',redo:'redo',b:'bold',i:'italic',u:'underline',ul:'insertUnorderedList',ol:'insertOrderedList',unlink:'unlink',clear:'removeFormat'}[k];
   try{document.execCommand('styleWithCSS',false,false);}catch(e){}document.execCommand(C,false,null);sync();}
@@ -121,7 +125,7 @@ function sync(){if(!bar||!cur)return;const q=c=>{try{return document.queryComman
 function place(){if(!bar||!cur||bar.classList.contains('dock'))return;if(innerWidth<=640){bar.style.top='';bar.style.left='';return;}const r=cur.getBoundingClientRect();const bw=bar.offsetWidth,bh=bar.offsetHeight;
   let y=r.top-bh-10;if(y<70)y=r.bottom+10;const x=Math.min(innerWidth-bw-8,Math.max(8,r.left+r.width/2-bw/2));bar.style.top=y+'px';bar.style.left=x+'px';}
 function show(n,opt){if(!bar)build();dock();cur=n;bar.querySelectorAll('button[data-k]').forEach(b=>b.disabled=false);bar.classList.add('live');const ht=bar.querySelector('.hint');if(ht)ht.textContent='Formatting: '+(n.dataset.f?String(n.dataset.f).split('.')[0].replace(/^exp$/,'experience').replace(/^edu$/,'education'):'text');accent=(opt&&opt.accent)||accent;const multi=!!(opt&&opt.multi),list=!!(opt&&opt.lists);
-  bar.querySelectorAll('[data-k=ul],[data-k=ol]').forEach(b=>b.disabled=!list);bar.querySelectorAll('[data-k=left],[data-k=center],[data-k=right],[data-k=justify]').forEach(b=>b.disabled=!!(opt&&opt.noAlign));
+  bar.querySelectorAll('[data-k=ul],[data-k=ol]').forEach(b=>b.disabled=!list);const fk=String(n.dataset.f||'');const inl=getComputedStyle(n).display==='inline'&&!n.dataset.al;const par=n.parentElement;const solo=!par||par.textContent.replace(/\s+/g,'')===n.textContent.replace(/\s+/g,'');const noAl=!!(opt&&opt.noAlign)||/^heads\./.test(fk)||(inl&&!solo);bar.querySelectorAll('[data-k=left],[data-k=center],[data-k=right],[data-k=justify]').forEach(b=>{b.disabled=noAl;b.title=noAl?'Alignment is set by the template here':TIP[b.dataset.k];});
   bar.style.display='flex';place();sync();}
 function hide(n){if(cur&&n&&cur!==n)return;cur=null;closePal();if(!bar)return;if(bar.classList.contains('dock')){idle();return;}bar.style.display='none';}
 function idle(){if(!bar)return;bar.classList.remove('live');const fl=bar.querySelector('.fn .fl');if(fl){fl.textContent='Font';fl.style.fontFamily='';}bar.querySelectorAll('button[data-k]').forEach(b=>{b.disabled=true;b.classList.remove('on');});const ht=bar.querySelector('.hint');if(ht)ht.textContent='Click any text on the CV to format it';}
@@ -156,5 +160,5 @@ function photoPng(src,shape){return new Promise(ok=>{if(!src)return ok(null);con
   const m=Math.min(img.width,img.height),sx=(img.width-m)/2,sy=(img.height-m)*.15;x.drawImage(img,sx,sy,m,m,0,0,S,S);
   c.toBlob(b=>{if(!b)return ok(null);b.arrayBuffer().then(a=>ok(new Uint8Array(a)));},'image/png');};img.onerror=()=>ok(null);img.src=src;});}
 
-window.SKRT={clean,isRich,plain,html,toEdit,fromEdit,show,hide,runs,paras,align,numbering,photoPng};
+window.SKRT={__full:true,unwrap,fixAmp,clean,isRich,plain,html,toEdit,fromEdit,show,hide,runs,paras,align,numbering,photoPng};
 })();

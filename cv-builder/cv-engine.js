@@ -1,3 +1,4 @@
+(function(){var R=window.SKRT=window.SKRT||{};var strip=function(v){return String(v==null?'':v).replace(/<[^>]*>/g,'').replace(/&nbsp;/g,' ').replace(/&amp;/g,'&');};if(typeof R.plain!=='function')R.plain=strip;if(typeof R.unwrap!=='function')R.unwrap=function(v){v=String(v==null?'':v);var m=/^<span style="display:block;text-align:(left|center|right|justify)">([\s\S]*)<\/span>$/.exec(v);return m?[m[1],m[2]]:['',v];};if(typeof R.fixAmp!=='function')R.fixAmp=function(v){return String(v==null?'':v).replace(/&amp;(amp;)+/g,'&amp;');};})();
 (function(){let D;const esc=t=>{t=String(t??'');return window.SKRT&&window.SKRT.isRich(t)?window.SKRT.clean(t):t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');};
 const SKPL=t=>{t=String(t??'');return window.SKRT?window.SKRT.plain(t):t.replace(/<[^>]+>/g,'');};
 const SKNL=c=>!String(c||'').trim()||/^(core|key)?\s*(skills|competenc(ies|y)|core competencies|areas of expertise|skills?\s*(&|and)\s*competencies)\s*:?\s*$/i.test(SKPL(c).trim());
@@ -122,7 +123,7 @@ function shell(S,C,F,fs,p,flow,photo){
 function paginate(S,C,F,fs,photo){
  const W=GW(S),VP=GEO[S.sh][1]+2*(PY-46);const its=items(S,C,F,fs,W);
  {const FULL=(PGH-VP-10)*0.8;its.forEach(it=>{if(!it.bullets||!it.bullets.length)return;const nb=[];it.bullets.forEach(b=>{if(String(b).charAt(0)==='\u200B'||it.h([b],true)<=FULL){nb.push(b);return;}const sn=String(b).match(/[^.!?;]+[.!?;]*\s*|.+$/g)||[b];let cur='',first=true;sn.forEach(x=>{const t=cur+x;if(cur&&it.h([t],true)>FULL){nb.push((first?'':'\u200B')+cur.trim());first=false;cur=x;}else cur=t;});if(cur.trim())nb.push((first?'':'\u200B')+cur.trim());});it.bullets=nb;});}const pages=[];let i=0,bi=0;
- while(i<its.length&&pages.length<12){
+ while(i<its.length&&pages.length<60){
   const p=pages.length;const av=PGH-VP-(p===0?header(S,C,F,fs,W)[1]+16:0)-10;let used=0,html='';const K=1.02;
   const put=(h,mt,hh)=>{const a=(used?mt:0)+hh*K;if(used+a>av)return false;html+=`<div style="margin-top:${used?mt:0}px">${h}</div>`;used+=a;return true;};
   let placed=0;
