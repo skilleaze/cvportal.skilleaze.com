@@ -38,10 +38,10 @@ var ps=ls.join('\n').split(/\n\s*\n/).map(function(p){return p.trim().replace(/^
 
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Lato:wght@400;700;900&family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
 <script src="./cv-builder/sk-update.js?v=20261109.2"></script>
-<script src="./cv-builder/cv-engine.js?v=20261110.2"></script>
+<script src="./cv-builder/cv-engine.js?v=20261111.2"></script>
 <script src="./cv-builder/muneez.js?v=20261109.2"></script>
 <script src="./cv-builder/portal-config.js?v=20261109.2"></script>
-<script src="./cv-builder/portal-store.js?v=20261109.2"></script>
+<script src="./cv-builder/portal-store.js?v=20261110.2"></script>
 <script src="./cv-builder/rich-text.js?v=20261109.2"></script>
 <script src="./cv-builder/photo-crop.js?v=20261109.2"></script>
 <script src="./cv-builder/sk-ui.js?v=20261109.2"></script>
@@ -873,7 +873,7 @@ class Component extends DCLogic {
       const cols=two?[it.filter(x=>x.x<vw*0.42),it.filter(x=>x.x>=vw*0.42)]:[it];
       for(const col of cols){col.sort((a,b)=>b.y-a.y||a.x-b.x);const lines=[];for(const x of col){const ln=lines[lines.length-1];if(ln&&Math.abs(ln.y-x.y)<Math.max(2,x.h*0.45)){ln.p.push(x);}else lines.push({y:x.y,h:x.h,p:[x]});}
         let py=null;for(const ln of lines){ln.p.sort((a,b)=>a.x-b.x);let s='';let ex=null;for(const p of ln.p){if(ex!==null&&p.x-ex>1.5&&!/\s$/.test(s)&&!/^\s/.test(p.s))s+=' ';s+=p.s;ex=p.x+p.w;}if(py!==null&&py-ln.y>ln.h*1.9)t+='\n';t+=s.trim()+'\n';py=ln.y;}t+='\n';}}return t;}
-  cleanImport(j){const EXC=/^(linked|you|java|power|type|post|my|face|whats|mac|word|hub|git|share|one|quick|sales|drop|data|web|smart|tik|mail|chat|free|fire|auto|photo|google|net|play|app|swift|team|zoom|mc|mac|de|van|la)$/i;const glue=s=>String(s||'').replace(/([a-z0-9.)])(\s*)(LinkedIn|Nationality|Current Location|Availability|References|Academic Transcripts|Study Period|Result Published|Institution|Platform|Published)\b/g,(m,a,sp,b)=>a+' · '+b).replace(/([A-Za-z]*?)([a-z]{2})([A-Z][a-z]{2,})/g,(m,a,b,c)=>EXC.test(a+b)?m:a+b+' '+c).replace(/\s*,\s*\./g,'.').replace(/\(\s*\)/g,'').replace(/[ \t]{2,}/g,' ').replace(/\s+([,.;:])/g,'$1').replace(/^\s*·\s*/,'').trim();
+  cleanImport(j){if(window.SKPH)Object.assign(j,window.SKPH(j));const EXC=/^(linked|you|java|power|type|post|my|face|whats|mac|word|hub|git|share|one|quick|sales|drop|data|web|smart|tik|mail|chat|free|fire|auto|photo|google|net|play|app|swift|team|zoom|mc|mac|de|van|la)$/i;const glue=s=>String(s||'').replace(/([a-z0-9.)])(\s*)(LinkedIn|Nationality|Current Location|Availability|References|Academic Transcripts|Study Period|Result Published|Institution|Platform|Published)\b/g,(m,a,sp,b)=>a+' · '+b).replace(/([A-Za-z]*?)([a-z]{2})([A-Z][a-z]{2,})/g,(m,a,b,c)=>EXC.test(a+b)?m:a+b+' '+c).replace(/\s*,\s*\./g,'.').replace(/\(\s*\)/g,'').replace(/[ \t]{2,}/g,' ').replace(/\s+([,.;:])/g,'$1').replace(/^\s*·\s*/,'').trim();
     const junk=x=>/^\s*(and|&|,|\.|-|–|•|or)?\s*$/i.test(String(x||''));const lines=t=>String(t||'').split(/\n/).map(glue).filter(x=>!junk(x)).join('\n');
     ['name','title','sub','location','phone','email','website','linkedin','summary','langs'].forEach(k=>{if(typeof j[k]==='string')j[k]=glue(j[k]);});
     const PERS=/^(nationality|current location|location|availability|visa|visa status|date of birth|dob|references?|academic transcripts|notice period|marital status|driving licen[cs]e|additional information|personal (details|information))/i;
@@ -895,8 +895,8 @@ class Component extends DCLogic {
     ['skills','exp','edu','extra'].forEach(k=>{if(!Array.isArray(j[k]))j[k]=[];});this.normalizeExp(j);this.cleanImport(j);
     const ORD=j._ord||null;delete j._ord;const into=this.state.importInto&&this.cvObj();
     this.setState({importOpen:false,importBusy:'',pasteText:'',importInto:null});
-    if(into){const keep=into.data||{};const merged=Object.assign(blank(),j);if(keep.photo)merged.photo=keep.photo;if(keep.heads)merged.heads=keep.heads;
-      this.setState(s=>({cvs:s.cvs.map(c=>c.id===into.id?Object.assign({},c,ORD?{order:ORD}:{},{data:merged,updated:Date.now(),label:(c.label==='My CV'&&j.name)?j.name+' CV':c.label}):c)}));}
+    if(into){const keep=into.data||{};const merged=Object.assign(blank(),j);if(keep.photo&&!merged.photo&&String(keep.name||'').trim().toLowerCase()===String(merged.name||'').trim().toLowerCase())merged.photo=keep.photo;this._lastPush=null;this.lastKey='';
+      this.setState(s=>({cvs:s.cvs.map(c=>c.id===into.id?(()=>{const n=Object.assign({},c,{data:merged,updated:Date.now(),label:(c.label==='My CV'&&j.name)?j.name+' CV':c.label});delete n.order;delete n.hide;if(ORD)n.order=ORD;return n;})():c)}));}
     else{this.create(j,(j.name||'Imported')+' CV');if(ORD)setTimeout(()=>this.save(c=>{c.order=ORD;}),0);}
     this.flash(via==='local'?'CV loaded. Check every section; layouts from some files need small fixes.':'CV loaded. Check every detail before downloading.');}
   renderVals(){const o=this._rv();const CH='all:unset;box-sizing:border-box;cursor:pointer;flex:1 1 0;min-width:0;text-align:center;padding:7px 6px;border-radius:999px;font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;';const on=x=>typeof x.on==='boolean'?x.on:/F1F3F7|EEF2FA|#042D7C;color:#FFFFFF|background:#042D7C/i.test(x.style||'');const fix=l=>(l||[]).map(x=>Object.assign({},x,{cs:CH+(on(x)?'background:#FFFFFF;color:#042D7C;box-shadow:0 1px 3px rgba(4,45,124,.18)':'color:#5B6470')}));
@@ -956,7 +956,7 @@ class Component extends DCLogic {
       cvCountLabel:s.cvs.length?`${s.cvs.length} saved in this browser`:'Nothing saved yet',
       cvList:s.cvs.map(c=>({label:c.label,code:window.SKCV?window.SKCV.code(c.tpl||0):'',sub:'Edited '+new Date(c.updated).toLocaleDateString('en-GB',{day:'numeric',month:'short'})+(c.data.title?' · '+c.data.title:''),
         open:()=>this.setState({cur:c.id,view:'edit'}),dup:()=>{const n=JSON.parse(JSON.stringify(c));n.id=uid();n.code=window.SKP&&SKP.newCode?SKP.newCode('ats'):'';delete n.src;delete n.serial;n.label=c.label+' (copy)';n.updated=Date.now();this.setState(x=>({cvs:[n,...x.cvs]}));},
-        del:()=>{if(confirm('Delete "'+c.label+'"?'))this.setState(x=>({cvs:x.cvs.filter(y=>y.id!==c.id),cur:x.cur===c.id?null:x.cur}));}})),
+        del:()=>{if(!confirm('Delete "'+c.label+'"? This also removes it from the portal.'))return;const code=c.code;this._lastPush=null;this.lastKey='';this.setState(x=>({cvs:x.cvs.filter(y=>y.id!==c.id&&!(code&&y.code===code)),cur:x.cur===c.id?null:x.cur}));if(code&&window.SKP&&SKP.deleteOwnCV)SKP.deleteOwnCV(code).catch(e=>this.flash('Removed from this device. Portal copy could not be deleted: '+((e&&e.message)||'')));}})),
       cvLabel:cv?cv.label:'',setLabel:e=>{const val=e.target.value;this.save(c=>{c.label=val;});},
       guided:!free,setGuided:()=>this.setState({mode:'guided'}),setFree:()=>this.setState({mode:'free'}),modeGuided:seg(!free),modeFree:seg(free),
       showQuick:show(0)&&!s.quickHidden&&!(d.summary||'').trim()&&!(d.exp||[]).some(e=>e.t),hideQuick:()=>this.setState({quickHidden:true}),qs:s.qs,
