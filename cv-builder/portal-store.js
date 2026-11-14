@@ -47,7 +47,12 @@ const R={
   getCV:c=>rpc('portal_cv_get',{p_token:tok(),p_code:c}),
   searchCVs:(q,kind,by,from,to)=>searchRaw(q,kind,by,from,to),
   deleteCV:c=>rpc('portal_cv_delete',{p_token:tok(),p_code:c}),
-  stats:()=>rpc('portal_stats',{p_token:tok()})
+  deleteOwnCV:c=>rpc('portal_cv_delete_own',{p_token:tok(),p_code:c}),
+  stats:()=>rpc('portal_stats',{p_token:tok()}),
+  async orders(o){o=o||{};try{return await rpc('portal_orders_list',{p_token:tok(),p_from:o.from||null,p_to:o.to||null,p_user:o.user||null,p_service:o.service||null,p_status:o.status||null})||[];}catch(e){if(MISS(e)){if(window.SKP)window.SKP.needsOrders=true;return [];}throw e;}},
+  async earnings(o){o=o||{};try{return await rpc('portal_earnings',{p_token:tok(),p_from:o.from||null,p_to:o.to||null,p_user:o.user||null,p_service:o.service||null});}catch(e){if(MISS(e)){if(window.SKP)window.SKP.needsOrders=true;return null;}throw e;}},
+  completeOrder:o=>rpc('portal_order_complete',{p_token:tok(),p_ref:o.ref,p_service:o.service,p_customer:o.customer||'',p_phone:o.phone||'',p_note:o.note||'',p_force:!!o.force}),
+  setOrder:(id,o)=>rpc('portal_order_set',{p_token:tok(),p_id:id,p_status:o.status||null,p_completed_by:o.by||null})
 };
 
 // ---------- local preview ----------
@@ -58,6 +63,12 @@ const curUser=d=>{const s=sess();if(!s)return null;const un=d.sessions[s.token];
 const pub=u=>u&&({username:u.username,name:u.name,role:u.role,active:u.active,created_by:u.created_by,created_at:u.created_at,last_login:u.last_login,login_count:u.login_count});
 const need=(d,admin)=>{const u=curUser(d);if(!u)throw new Error('Please sign in again.');if(admin&&u.role!=='admin')throw new Error('Admins only.');return u;};
 const meta=c=>({serial:c.serial,time_spent:c.time_spent||0,edit_count:c.edit_count||0,downloads:c.downloads||0,last_download:c.last_download||null,code:c.code,kind:c.kind,customer:c.customer,phone:c.phone,email:c.email,label:c.label,created_by:c.created_by,updated_by:c.updated_by,created_at:c.created_at,updated_at:c.updated_at});
+
+const RATES={cv:30,cover:5,linkedin:50,portfolio:100};const SV=['cv','cover','linkedin','portfolio'];
+const credit=(d,ref,svc,who,x)=>{d.orders=d.orders||[];let o=d.orders.find(z=>z.ref===ref&&z.service===svc);const now=new Date().toISOString();const c=d.cvs.find(z=>z.code===ref)||{};x=x||{};
+  if(!o){d.oseq=(d.oseq||0)+1;o={id:d.oseq,ref,service:svc,customer:x.customer||c.customer||'',phone:x.phone||c.phone||'',note:x.note||'',status:'completed',created_by:who,created_at:now,completed_by:who,completed_at:now,rate:RATES[svc],updated_at:now};d.orders.push(o);LOG(d,who,'order_completed',svc);return {credited:true,id:o.id,by:who,amount:o.rate};}
+  if(o.status==='pending'){Object.assign(o,{status:'completed',completed_by:who,completed_at:now,rate:RATES[svc],updated_at:now});LOG(d,who,'order_completed',svc);return {credited:true,id:o.id,by:who,amount:o.rate};}
+  return {credited:false,id:o.id,by:o.completed_by,status:o.status};};
 const L={
   async login(u,p){const d=await seed();const h=await sha(p);const x=d.users.find(z=>z.username.toLowerCase()===String(u).trim().toLowerCase());
     if(!x||x.pass!==h)throw new Error('Username or password is incorrect.');if(!x.active)throw new Error('This account is disabled. Ask the admin.');
@@ -80,7 +91,7 @@ const L={
     if(!c.serial){d.seq=(d.seq||0)+1;c.serial=d.seq;}c.time_spent=(c.time_spent||0)+sec;c.edit_count=(c.edit_count||0)+1;
     Object.assign(c,{kind:r.kind,customer:r.customer||'',phone:r.phone||'',email:r.email||'',label:r.label||'',doc:r.doc,updated_by:u.username,updated_at:now});
     try{put(d);}catch(e){throw new Error('Browser storage is full. Connect the shared database (see SETUP.md).');}return {serial:c.serial,code:c.code};},
-  async logCV(code,action,detail){const d=db();const u=need(d);d.act=d.act||[];d.act.push({id:Date.now(),code,username:u.username,action,seconds:0,detail:detail||'',at:new Date().toISOString()});const c=d.cvs.find(x=>x.code===code);if(c&&/^download_/.test(action)){c.downloads=(c.downloads||0)+1;c.last_download=new Date().toISOString();}put(d);return true;},
+  async logCV(code,action,detail){const d=db();const u=need(d);d.act=d.act||[];d.act.push({id:Date.now(),code,username:u.username,action,seconds:0,detail:detail||'',at:new Date().toISOString()});const c=d.cvs.find(x=>x.code===code);if(c&&/^download_/.test(action)){c.downloads=(c.downloads||0)+1;c.last_download=new Date().toISOString();if(u.role!=='admin')credit(d,code,/^cover/i.test(detail||'')?'cover':'cv',u.username);}put(d);return true;},
   async activity(o){o=o||{};const d=db();const u=need(d);if(!o.code&&u.role!=='admin')throw new Error('Admins only.');const day=x=>String(x||'').slice(0,10);
     return (d.act||[]).filter(a=>(!o.code||a.code===o.code)&&(!o.user||a.username===o.user)&&(!o.from||day(a.at)>=o.from)&&(!o.to||day(a.at)<=o.to)).slice(-300).reverse().map(a=>{const c=d.cvs.find(x=>x.code===a.code)||{};return Object.assign({},a,{customer:c.customer||'',serial:c.serial||null});});},
   async report(from,to){const d=db();const u=need(d);const day=x=>String(x||'').slice(0,10);const today=new Date().toISOString().slice(0,10);const t=to||today;
@@ -93,9 +104,26 @@ const L={
   async searchCVs(q,kind,by,from,to){const d=db();need(d);const n=norm(q).replace('#','');const nd=n.replace(/\D/g,'');const day=x=>String(x||'').slice(0,10);
     return d.cvs.filter(c=>(!kind||c.kind===kind)&&(!by||c.created_by===by)&&(!from||day(c.created_at)>=from)&&(!to||day(c.created_at)<=to)&&(!n||norm(c.customer).includes(n)||norm(c.phone).includes(n)||norm(c.code).includes(n)||norm(c.email).includes(n)||(nd&&String(c.serial)===String(+nd))))
       .sort((a,b)=>b.updated_at.localeCompare(a.updated_at)).slice(0,300).map(meta);},
+  async deleteOwnCV(code){const d=db();const u=need(d);const c=d.cvs.find(x=>x.code===code);if(!c)return true;if(u.role!=='admin'&&c.created_by!==u.username)throw new Error('Only the expert who created this CV or the admin can delete it.');d.cvs=d.cvs.filter(x=>x.code!==code);d.act=d.act||[];d.act.push({id:Date.now(),code,username:u.username,action:'deleted',seconds:0,detail:c.customer||'',at:new Date().toISOString()});put(d);return true;},
   async deleteCV(code){const d=db();const u=need(d,true);const c=d.cvs.find(x=>x.code===code);d.cvs=d.cvs.filter(x=>x.code!==code);d.act=d.act||[];d.act.push({id:Date.now(),code,username:u.username,action:'deleted',seconds:0,detail:c?((c.customer||'')+(c.serial?' · No. '+String(c.serial).padStart(5,'0'):'')):'',at:new Date().toISOString()});put(d);return true;},
   async stats(){const d=db();need(d);const t=new Date().toISOString().slice(0,10);
-    const ex=d.users.filter(u=>u.role!=='admin');return {experts:ex.length,active_experts:ex.filter(u=>u.active).length,logins:ex.reduce((a,u)=>a+(u.login_count||0),0),users:d.users.length,active_users:d.users.filter(u=>u.active).length,cvs:d.cvs.length,ats:d.cvs.filter(c=>c.kind==='ats').length,europass:d.cvs.filter(c=>c.kind==='europass').length,customers:new Set(d.cvs.map(c=>norm(c.phone)||norm(c.customer)).filter(Boolean)).size,cvs_week:d.cvs.filter(c=>Date.now()-new Date(c.created_at)<7*864e5).length,cvs_today:d.cvs.filter(c=>(c.created_at||'').slice(0,10)===t).length};}
+    const ex=d.users.filter(u=>u.role!=='admin');return {experts:ex.length,active_experts:ex.filter(u=>u.active).length,logins:ex.reduce((a,u)=>a+(u.login_count||0),0),users:d.users.length,active_users:d.users.filter(u=>u.active).length,cvs:d.cvs.length,ats:d.cvs.filter(c=>c.kind==='ats').length,europass:d.cvs.filter(c=>c.kind==='europass').length,customers:new Set(d.cvs.map(c=>norm(c.phone)||norm(c.customer)).filter(Boolean)).size,cvs_week:d.cvs.filter(c=>Date.now()-new Date(c.created_at)<7*864e5).length,cvs_today:d.cvs.filter(c=>(c.created_at||'').slice(0,10)===t).length};},
+  async orders(o){o=o||{};const d=db();const u=need(d);const who=u.role==='admin'?(o.user||''):u.username;const day=x=>String(x||'').slice(0,10);
+    return (d.orders||[]).filter(z=>(!who||z.completed_by===who||(!z.completed_by&&z.created_by===who))&&(!o.service||z.service===o.service)&&(!o.status||z.status===o.status)&&(!o.from||day(z.completed_at||z.created_at)>=o.from)&&(!o.to||day(z.completed_at||z.created_at)<=o.to))
+      .map(z=>Object.assign({},z,{expert_name:(d.users.find(x=>x.username===z.completed_by)||{}).name||''})).sort((a,b)=>String(b.completed_at||b.created_at).localeCompare(String(a.completed_at||a.created_at)));},
+  async earnings(o){o=o||{};const d=db();const u=need(d);const who=u.role==='admin'?(o.user||''):u.username;const day=x=>String(x||'').slice(0,10);
+    const done=(d.orders||[]).filter(z=>z.status==='completed'&&(!o.service||z.service===o.service));const inR=z=>(!o.from||day(z.completed_at)>=o.from)&&(!o.to||day(z.completed_at)<=o.to);
+    const experts=d.users.filter(x=>x.role==='user'&&(!who||x.username===who)).map(x=>{const m=done.filter(z=>z.completed_by===x.username&&inR(z));const r={username:x.username,name:x.name,active:x.active,orders:m.length,total:0};SV.forEach(k=>{const q=m.filter(z=>z.service===k);r[k]=q.length;r[k+'_amt']=q.reduce((a,z)=>a+(+z.rate||0),0);r.total+=r[k+'_amt'];});return r;}).sort((a,b)=>b.total-a.total);
+    const mine=done.filter(z=>!who||z.completed_by===who);const mm={};mine.forEach(z=>{const k=String(z.completed_at).slice(0,7);const m=mm[k]=mm[k]||{month:k,orders:0,total:0,cv:0,cover:0,linkedin:0,portfolio:0};m.orders++;m.total+=+z.rate||0;m[z.service]++;});
+    const dd={};mine.filter(inR).forEach(z=>{const k=day(z.completed_at);const m=dd[k]=dd[k]||{day:k,orders:0,total:0};m.orders++;m.total+=+z.rate||0;});
+    return {rates:RATES,experts,monthly:Object.values(mm).sort((a,b)=>b.month.localeCompare(a.month)),daily:Object.values(dd).sort((a,b)=>a.day.localeCompare(b.day))};},
+  async completeOrder(o){const d=db();const u=need(d);if(u.role==='admin')throw new Error('Orders are completed by CV experts. Use Reassign to credit an expert.');if(!o.ref)throw new Error('Order reference is required.');
+    const ph=String(o.phone||'').replace(/\D/g,'');if(!o.force&&ph.length>=6){const dup=(d.orders||[]).find(z=>z.service===o.service&&z.status==='completed'&&String(z.phone||'').replace(/\D/g,'')===ph&&z.ref!==o.ref&&Date.now()-new Date(z.completed_at)<30*864e5);if(dup)throw new Error('DUPLICATE: this customer already has a completed '+o.service+' order in the last 30 days (by '+dup.completed_by+').');}
+    const r=credit(d,o.ref,o.service,u.username,o);put(d);return r;},
+  async setOrder(id,o){const d=db();const u=need(d,true);const z=(d.orders||[]).find(x=>x.id===id);if(!z)throw new Error('Order not found.');const now=new Date().toISOString();
+    if(o.by){if(!d.users.some(x=>x.username===o.by&&x.role==='user'))throw new Error('Expert not found.');z.completed_by=o.by;LOG(d,u.username,'order_reassigned',z.service+' -> '+o.by);}
+    if(o.status){if(o.status==='completed'){z.status='completed';z.completed_at=z.completed_at||now;z.rate=z.rate==null?RATES[z.service]:z.rate;z.completed_by=z.completed_by||z.created_by;}else if(o.status==='pending'){Object.assign(z,{status:'pending',completed_by:null,completed_at:null,rate:null});}else z.status=o.status;LOG(d,u.username,'order_'+o.status,z.service);}
+    z.updated_at=now;put(d);return z;}
 };
 window.SKP=Object.assign({},REMOTE?R:L,{remote:REMOTE,newCode,session:sess});
 })();
