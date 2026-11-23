@@ -174,3 +174,10 @@ from (
 join portal_cvs c on c.code=f.code
 join portal_rates r on r.service=f.svc
 on conflict (ref,service) do nothing;
+
+-- Access: tables stay locked; the app may call only the signed-in functions.
+-- portal_order_credit is internal (it trusts p_user), so nobody may call it directly.
+revoke all on portal_rates, portal_orders from anon, authenticated;
+revoke execute on function portal_order_credit(text,text,text,text,text,text) from public, anon, authenticated;
+grant execute on function portal_order_complete(text,text,text,text,text,text,boolean), portal_order_set(text,bigint,text,text),
+  portal_orders_list(text,date,date,text,text,text), portal_earnings(text,date,date,text,text), portal_cv_log(text,text,text,text) to anon;
