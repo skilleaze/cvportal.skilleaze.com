@@ -25,7 +25,7 @@ Deno.serve(async (req) => {
   if (req.method !== "POST") return json({ error: "POST only" }, 405);
   try {
     const { prompt, token } = await req.json();
-    if (!prompt || typeof prompt !== "string" || prompt.length > 30000) return json({ error: "Bad request" }, 400);
+    if (!prompt || typeof prompt !== "string" || prompt.length > 80000) return json({ error: "Bad request" }, 400);
     // Check the portal session
     const me = await fetch(SB_URL + "/rest/v1/rpc/portal_me", {
       method: "POST",
@@ -40,7 +40,7 @@ Deno.serve(async (req) => {
         "anthropic-version": "2023-06-01",
         "content-type": "application/json",
       },
-      body: JSON.stringify({ model: MODEL, max_tokens: 8000, temperature: 0.2, system: "You are a senior CV writer and recruiter for Skilleaze. Be strictly truthful: never invent employers, job titles, dates, numbers, skills, tools or qualifications. When asked for JSON, return valid, complete JSON only.", messages: [{ role: "user", content: prompt }] }),
+      body: JSON.stringify({ model: MODEL, max_tokens: 16000, temperature: 0.2, system: "You are a senior CV writer and recruiter for Skilleaze. Be strictly truthful: never invent employers, job titles, dates, numbers, skills, tools or qualifications. When asked for JSON, return valid, complete JSON only.", messages: [{ role: "user", content: prompt }] }),
     });
     const j = await r.json();
     if (!r.ok) return json({ error: j?.error?.message ?? "AI error" }, 502);
