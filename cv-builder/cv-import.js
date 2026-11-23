@@ -31,7 +31,7 @@ function parse(text){
  var out={name:'',title:'',sub:'',location:'',phone:'',email:'',website:'',linkedin:'',summary:'',skills:[],exp:[],edu:[],langs:'',extra:[]};
  var all=raw.join('\n');
  var em=all.match(/[\w.+-]+@[\w-]+\.[\w.-]+/);if(em)out.email=em[0];
- var li=all.match(/(?:https?:\/\/)?(?:[a-z]{2,3}\.)?linkedin\.com\/in\/[\w%\-]+\/?/i);if(li)out.linkedin=li[0].replace(/^https?:\/\//,'');
+ var li=all.match(/(?:https?:\/\/)?(?:[a-z]{2,3}\.)?linkedin\.com\/in\/[\w%\-]+\/?/i);if(li)out.linkedin=/^https?:\/\//i.test(li[0])?li[0]:'https://'+li[0];
  var ph=all.match(/(?:\+|00)?\d[\d\s\-().]{7,}\d/);if(ph)out.phone=clean(ph[0]);
  var ws=all.match(/(?:https?:\/\/|www\.)[^\s|,]+/ig);if(ws){for(var w=0;w<ws.length;w++)if(!/linkedin/i.test(ws[w])){out.website=ws[w].replace(/^https?:\/\//,'');break;}}
  var secs={top:[]},cur='top',order=[];
