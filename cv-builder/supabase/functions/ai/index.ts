@@ -1,9 +1,10 @@
 // Supabase Edge Function "ai": POST { prompt, token } -> { text }
 // Only signed-in portal users can use it (token is checked against portal_sessions).
-// Secrets:  supabase secrets set ANTHROPIC_API_KEY=sk-ant-...  ALLOWED_ORIGINS=https://cvportal.skilleaze.com
+import { askAI } from "./llm.ts";
+// Secrets:  ANTHROPIC_API_KEY (Claude) and/or BACKUP_AI_KEY (free Gemini / Groq / OpenRouter key, used when Claude fails). See llm.ts.
+// Older:    supabase secrets set ANTHROPIC_API_KEY=sk-ant-...  ALLOWED_ORIGINS=https://cvportal.skilleaze.com
 // Deploy:   supabase functions deploy ai --no-verify-jwt
 const ALLOW = (Deno.env.get("ALLOWED_ORIGINS") ?? "http://localhost:5500").split(",").map((s) => s.trim());
-const MODEL = Deno.env.get("ANTHROPIC_MODEL") ?? "claude-sonnet-4-5";
 const SB_URL = Deno.env.get("SUPABASE_URL")!;
 const SB_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
 
@@ -33,19 +34,9 @@ Deno.serve(async (req) => {
       body: JSON.stringify({ p_token: token ?? "" }),
     }).then((r) => r.json()).catch(() => null);
     if (!me || !me.username) return json({ error: "Please sign in again." }, 401);
-    const r = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {
-        "x-api-key": Deno.env.get("ANTHROPIC_API_KEY")!,
-        "anthropic-version": "2023-06-01",
-        "content-type": "application/json",
-      },
-      body: JSON.stringify({ model: MODEL, max_tokens: 16000, temperature: 0.2, system: "You are a senior CV writer and recruiter for Skilleaze. Be strictly truthful: never invent employers, job titles, dates, numbers, skills, tools or qualifications. When asked for JSON, return valid, complete JSON only.", messages: [{ role: "user", content: prompt }] }),
-    });
-    const j = await r.json();
-    if (!r.ok) return json({ error: j?.error?.message ?? "AI error" }, 502);
-    const text = (j.content ?? []).map((c: { text?: string }) => c.text ?? "").join("");
-    return json({ text });
+    const out = await askAI("You are a senior CV writer and recruiter for Skilleaze. Be strictly truthful: never invent employers, job titles, dates, numbers, skills, tools or qualifications. When asked for JSON, return valid, complete JSON only.", prompt);
+    if ("error" in out) return json({ error: out.error }, 502);
+    return json({ text: out.text, provider: out.provider });
   } catch (_e) {
     return json({ error: "AI error" }, 500);
   }
