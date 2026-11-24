@@ -36,8 +36,8 @@ var ps=ls.join('\n').split(/\n\s*\n/).map(function(p){return p.trim().replace(/^
 <title>Skilleaze Internal CV Portal · Europass CV</title><meta name="robots" content="noindex,nofollow">
 
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Lato:wght@400;700;900&family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
-<script src="./cv-builder/cv-engine.js?v=20261124.3"></script>
-<script src="./cv-builder/europass-engine.js?v=20261124.3"></script>
+<script src="./cv-builder/cv-engine.js?v=20261124.4"></script>
+<script src="./cv-builder/europass-engine.js?v=20261124.4"></script>
 <script src="./cv-builder/muneez.js?v=38"></script>
 <script src="./cv-builder/portal-config.js?v=38"></script>
 <script src="./cv-builder/portal-store.js?v=39"></script>
@@ -803,7 +803,7 @@ class Component extends DCLogic {
       newCv:()=>{if(location.hash)history.replaceState(null,'',location.pathname);this.create();},
       openImport:()=>this.setState({importOpen:true,importInto:null,impTab:'file'}),openImportHere:()=>this.setState({importOpen:true,importInto:true,impTab:'file'}),importIntoNote:s.importInto?'The details will replace the matching fields in this CV. Your design, colour and photo stay as they are.':'A new CV is created from the file, with its own code, and saved to the portal.',closeImport:()=>this.setState({importOpen:false}),stop:e=>e.stopPropagation(),
       cvCountLabel:s.cvs.length?`${s.cvs.length} saved in this browser`:'Nothing saved yet',
-      cvList:s.cvs.map(c=>({label:c.label,code:window.SKCV?window.SKCV.code(c.tpl||0):'',sub:'Edited '+new Date(c.updated).toLocaleDateString('en-GB',{day:'numeric',month:'short'})+(c.data.title?' · '+c.data.title:''),
+      cvList:s.cvs.map(c=>({label:(/^My (Europass )?CV$/i.test(c.label||'')&&c.data&&String(c.data.name||'').trim())?String(c.data.name).trim()+' CV':c.label,code:window.SKCV?window.SKCV.code(c.tpl||0):'',sub:'Edited '+new Date(c.updated).toLocaleDateString('en-GB',{day:'numeric',month:'short'})+(c.data.title?' · '+c.data.title:''),
         open:()=>this.setState({cur:c.id,view:'edit'}),dup:()=>{const n=JSON.parse(JSON.stringify(c));n.id=uid();n.code=window.SKP&&SKP.newCode?SKP.newCode('europass'):'';delete n.src;delete n.serial;n.label=c.label+' (copy)';n.updated=Date.now();this.setState(x=>({cvs:[n,...x.cvs]}));},
         del:()=>{if(!confirm('Delete "'+c.label+'"? This also removes it from the portal.'))return;const code=c.code;this._lastPush=null;this.lastKey='';this.setState(x=>({cvs:x.cvs.filter(y=>y.id!==c.id&&!(code&&y.code===code)),cur:x.cur===c.id?null:x.cur}));if(code&&window.SKP&&SKP.deleteOwnCV)SKP.deleteOwnCV(code).catch(e=>this.flash('Removed from this device. Portal copy could not be deleted: '+((e&&e.message)||'')));}})),
       cvLabel:cv?cv.label:'',setLabel:e=>{const val=e.target.value;this.save(c=>{c.label=val;});},
