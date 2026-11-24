@@ -67,6 +67,7 @@ input,select,button{font-family:inherit}
 .sk-two{display:grid;grid-template-columns:minmax(0,1.9fr) minmax(0,1fr);gap:16px;align-items:start}
 .sk-two>:only-child{grid-column:1/-1}
 @media(max-width:1000px){.sk-two{grid-template-columns:minmax(0,1fr)}}
+.sk-stretch{align-items:stretch}.sk-chartcard{display:flex;flex-direction:column}.sk-chartcard .sk-chart{flex:1 1 auto;min-height:170px;height:auto}
 .sk-side{display:flex;flex-direction:column;gap:16px;min-width:0}
 .sk-chart{display:flex;align-items:flex-end;gap:3px;height:170px;padding:8px 22px 0;border-bottom:1px solid #EEF0F4;margin:0 0 0}
 .sk-barc{flex:1 1 0;min-width:0;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;cursor:default}
@@ -165,8 +166,8 @@ input,select,button{font-family:inherit}
 <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="4"><div class="sk-stat"><div class="sk-lbl">{{ k.label }}</div><div class="sk-num">{{ k.value }}</div><div class="sk-muted">{{ k.note }}</div></div></sc-for>
 </section>
 
-<section class="sk-two">
-<div class="sk-card">
+<section class="sk-two sk-stretch">
+<div class="sk-card sk-chartcard">
 <div class="sk-cardhead"><div style="display:flex;flex-direction:column;gap:3px"><h2 class="sk-h2">CVs per day</h2><span class="sk-muted">{{ chartNote }}</span></div><div style="display:flex;gap:22px"><div style="text-align:right"><div class="sk-big">{{ chartTotal }}</div><div class="sk-muted">total</div></div><div style="text-align:right"><div class="sk-big">{{ chartAvg }}</div><div class="sk-muted">per day</div></div><div style="text-align:right"><div class="sk-big">{{ chartBest }}</div><div class="sk-muted">best day</div></div></div></div>
 <div class="sk-chart"><sc-for list="{{ bars }}" as="b" hint-placeholder-count="14"><div class="sk-barc" title="{{ b.tip }}"><div style="{{ b.style }}"></div></div></sc-for></div>
 <div class="sk-axis"><sc-for list="{{ bars }}" as="b" hint-placeholder-count="0"><span>{{ b.lbl }}</span></sc-for></div>
@@ -563,7 +564,7 @@ class Component extends DCLogic {
     const daily=R.daily||[];const mx=Math.max(1,...daily.map(d=>d.n));const step=Math.max(1,Math.ceil(daily.length/8));
     const bars=daily.map((d,i)=>({n:d.n||'',tip:new Date(d.d+'T00:00:00').toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'})+': '+d.n+' CV'+(d.n===1?'':'s'),
       lbl:(i%step===0&&(daily.length-1-i>=Math.ceil(step/2)||i===0)||i===daily.length-1)?new Date(d.d+'T00:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short'}):'',
-      style:`width:100%;max-width:30px;border-radius:6px 6px 2px 2px;background:${!d.n?'#EEF0F4':(d.n===mx||i===daily.length-1)?'#042D7C':'#A9BDE6'};height:${d.n?Math.max(5,Math.round(d.n/mx*150)):3}px;transition:height .3s`}));
+      style:`width:100%;max-width:30px;border-radius:6px 6px 2px 2px;background:${!d.n?'#EEF0F4':(d.n===mx||i===daily.length-1)?'#042D7C':'#A9BDE6'};height:${d.n?'max(5px,'+Math.round(d.n/mx*92)+'%)':'3px'};transition:height .3s`}));
     const chTot=daily.reduce((a,d)=>a+(+d.n||0),0);
     // customers
     const cm={};s.results.forEach(r=>{const k=this.custKey(r);(cm[k]=cm[k]||{key:k,name:r.customer||'(no name)',phone:r.phone||'—',email:r.email||'',list:[],last:r.updated_at}).list.push(r);if(r.updated_at>cm[k].last)cm[k].last=r.updated_at;if(!cm[k].email&&r.email)cm[k].email=r.email;});
@@ -590,7 +591,7 @@ class Component extends DCLogic {
         del:async()=>{if(!confirm('Permanently delete '+u.name+' (@'+u.username+')?\n\nTheir login is removed and the username becomes free again. CVs they made stay in the portal.'))return;try{await SKP.deleteUser(u.username);this.setState({dr:null});this.flash(u.name+' deleted');this.refresh();}catch(e){this.flash(e.message);}},
         hasCvs:L.length>0,cvsTitle:'CVs by '+String(u.name).split(' ')[0],cvs:L.map(card),hasAct:(d.act||[]).length>0,act:(d.act||[]).map(actRow),loading:d.loading};}}
     const avg=T.cvs?this.dur(T.seconds/T.cvs):'—';const cvLim=s.cvLim||50;
-    const bMax=Math.max(1,...exps.slice(0,6).map(e=>e.cvs||0));
+    const bMax=Math.max(1,...exps.slice(0,5).map(e=>e.cvs||0));
     const myE=(((s.earn&&s.earn.experts)||[]).filter(e=>!me||e.username===me.username||((s.earn.experts||[]).length===1))).reduce((a,e)=>({total:a.total+(+e.total||0),orders:a.orders+(+e.orders||0)}),{total:0,orders:0});
     const tab=s.tab;
     return {
@@ -622,7 +623,7 @@ class Component extends DCLogic {
         {label:'Earned',value:'₹'+Math.round(myE.total).toLocaleString('en-IN'),note:myE.orders+' completed order'+(myE.orders===1?'':'s')}],
       chartNote:periodLbl.charAt(0).toUpperCase()+periodLbl.slice(1)+(daily.length>=90?' · last 90 days shown':''),bars,chartTotal:String(chTot),chartAvg:daily.length?(Math.round(chTot/daily.length*10)/10).toLocaleString('en-GB'):'0',chartBest:String(daily.length?mx===1&&!chTot?0:mx:0),
       boardNote:exps.length+' expert'+(exps.length===1?'':'s')+' · '+exps.filter(e=>e.active!==false).length+' active',
-      board:exps.slice(0,6).map((e,i)=>({rank:i+1,name:e.name,cvs:String(e.cvs||0),bar:'width:'+Math.round((e.cvs||0)/bMax*100)+'%',line:this.dur(e.seconds)+' worked · '+(e.downloads||0)+' download'+(e.downloads===1?'':'s'),open:expOpen(e),
+      board:exps.slice(0,5).map((e,i)=>({rank:i+1,name:e.name,cvs:String(e.cvs||0),bar:'width:'+Math.round((e.cvs||0)/bMax*100)+'%',line:this.dur(e.seconds)+' worked · '+(e.downloads||0)+' download'+(e.downloads===1?'':'s'),open:expOpen(e),
         rankStyle:`width:28px;height:28px;border-radius:9px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:12px;${i===0?'background:#042D7C;color:#FFFFFF':'background:#EEF2FA;color:#042D7C'}`})),
       noBoard:admin&&exps.length===0,
       recent:s.results.slice(0,6).map(card),noRecent:s.ready&&!!me&&s.results.length===0,hasRecent:s.results.length>0,recentNote:s.results.length?('Newest of '+s.results.length+' in '+periodLbl):'',
