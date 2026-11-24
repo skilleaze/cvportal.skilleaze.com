@@ -27,13 +27,76 @@
 <script src="./cv-builder/portal-store.js?v=31"></script>
 <script src="./cv-builder/sk-ui.js?v=30"></script>
 <style>
-body{margin:0;background:#F4F6FA;font-family:Lato,sans-serif;color:#2C3E50}
+body{margin:0;background:#F5F7FB;font-family:Lato,sans-serif;color:#2C3E50}
 a{color:#042D7C}a:hover{color:#053BA0}
 input,select,button{font-family:inherit}
 :focus-visible{outline:2px solid #053BA0;outline-offset:2px}
 @keyframes skp-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 @keyframes skp-dr{from{transform:translateX(40px);opacity:0}to{transform:none;opacity:1}}
 ::-webkit-scrollbar{height:8px;width:8px}::-webkit-scrollbar-thumb{background:#D5DAE3;border-radius:8px}
+.sk-h1{margin:0;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:clamp(30px,3.4vw,40px);line-height:1.05;color:#0B1B3F;letter-spacing:-.005em}
+.sk-sub{font-size:14.5px;color:#6B7380;line-height:1.5;max-width:560px}
+.sk-date{font-size:12px;font-weight:700;color:#8A919C;letter-spacing:.02em}
+.sk-head{display:flex;justify-content:space-between;align-items:flex-end;gap:18px;flex-wrap:wrap;animation:skp-in .35s ease}
+.sk-actions{display:flex;gap:8px;flex-wrap:wrap}
+.sk-btn,.sk-btn2,.sk-btn3{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:11px 18px;font-weight:900;font-size:13.5px;text-decoration:none;white-space:nowrap;cursor:pointer;transition:background .15s,border-color .15s,box-shadow .15s}
+.sk-btn{background:#042D7C;color:#FFFFFF;border:1px solid #042D7C;box-shadow:0 6px 16px rgba(4,45,124,.18)}
+.sk-btn:hover{background:#053BA0;color:#FFFFFF}
+.sk-btn2{background:#FFFFFF;color:#042D7C;border:1px solid #D6DCE8}
+.sk-btn2:hover{border-color:#042D7C;color:#042D7C}
+.sk-btn3{background:transparent;color:#4A5363;border:1px dashed #C3CAD8}
+.sk-btn3:hover{border-color:#042D7C;color:#042D7C}
+.sk-card{background:#FFFFFF;border:1px solid #E6E9F0;border-radius:20px;box-shadow:0 1px 2px rgba(16,24,40,.04);min-width:0}
+.sk-pad{padding:20px 22px}
+.sk-cardhead{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:18px 22px 14px}
+.sk-h2{margin:0;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:24px;line-height:1.1;color:#0B1B3F}
+.sk-link{background:transparent;border:0;color:#053BA0;font-weight:900;font-size:13px;cursor:pointer;padding:6px 2px;text-decoration:none}
+.sk-link:hover{color:#042D7C;text-decoration:underline}
+.sk-lbl{font-size:11px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:#7A8290}
+.sk-muted{font-size:12.5px;color:#6B7380}
+.sk-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
+.sk-stat{padding:20px 22px;display:flex;flex-direction:column;gap:7px;min-width:0}
+.sk-stat+.sk-stat{border-left:1px solid #EEF0F4}
+.sk-num{font-weight:900;font-size:30px;line-height:1.05;color:#0B1B3F;font-variant-numeric:tabular-nums;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media(max-width:760px){.sk-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.sk-stat:nth-child(3){border-left:0}.sk-stat:nth-child(n+3){border-top:1px solid #EEF0F4}.sk-num{font-size:25px}}
+.sk-period{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.sk-seg{display:flex;gap:2px;background:#E9ECF2;border-radius:999px;padding:3px;overflow-x:auto;max-width:100%;scrollbar-width:none}
+.sk-seg::-webkit-scrollbar{display:none}
+.sk-dates{display:flex;gap:6px;align-items:center;margin-left:auto}
+.sk-dates input{border:1px solid #DDE2EA;border-radius:999px;padding:7px 12px;font-size:13px;color:#2C3E50;background:#FFFFFF}
+.sk-two{display:grid;grid-template-columns:minmax(0,1.9fr) minmax(0,1fr);gap:16px;align-items:start}
+.sk-two>:only-child{grid-column:1/-1}
+@media(max-width:1000px){.sk-two{grid-template-columns:minmax(0,1fr)}}
+.sk-side{display:flex;flex-direction:column;gap:16px;min-width:0}
+.sk-chart{display:flex;align-items:flex-end;gap:3px;height:170px;padding:8px 22px 0;border-bottom:1px solid #EEF0F4;margin:0 0 0}
+.sk-barc{flex:1 1 0;min-width:0;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;cursor:default}
+.sk-barc:hover>div{filter:brightness(.82)}
+.sk-axis{display:flex;gap:3px;padding:8px 22px 18px}
+.sk-axis>span{flex:1 1 0;min-width:0;font-size:10.5px;color:#8A919C;white-space:nowrap;display:flex;justify-content:center;overflow:visible;width:0}
+.sk-big{font-weight:900;font-size:22px;color:#0B1B3F;font-variant-numeric:tabular-nums;line-height:1}
+.sk-colh{display:grid;grid-template-columns:minmax(0,2.1fr) minmax(0,1.3fr) minmax(0,1.3fr) minmax(0,1fr) 150px;gap:16px;padding:0 22px 10px}
+.sk-row{display:grid;grid-template-columns:minmax(0,2.1fr) minmax(0,1.3fr) minmax(0,1.3fr) minmax(0,1fr) 150px;gap:16px;align-items:center;padding:13px 22px;border-top:1px solid #F0F2F6;transition:background .15s}
+.sk-row:hover{background:#F8FAFE}
+.sk-cell{display:flex;flex-direction:column;gap:2px;min-width:0}
+.sk-who{display:flex;gap:12px;align-items:center;min-width:0}
+.sk-av{width:38px;height:38px;border-radius:12px;background:#EEF2FA;color:#042D7C;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px;flex-shrink:0}
+.sk-t1{font-weight:900;color:#1F2A3C;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sk-t1s{font-weight:700;color:#2C3E50;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sk-t2{font-size:12.5px;color:#7A8290;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sk-mono{font-family:ui-monospace,Menlo,monospace;font-size:11.5px;letter-spacing:.03em}
+.sk-go{display:flex;gap:6px;justify-content:flex-end;align-items:center}
+.sk-open{background:#042D7C;color:#FFFFFF;border-radius:999px;padding:8px 15px;font-weight:900;font-size:12.5px;text-decoration:none;white-space:nowrap}
+.sk-open:hover{background:#053BA0;color:#FFFFFF}
+.sk-ghost{background:transparent;color:#4A5363;border:1px solid #E1E5EC;border-radius:999px;padding:7px 13px;font-weight:900;font-size:12.5px;cursor:pointer;white-space:nowrap}
+.sk-ghost:hover{border-color:#042D7C;color:#042D7C}
+.sk-show-m{display:none}
+@media(max-width:860px){.sk-row{grid-template-columns:minmax(0,1fr) auto;gap:10px;padding:12px 16px}.sk-colh,.sk-hide-m{display:none!important}.sk-show-m{display:block}.sk-cardhead{padding:16px 16px 12px}.sk-ghost{display:none}}
+.sk-more{display:flex;justify-content:center;padding:14px;border-top:1px solid #F0F2F6}
+.sk-lrow{display:flex;gap:12px;align-items:center;padding:11px 22px;border-top:1px solid #F0F2F6;cursor:pointer;transition:background .15s;width:100%;box-sizing:border-box;background:transparent;border-left:0;border-right:0;border-bottom:0;text-align:left;font:inherit}
+.sk-lrow:hover{background:#F8FAFE}
+.sk-track{height:6px;border-radius:6px;background:#EEF1F6;overflow:hidden}
+.sk-fill{height:100%;border-radius:6px;background:#042D7C}
+.sk-empty{padding:28px 22px;color:#6B7380;font-size:14px;border-top:1px solid #F0F2F6}
 </style>
 <style id="skp-touch">html{-webkit-text-size-adjust:100%;text-size-adjust:100%}body{overflow-x:hidden;-webkit-tap-highlight-color:rgba(4,45,124,.12)}img,svg,video,canvas{max-width:100%}
 @media (pointer:coarse),(max-width:820px){input,select,textarea{font-size:16px!important}button,a[href],[role=button],select{touch-action:manipulation}input[type=checkbox],input[type=radio]{width:22px;height:22px}}
@@ -86,88 +149,54 @@ input,select,button{font-family:inherit}
 <sc-if value="{{ needsUpgrade }}"><div style="font-size:13px;color:#7A5B12;background:#FBF4E2;border:1px solid #F0E2BC;border-radius:14px;padding:12px 16px;line-height:1.5"><strong>Database update needed.</strong> Run <code>supabase-upgrade-v2.sql</code> once in Supabase → SQL Editor to switch on CV numbers, time tracking, downloads and the activity log. Everything else works already.</div></sc-if>
 <sc-if value="{{ preview }}"><div style="font-size:13px;color:#7A5B12;background:#FBF4E2;border:1px solid #F0E2BC;border-radius:14px;padding:12px 16px;line-height:1.5"><strong>Preview mode.</strong> Data is saved in this browser only. Connect Supabase (see SETUP.md) so the whole team shares it.</div></sc-if>
 
-<sc-if value="{{ tabOverview }}"><section style="background:#042D7C;color:#FFFFFF;border-radius:28px;padding:clamp(22px,3.5vw,36px);display:flex;justify-content:space-between;align-items:flex-end;gap:22px;flex-wrap:wrap;animation:skp-in .35s ease">
-<div style="display:flex;flex-direction:column;gap:8px;min-width:0">
-<div style="font-size:13px;color:#C9D3E8">{{ today }}</div>
-<h1 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:clamp(34px,4.6vw,54px);line-height:1">{{ heroTitle }}</h1>
-<div style="font-size:15px;color:#E3E4E8;max-width:560px;line-height:1.5">{{ heroSub }}</div>
-</div>
-<sc-if value="{{ canCreate }}"><div style="display:flex;gap:10px;flex-wrap:wrap">
-<a href="{{ urlAts }}?new=1" style="display:inline-flex;align-items:center;gap:10px;background:#FFFFFF;color:#042D7C;border-radius:999px;padding:13px 20px;font-weight:900;font-size:14px;text-decoration:none;white-space:nowrap" style-hover="background:#E9EEF8;color:#042D7C">+ New ATS CV</a>
-<a href="{{ urlEp }}?new=1" style="display:inline-flex;align-items:center;gap:10px;background:rgba(255,255,255,.1);color:#FFFFFF;border:1px solid rgba(255,255,255,.4);border-radius:999px;padding:12px 20px;font-weight:900;font-size:14px;text-decoration:none;white-space:nowrap" style-hover="background:rgba(255,255,255,.18);color:#FFFFFF">+ New Europass CV</a>
-<a href="{{ urlAts }}?import=1" style="display:inline-flex;align-items:center;gap:10px;background:transparent;color:#FFFFFF;border:1px dashed rgba(255,255,255,.5);border-radius:999px;padding:12px 20px;font-weight:900;font-size:14px;text-decoration:none;white-space:nowrap" style-hover="background:rgba(255,255,255,.1);color:#FFFFFF">Upload existing CV</a>
-</div></sc-if>
+<sc-if value="{{ tabOverview }}"><section class="sk-head">
+<div style="display:flex;flex-direction:column;gap:6px;min-width:0"><div class="sk-date">{{ today }}</div><h1 class="sk-h1">{{ heroTitle }}</h1><div class="sk-sub">{{ heroSub }}</div></div>
+<sc-if value="{{ canCreate }}"><div class="sk-actions"><a class="sk-btn" href="{{ urlAts }}?new=1">+ New ATS CV</a><a class="sk-btn2" href="{{ urlEp }}?new=1">+ New Europass CV</a><a class="sk-btn3" href="{{ urlAts }}?import=1">⇪ Upload existing CV</a></div></sc-if>
 </section></sc-if>
-<sc-if value="{{ notOverview }}"><section style="display:flex;justify-content:space-between;align-items:flex-end;gap:14px;flex-wrap:wrap"><div><div style="font-size:12px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#053BA0">{{ tabKicker }}</div><h1 style="margin:4px 0 0;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:clamp(32px,4vw,44px);line-height:1.05;color:#042D7C">{{ tabTitle }}</h1></div><sc-if value="{{ canCreate }}"><a href="{{ urlAts }}?new=1" style="background:#042D7C;color:#FFFFFF;border-radius:999px;padding:12px 18px;font-weight:900;font-size:14px;text-decoration:none;white-space:nowrap" style-hover="background:#053BA0;color:#FFFFFF">+ New CV</a></sc-if></section></sc-if>
+<sc-if value="{{ notOverview }}"><section class="sk-head"><div style="display:flex;flex-direction:column;gap:6px;min-width:0"><h1 class="sk-h1">{{ tabTitle }}</h1><div class="sk-sub">{{ tabSub }}</div></div><sc-if value="{{ canCreate }}"><a class="sk-btn" href="{{ urlAts }}?new=1">+ New CV</a></sc-if></section></sc-if>
 
-<section style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:#FFFFFF;border:1px solid #E3E4E8;border-radius:20px;padding:10px 12px">
-<span style="font-size:12px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:#5B6470;padding:0 6px">Period</span>
-<div style="display:flex;gap:4px;flex-wrap:wrap">
-<sc-for list="{{ ranges }}" as="r" hint-placeholder-count="6"><button onClick="{{ r.go }}" style="{{ r.style }}">{{ r.label }}</button></sc-for>
-</div>
-<div style="display:flex;gap:6px;align-items:center;margin-left:auto;flex-wrap:wrap">
-<input type="date" value="{{ fromVal }}" onChange="{{ setFrom }}" aria-label="From date" style="border:1px solid #D5D9E0;border-radius:12px;padding:8px 10px;font-size:14px;color:#2C3E50;background:#F8F9FA">
-<span style="color:#8A919C">to</span>
-<input type="date" value="{{ toVal }}" onChange="{{ setTo }}" aria-label="To date" style="border:1px solid #D5D9E0;border-radius:12px;padding:8px 10px;font-size:14px;color:#2C3E50;background:#F8F9FA">
-</div>
+<section class="sk-period">
+<div class="sk-seg" role="tablist" aria-label="Period"><sc-for list="{{ ranges }}" as="r" hint-placeholder-count="6"><button onClick="{{ r.go }}" style="{{ r.style }}">{{ r.label }}</button></sc-for></div>
+<div class="sk-dates"><input type="date" value="{{ fromVal }}" onChange="{{ setFrom }}" aria-label="From date"><span style="color:#8A919C;font-size:13px">→</span><input type="date" value="{{ toVal }}" onChange="{{ setTo }}" aria-label="To date"></div>
 </section>
 
 <sc-if value="{{ tabOverview }}">
-<section style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));gap:14px">
-<sc-for list="{{ kpis }}" as="k" hint-placeholder-count="6">
-<div style="background:#FFFFFF;border:1px solid #E3E4E8;border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:8px;animation:skp-in .35s ease" style-hover="border-color:#C9D3E8;box-shadow:0 10px 30px rgba(4,45,124,.07)">
-<div style="font-size:12px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:#5B6470">{{ k.label }}</div>
-<div style="font-weight:900;font-size:36px;line-height:1;color:#042D7C;font-variant-numeric:tabular-nums">{{ k.value }}</div>
-<div style="font-size:13px;color:#5B6470">{{ k.note }}</div>
-</div>
-</sc-for>
+<section class="sk-card sk-stats" style="animation:skp-in .35s ease">
+<sc-for list="{{ kpis }}" as="k" hint-placeholder-count="4"><div class="sk-stat"><div class="sk-lbl">{{ k.label }}</div><div class="sk-num">{{ k.value }}</div><div class="sk-muted">{{ k.note }}</div></div></sc-for>
 </section>
 
-<section style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,520px),1fr));gap:16px;align-items:stretch">
-<div style="background:#FFFFFF;border:1px solid #E3E4E8;border-radius:24px;padding:22px;display:flex;flex-direction:column;gap:16px;min-width:0">
-<div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap"><h2 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:28px;color:#042D7C">CVs created per day</h2><span style="font-size:13px;color:#5B6470">{{ chartNote }}</span></div>
-<div style="display:flex;align-items:flex-end;gap:3px;height:190px;padding:18px 14px 0">
-<sc-for list="{{ bars }}" as="b" hint-placeholder-count="14">
-<div title="{{ b.tip }}" style="flex:1 1 0;min-width:0;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:4px">
-<span style="font-size:11px;font-weight:900;color:#042D7C">{{ b.n }}</span>
-<div style="{{ b.style }}"></div>
-<span style="font-size:10px;color:#8A919C;white-space:nowrap;height:12px;width:0;display:flex;justify-content:center;overflow:visible">{{ b.lbl }}</span>
-</div>
-</sc-for>
-</div>
+<section class="sk-two">
+<div class="sk-card">
+<div class="sk-cardhead"><div style="display:flex;flex-direction:column;gap:3px"><h2 class="sk-h2">CVs per day</h2><span class="sk-muted">{{ chartNote }}</span></div><div style="display:flex;gap:22px"><div style="text-align:right"><div class="sk-big">{{ chartTotal }}</div><div class="sk-muted">total</div></div><div style="text-align:right"><div class="sk-big">{{ chartAvg }}</div><div class="sk-muted">per day</div></div><div style="text-align:right"><div class="sk-big">{{ chartBest }}</div><div class="sk-muted">best day</div></div></div></div>
+<div class="sk-chart"><sc-for list="{{ bars }}" as="b" hint-placeholder-count="14"><div class="sk-barc" title="{{ b.tip }}"><div style="{{ b.style }}"></div></div></sc-for></div>
+<div class="sk-axis"><sc-for list="{{ bars }}" as="b" hint-placeholder-count="0"><span>{{ b.lbl }}</span></sc-for></div>
 </div>
 <sc-if value="{{ isAdmin }}">
-<div style="background:#FFFFFF;border:1px solid #E3E4E8;border-radius:24px;padding:22px;display:flex;flex-direction:column;gap:12px;min-width:0">
-<div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px"><h2 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:28px;color:#042D7C">Expert leaderboard</h2><button onClick="{{ goExperts }}" style="background:transparent;border:0;color:#053BA0;font-weight:900;font-size:13px;cursor:pointer">All experts →</button></div>
-<sc-if value="{{ noBoard }}"><div style="color:#5B6470;font-size:14px;padding:20px 0">No CV experts yet. Add one in the Experts tab.</div></sc-if>
-<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,210px),1fr));gap:10px">
+<div class="sk-card">
+<div class="sk-cardhead"><div style="display:flex;flex-direction:column;gap:3px"><h2 class="sk-h2">Top experts</h2><span class="sk-muted">{{ boardNote }}</span></div><button onClick="{{ goExperts }}" class="sk-link">All experts →</button></div>
+<sc-if value="{{ noBoard }}"><div class="sk-empty">No CV experts yet. Add one in the Experts tab.</div></sc-if>
 <sc-for list="{{ board }}" as="e" hint-placeholder-count="3">
-<button onClick="{{ e.open }}" style="all:unset;cursor:pointer;background:#F8F9FA;border:1px solid #EEF0F3;border-radius:18px;padding:14px;display:flex;gap:12px;align-items:center" style-hover="border-color:#042D7C;background:#FFFFFF">
+<button onClick="{{ e.open }}" class="sk-lrow">
 <div style="{{ e.rankStyle }}">{{ e.rank }}</div>
-<div style="min-width:0;display:flex;flex-direction:column;gap:2px"><span style="font-weight:900;color:#042D7C;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ e.name }}</span><span style="font-size:12px;color:#5B6470">{{ e.line }}</span></div>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:5px"><div style="display:flex;justify-content:space-between;gap:8px"><span class="sk-t1">{{ e.name }}</span><span class="sk-t1" style="color:#042D7C">{{ e.cvs }}</span></div><div class="sk-track"><div class="sk-fill" style="{{ e.bar }}"></div></div><span class="sk-t2">{{ e.line }}</span></div>
 </button>
 </sc-for>
-</div>
+<div style="height:8px"></div>
 </div>
 </sc-if>
 </section>
 
-<section style="display:flex;flex-direction:column;gap:14px">
-<div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px"><h2 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:28px;color:#042D7C">Latest CVs</h2><button onClick="{{ goCvs }}" style="background:transparent;border:0;color:#053BA0;font-weight:900;font-size:13px;cursor:pointer">See all →</button></div>
-<sc-if value="{{ noRecent }}"><div style="background:#FFFFFF;border:1px dashed #D5D9E0;border-radius:22px;padding:32px;color:#5B6470;font-size:15px">{{ emptyText }}</div></sc-if>
-<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,290px),1fr));gap:14px">
-<sc-for list="{{ recent }}" as="r" hint-placeholder-count="3">
-<article style="background:#FFFFFF;border:1px solid #E3E4E8;border-radius:22px;padding:18px;display:flex;flex-direction:column;gap:12px;animation:skp-in .35s ease" style-hover="border-color:#C9D3E8;box-shadow:0 12px 32px rgba(4,45,124,.08);transform:translateY(-2px)">
-<div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span style="font-weight:900;font-size:13px;color:#042D7C;background:#E9EEF8;border-radius:999px;padding:5px 11px;font-variant-numeric:tabular-nums">{{ r.no }}</span><span style="{{ r.kindStyle }}">{{ r.kindLabel }}</span></div>
-<div style="display:flex;flex-direction:column;gap:3px;min-width:0"><div style="font-weight:900;font-size:19px;color:#2C3E50;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.customer }}</div><div style="font-size:14px;color:#5B6470">{{ r.phone }}</div><div style="font-size:12px;color:#8A919C;font-family:ui-monospace,Menlo,monospace;letter-spacing:.04em">{{ r.code }}</div></div>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px;color:#5B6470;border-top:1px solid #EEF0F3;padding-top:12px">
-<div><div style="font-weight:900;color:#2C3E50">{{ r.createdBy }}</div>{{ r.created }}</div>
-<div><div style="font-weight:900;color:#2C3E50">{{ r.time }}</div>{{ r.dl }}</div>
-</div>
-<div style="display:flex;gap:8px"><a href="{{ r.href }}" style="flex:1;text-align:center;background:#042D7C;color:#FFFFFF;border-radius:999px;padding:10px 14px;font-weight:900;font-size:13px;text-decoration:none" style-hover="background:#053BA0;color:#FFFFFF">{{ openLabel }}</a><button onClick="{{ r.info }}" style="background:#FFFFFF;color:#042D7C;border:1px solid #D9DCE3;border-radius:999px;padding:9px 14px;font-weight:900;font-size:13px;cursor:pointer" style-hover="border-color:#042D7C">Details</button></div>
-</article>
-</sc-for>
-</div>
+<section class="sk-card">
+<div class="sk-cardhead"><div style="display:flex;flex-direction:column;gap:3px"><h2 class="sk-h2">Latest CVs</h2><span class="sk-muted">{{ recentNote }}</span></div><button onClick="{{ goCvs }}" class="sk-link">See all CVs →</button></div>
+<sc-if value="{{ noRecent }}"><div class="sk-empty">{{ emptyText }}</div></sc-if>
+<sc-if value="{{ hasRecent }}"><div class="sk-colh"><span class="sk-lbl">Customer</span><span class="sk-lbl">CV</span><span class="sk-lbl">Created</span><span class="sk-lbl">Work</span><span></span></div></sc-if>
+<sc-for list="{{ recent }}" as="r" hint-placeholder-count="3"><div class="sk-row">
+<div class="sk-who"><div class="sk-av">{{ r.ini }}</div><div class="sk-cell"><span class="sk-t1">{{ r.customer }}</span><span class="sk-t2">{{ r.phone }}</span><span class="sk-t2 sk-show-m">{{ r.mob }}</span></div></div>
+<div class="sk-cell sk-hide-m"><span class="sk-t1s">{{ r.no }} <span style="{{ r.kindStyle }}">{{ r.kindLabel }}</span></span><span class="sk-t2 sk-mono">{{ r.code }}</span></div>
+<div class="sk-cell sk-hide-m"><span class="sk-t1s">{{ r.createdBy }}</span><span class="sk-t2">{{ r.created }}</span></div>
+<div class="sk-cell sk-hide-m"><span class="sk-t1s">{{ r.time }}</span><span class="sk-t2">{{ r.dl }}</span></div>
+<div class="sk-go"><button onClick="{{ r.info }}" class="sk-ghost">Details</button><a href="{{ r.href }}" class="sk-open">{{ openLabel }}</a></div>
+</div></sc-for>
 </section>
 </sc-if>
 
@@ -184,29 +213,27 @@ input,select,button{font-family:inherit}
 </sc-if>
 
 <sc-if value="{{ tabCvs }}">
-<sc-if value="{{ noResults }}"><div style="background:#FFFFFF;border:1px dashed #D5D9E0;border-radius:22px;padding:32px;color:#5B6470;font-size:15px">{{ emptyText }}</div></sc-if>
-<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,290px),1fr));gap:14px">
-<sc-for list="{{ results }}" as="r" hint-placeholder-count="6">
-<article style="background:#FFFFFF;border:1px solid #E3E4E8;border-radius:22px;padding:18px;display:flex;flex-direction:column;gap:12px" style-hover="border-color:#C9D3E8;box-shadow:0 12px 32px rgba(4,45,124,.08);transform:translateY(-2px)">
-<div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span style="font-weight:900;font-size:13px;color:#042D7C;background:#E9EEF8;border-radius:999px;padding:5px 11px;font-variant-numeric:tabular-nums">{{ r.no }}</span><span style="{{ r.kindStyle }}">{{ r.kindLabel }}</span></div>
-<div style="display:flex;flex-direction:column;gap:3px;min-width:0"><div style="font-weight:900;font-size:19px;color:#2C3E50;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.customer }}</div><div style="font-size:14px;color:#5B6470">{{ r.phone }}</div><div style="font-size:12px;color:#8A919C;font-family:ui-monospace,Menlo,monospace;letter-spacing:.04em">{{ r.code }}</div></div>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px;color:#5B6470;border-top:1px solid #EEF0F3;padding-top:12px">
-<div><div style="font-weight:900;color:#2C3E50">{{ r.createdBy }}</div>{{ r.created }}</div>
-<div><div style="font-weight:900;color:#2C3E50">{{ r.time }}</div>{{ r.dl }}</div>
-</div>
-<div style="display:flex;gap:8px"><a href="{{ r.href }}" style="flex:1;text-align:center;background:#042D7C;color:#FFFFFF;border-radius:999px;padding:10px 14px;font-weight:900;font-size:13px;text-decoration:none" style-hover="background:#053BA0;color:#FFFFFF">{{ openLabel }}</a><button onClick="{{ r.info }}" style="background:#FFFFFF;color:#042D7C;border:1px solid #D9DCE3;border-radius:999px;padding:9px 14px;font-weight:900;font-size:13px;cursor:pointer" style-hover="border-color:#042D7C">Details</button></div>
-</article>
-</sc-for>
-</div>
+<section class="sk-card">
+<sc-if value="{{ noResults }}"><div class="sk-empty" style="border-top:0">{{ emptyText }}</div></sc-if>
+<sc-if value="{{ hasResults }}"><div class="sk-colh" style="padding-top:16px"><span class="sk-lbl">Customer</span><span class="sk-lbl">CV</span><span class="sk-lbl">Created</span><span class="sk-lbl">Work</span><span></span></div></sc-if>
+<sc-for list="{{ results }}" as="r" hint-placeholder-count="6"><div class="sk-row">
+<div class="sk-who"><div class="sk-av">{{ r.ini }}</div><div class="sk-cell"><span class="sk-t1">{{ r.customer }}</span><span class="sk-t2">{{ r.phone }}</span><span class="sk-t2 sk-show-m">{{ r.mob }}</span></div></div>
+<div class="sk-cell sk-hide-m"><span class="sk-t1s">{{ r.no }} <span style="{{ r.kindStyle }}">{{ r.kindLabel }}</span></span><span class="sk-t2 sk-mono">{{ r.code }}</span></div>
+<div class="sk-cell sk-hide-m"><span class="sk-t1s">{{ r.createdBy }}</span><span class="sk-t2">{{ r.created }}</span></div>
+<div class="sk-cell sk-hide-m"><span class="sk-t1s">{{ r.time }}</span><span class="sk-t2">{{ r.dl }}</span></div>
+<div class="sk-go"><button onClick="{{ r.info }}" class="sk-ghost">Details</button><a href="{{ r.href }}" class="sk-open">{{ openLabel }}</a></div>
+</div></sc-for>
+<sc-if value="{{ moreCvs }}"><div class="sk-more"><button onClick="{{ showMoreCvs }}" class="sk-btn2">{{ moreCvsLabel }}</button></div></sc-if>
+</section>
 </sc-if>
 
 <sc-if value="{{ tabCustomers }}">
 <sc-if value="{{ noCustomers }}"><div style="background:#FFFFFF;border:1px dashed #D5D9E0;border-radius:22px;padding:32px;color:#5B6470;font-size:15px">No customers in this period.</div></sc-if>
 <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,270px),1fr));gap:14px">
 <sc-for list="{{ customers }}" as="c" hint-placeholder-count="6">
-<button onClick="{{ c.open }}" style="all:unset;cursor:pointer;background:#FFFFFF;border:1px solid #E3E4E8;border-radius:22px;padding:18px;display:flex;flex-direction:column;gap:14px" style-hover="border-color:#C9D3E8;box-shadow:0 12px 32px rgba(4,45,124,.08)">
+<button onClick="{{ c.open }}" style="all:unset;cursor:pointer;background:#FFFFFF;border:1px solid #E6E9F0;border-radius:20px;padding:18px;box-shadow:0 1px 2px rgba(16,24,40,.04);display:flex;flex-direction:column;gap:14px" style-hover="border-color:#C9D3E8;box-shadow:0 12px 32px rgba(4,45,124,.08)">
 <div style="display:flex;gap:12px;align-items:center;min-width:0"><div style="width:46px;height:46px;border-radius:16px;background:#E9EEF8;color:#042D7C;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;flex-shrink:0">{{ c.ini }}</div><div style="min-width:0;display:flex;flex-direction:column;gap:2px"><span style="font-weight:900;font-size:17px;color:#2C3E50;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ c.name }}</span><span style="font-size:13px;color:#5B6470">{{ c.phone }}</span></div></div>
-<div style="display:flex;gap:6px;flex-wrap:wrap;font-size:12px"><span style="background:#042D7C;color:#FFFFFF;border-radius:999px;padding:4px 10px;font-weight:900">{{ c.count }}</span><span style="background:#F1F3F6;border-radius:999px;padding:4px 10px;color:#2C3E50">{{ c.last }}</span></div>
+<div style="display:flex;gap:6px;flex-wrap:wrap;font-size:12px"><span style="background:#EEF2FA;color:#042D7C;border-radius:999px;padding:4px 10px;font-weight:900">{{ c.count }}</span><span style="background:#F1F3F6;border-radius:999px;padding:4px 10px;color:#2C3E50">{{ c.last }}</span></div>
 <div style="font-size:12px;color:#8A919C;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ c.email }}</div>
 </button>
 </sc-for>
@@ -218,34 +245,19 @@ input,select,button{font-family:inherit}
 <section style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between">
 <div style="display:flex;gap:6px;flex-wrap:wrap"><sc-for list="{{ svcChips }}" as="c" hint-placeholder-count="5"><button onClick="{{ c.go }}" style="{{ c.style }}">{{ c.label }}</button></sc-for></div>
 <div style="display:flex;gap:8px;flex-wrap:wrap">
-<sc-if value="{{ canLogOrder }}"><button onClick="{{ openLog }}" style="background:#042D7C;color:#FFFFFF;border:0;border-radius:999px;padding:11px 18px;font-weight:900;font-size:14px;cursor:pointer;white-space:nowrap" style-hover="background:#053BA0">+ Log completed order</button></sc-if>
-<sc-if value="{{ isAdminE }}"><button onClick="{{ exportCsv }}" style="background:#FFFFFF;color:#042D7C;border:1px solid #C9D3E8;border-radius:999px;padding:10px 16px;font-weight:900;font-size:13px;cursor:pointer;white-space:nowrap" style-hover="border-color:#042D7C">Download salary report (CSV)</button></sc-if>
+<sc-if value="{{ canLogOrder }}"><button onClick="{{ openLog }}" class="sk-btn">+ Log completed order</button></sc-if>
+<sc-if value="{{ isAdminE }}"><button onClick="{{ exportCsv }}" class="sk-btn2">↓ Salary report (CSV)</button></sc-if>
 </div>
 </section>
 <sc-if value="{{ isAdminE }}"><section style="display:flex;gap:6px;flex-wrap:wrap;align-items:center"><span style="font-size:12px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:#5B6470;margin-right:4px">Expert</span><sc-for list="{{ expChips }}" as="c" hint-placeholder-count="4"><button onClick="{{ c.go }}" style="{{ c.style }}">{{ c.label }}</button></sc-for></section></sc-if>
 
-<section style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:14px">
-<sc-for list="{{ eKpis }}" as="k" hint-placeholder-count="4">
-<div style="background:#FFFFFF;border:1px solid #E3E4E8;border-radius:22px;padding:18px 20px;display:flex;flex-direction:column;gap:8px">
-<div style="font-size:12px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:#5B6470">{{ k.label }}</div>
-<div style="font-weight:900;font-size:32px;line-height:1;color:#042D7C;font-variant-numeric:tabular-nums">{{ k.value }}</div>
-<div style="font-size:13px;color:#5B6470">{{ k.note }}</div>
-</div>
-</sc-for>
-</section>
-
-<section style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:14px">
-<sc-for list="{{ svcCards }}" as="c" hint-placeholder-count="4">
-<div style="background:#042D7C;color:#FFFFFF;border-radius:22px;padding:18px 20px;display:flex;flex-direction:column;gap:10px">
-<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px"><span style="font-weight:900;font-size:15px">{{ c.label }}</span><span style="font-size:12px;color:#C9D6F2;white-space:nowrap">{{ c.rate }}</span></div>
-<div style="display:flex;justify-content:space-between;align-items:flex-end;gap:8px"><div><div style="font-weight:900;font-size:34px;line-height:1;font-variant-numeric:tabular-nums">{{ c.count }}</div><div style="font-size:12px;color:#C9D6F2;margin-top:4px">orders</div></div><div style="text-align:right"><div style="font-weight:900;font-size:22px;font-variant-numeric:tabular-nums">{{ c.amount }}</div><div style="font-size:12px;color:#C9D6F2;margin-top:4px">incentive</div></div></div>
-</div>
-</sc-for>
+<section class="sk-card sk-stats">
+<sc-for list="{{ eKpis }}" as="k" hint-placeholder-count="4"><div class="sk-stat"><div class="sk-lbl">{{ k.label }}</div><div class="sk-num">{{ k.value }}</div><div class="sk-muted">{{ k.note }}</div></div></sc-for>
 </section>
 
 <sc-if value="{{ isAdminE }}">
-<section style="background:#FFFFFF;border:1px solid #E3E4E8;border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:12px">
-<div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap"><h2 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:28px;color:#042D7C">Expert performance &amp; salary</h2><span style="font-size:14px;color:#2C3E50">Combined payable <strong style="color:#042D7C;font-size:18px">{{ payable }}</strong></span></div>
+<section class="sk-card sk-pad" style="display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap"><h2 class="sk-h2">Expert performance &amp; salary</h2><span style="font-size:14px;color:#2C3E50">Combined payable <strong style="color:#042D7C;font-size:18px">{{ payable }}</strong></span></div>
 <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -4px">
 <table style="width:100%;min-width:760px;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums">
 <thead><tr style="text-align:left;color:#5B6470;font-size:12px;text-transform:uppercase;letter-spacing:.08em"><th style="padding:10px 8px;border-bottom:1px solid #E3E4E8">Expert</th><th style="padding:10px 8px;border-bottom:1px solid #E3E4E8">Resume / CV</th><th style="padding:10px 8px;border-bottom:1px solid #E3E4E8">Cover letter</th><th style="padding:10px 8px;border-bottom:1px solid #E3E4E8">LinkedIn</th><th style="padding:10px 8px;border-bottom:1px solid #E3E4E8">Portfolio</th><th style="padding:10px 8px;border-bottom:1px solid #E3E4E8">Orders</th><th style="padding:10px 8px;border-bottom:1px solid #E3E4E8;text-align:right">Incentive</th></tr></thead>
@@ -256,29 +268,43 @@ input,select,button{font-family:inherit}
 </section>
 </sc-if>
 
-<section style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr));gap:16px;align-items:start">
-<div style="background:#FFFFFF;border:1px solid #E3E4E8;border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:10px">
-<h2 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:26px;color:#042D7C">{{ histTitle }}</h2>
-<sc-if value="{{ noMonths }}"><div style="color:#5B6470;font-size:14px">No completed orders yet.</div></sc-if>
-<sc-for list="{{ months }}" as="m" hint-placeholder-count="3">
-<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #F0F1F4">
-<div style="min-width:0"><div style="font-weight:900;color:#2C3E50">{{ m.label }}</div><div style="font-size:12px;color:#5B6470">{{ m.mix }}</div></div>
-<div style="text-align:right;flex-shrink:0"><div style="font-weight:900;color:#042D7C;font-size:17px">{{ m.total }}</div><div style="font-size:12px;color:#5B6470">{{ m.orders }} orders</div></div>
-</div>
-</sc-for>
-</div>
-<div style="background:#FFFFFF;border:1px solid #E3E4E8;border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:10px">
-<div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap"><h2 style="margin:0;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:26px;color:#042D7C">Orders</h2><div style="display:flex;gap:6px;flex-wrap:wrap"><sc-for list="{{ stChips }}" as="c" hint-placeholder-count="4"><button onClick="{{ c.go }}" style="{{ c.style }}">{{ c.label }}</button></sc-for></div></div>
-<sc-if value="{{ noOrders }}"><div style="color:#5B6470;font-size:14px">No orders in this period.</div></sc-if>
+<section class="sk-two">
+<div class="sk-card">
+<div class="sk-cardhead"><div style="display:flex;flex-direction:column;gap:3px"><h2 class="sk-h2">Orders</h2><span class="sk-muted">{{ ordersNote }}</span></div><div class="sk-seg"><sc-for list="{{ stChips }}" as="c" hint-placeholder-count="4"><button onClick="{{ c.go }}" style="{{ c.style }}">{{ c.label }}</button></sc-for></div></div>
+<sc-if value="{{ noOrders }}"><div class="sk-empty">No orders in this period.</div></sc-if>
 <sc-for list="{{ orderRows }}" as="o" hint-placeholder-count="4">
-<div style="display:flex;flex-direction:column;gap:8px;padding:12px 0;border-bottom:1px solid #F0F1F4">
-<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
-<div style="min-width:0;display:flex;flex-direction:column;gap:3px"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span style="font-weight:900;color:#2C3E50">{{ o.customer }}</span><span style="{{ o.stStyle }}">{{ o.status }}</span></div><div style="font-size:12px;color:#5B6470">{{ o.svc }} · {{ o.ref }} · {{ o.when }}</div><div style="font-size:12px;color:#5B6470">Completed by {{ o.by }}</div></div>
-<div style="font-weight:900;color:#042D7C;font-size:16px;flex-shrink:0">{{ o.amount }}</div>
+<div style="display:flex;flex-direction:column;gap:8px;padding:13px 22px;border-top:1px solid #F0F2F6">
+<div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
+<div class="sk-who"><div class="sk-av" style="width:34px;height:34px;border-radius:10px;font-size:12px">{{ o.ini }}</div><div class="sk-cell"><div style="display:flex;gap:8px;align-items:center;min-width:0"><span class="sk-t1">{{ o.customer }}</span><span style="{{ o.stStyle }}">{{ o.status }}</span></div><span class="sk-t2">{{ o.svc }} · {{ o.when }} · {{ o.by }}</span><span class="sk-t2 sk-mono">{{ o.ref }}</span></div></div>
+<div style="font-weight:900;color:#0B1B3F;font-size:15px;flex-shrink:0;font-variant-numeric:tabular-nums">{{ o.amount }}</div>
 </div>
-<sc-if value="{{ o.hasActs }}"><div style="display:flex;gap:6px;flex-wrap:wrap"><sc-for list="{{ o.acts }}" as="a" hint-placeholder-count="2"><button onClick="{{ a.go }}" style="background:#F4F6FA;color:#042D7C;border:1px solid #E3E4E8;border-radius:999px;padding:6px 12px;font-weight:900;font-size:12px;cursor:pointer" style-hover="border-color:#042D7C">{{ a.label }}</button></sc-for></div></sc-if>
+<sc-if value="{{ o.hasActs }}"><div style="display:flex;gap:6px;flex-wrap:wrap;padding-left:46px"><sc-for list="{{ o.acts }}" as="a" hint-placeholder-count="2"><button onClick="{{ a.go }}" class="sk-ghost" style="padding:5px 11px;font-size:12px;display:inline-block">{{ a.label }}</button></sc-for></div></sc-if>
 </div>
 </sc-for>
+<sc-if value="{{ moreOrders }}"><div class="sk-more"><button onClick="{{ showMoreOrders }}" class="sk-btn2">{{ moreOrdersLabel }}</button></div></sc-if>
+</div>
+<div class="sk-side">
+<div class="sk-card">
+<div class="sk-cardhead"><h2 class="sk-h2">By service</h2><span class="sk-muted">{{ svcNote }}</span></div>
+<sc-for list="{{ svcCards }}" as="c" hint-placeholder-count="4">
+<div style="padding:12px 22px;border-top:1px solid #F0F2F6;display:flex;flex-direction:column;gap:7px">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px"><div class="sk-cell"><span class="sk-t1">{{ c.label }}</span><span class="sk-t2">{{ c.count }} orders · {{ c.rate }}</span></div><span class="sk-t1" style="color:#042D7C;font-variant-numeric:tabular-nums">{{ c.amount }}</span></div>
+<div class="sk-track"><div class="sk-fill" style="{{ c.bar }}"></div></div>
+</div>
+</sc-for>
+<div style="height:8px"></div>
+</div>
+<div class="sk-card">
+<div class="sk-cardhead"><h2 class="sk-h2">{{ histTitle }}</h2></div>
+<sc-if value="{{ noMonths }}"><div class="sk-empty">No completed orders yet.</div></sc-if>
+<sc-for list="{{ months }}" as="m" hint-placeholder-count="3">
+<div style="padding:12px 22px;border-top:1px solid #F0F2F6;display:flex;flex-direction:column;gap:7px">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px"><div class="sk-cell"><span class="sk-t1">{{ m.label }}</span><span class="sk-t2">{{ m.orders }} orders{{ m.mix }}</span></div><span class="sk-t1" style="color:#042D7C;font-variant-numeric:tabular-nums">{{ m.total }}</span></div>
+<div class="sk-track"><div class="sk-fill" style="{{ m.bar }}"></div></div>
+</div>
+</sc-for>
+<div style="height:8px"></div>
+</div>
 </div>
 </section>
 </sc-if>
@@ -288,7 +314,7 @@ input,select,button{font-family:inherit}
 <button onClick="{{ openAdd }}" style="all:unset;cursor:pointer;box-sizing:border-box;min-height:190px;border:1.5px dashed #B9C3D6;border-radius:22px;padding:20px;display:flex;flex-direction:column;justify-content:center;gap:8px;color:#042D7C;background:#FFFFFF" style-hover="border-color:#042D7C;background:#F8FAFF"><span style="width:44px;height:44px;border-radius:50%;background:#042D7C;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:400">+</span><span style="font-weight:900;font-size:17px">Add CV expert</span><span style="font-size:13px;color:#5B6470">Create a login for a new team member</span></button>
 <sc-if value="{{ noExperts }}"><div style="min-height:190px;box-sizing:border-box;border-radius:22px;padding:20px;display:flex;flex-direction:column;justify-content:center;gap:6px;background:#FFFFFF;border:1px solid #E3E4E8"><strong style="color:#042D7C;font-size:16px">No experts yet</strong><span style="font-size:13px;color:#5B6470;line-height:1.5">Add your first CV expert. They sign in here with the username and password you set.</span></div></sc-if>
 <sc-for list="{{ experts }}" as="u" hint-placeholder-count="3">
-<button onClick="{{ u.open }}" style="all:unset;cursor:pointer;background:#FFFFFF;border:1px solid #E3E4E8;border-radius:22px;padding:18px;display:flex;flex-direction:column;gap:14px" style-hover="border-color:#C9D3E8;box-shadow:0 12px 32px rgba(4,45,124,.08)">
+<button onClick="{{ u.open }}" style="all:unset;cursor:pointer;background:#FFFFFF;border:1px solid #E6E9F0;border-radius:20px;box-shadow:0 1px 2px rgba(16,24,40,.04);padding:18px;display:flex;flex-direction:column;gap:14px" style-hover="border-color:#C9D3E8;box-shadow:0 12px 32px rgba(4,45,124,.08)">
 <div style="display:flex;gap:12px;align-items:center;min-width:0"><div style="width:46px;height:46px;border-radius:50%;background:#042D7C;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:17px;flex-shrink:0">{{ u.initial }}</div><div style="min-width:0;display:flex;flex-direction:column;gap:3px"><span style="font-weight:900;font-size:17px;color:#2C3E50">{{ u.name }}</span><span style="font-size:12px;color:#5B6470">@{{ u.username }}</span></div><span style="{{ u.badgeStyle }}">{{ u.badge }}</span></div>
 <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;text-align:left">
 <div style="background:#F8F9FA;border-radius:14px;padding:10px"><div style="font-weight:900;font-size:20px;color:#042D7C">{{ u.cvs }}</div><div style="font-size:11px;color:#5B6470">CVs in period</div></div>
@@ -441,6 +467,7 @@ class Component extends DCLogic {
     this._key=e=>{if(e.key==='Escape'){if(this.state.logO)this.setState({logO:null});else if(this.state.rs)this.setState({rs:null});else if(this.state.add)this.setState({add:null});else if(this.state.dr)this.setState({dr:null});}};document.addEventListener('keydown',this._key);}
   componentWillUnmount(){clearInterval(this.wait);clearTimeout(this._q);clearTimeout(this._t);document.removeEventListener('keydown',this._key);}
   async boot(){const me=await SKP.me();this.setState({ready:true,me});if(me)this.refresh();}
+  go(k){this.setState({tab:k,cvLim:50,oLim:30});try{window.scrollTo({top:0,behavior:'smooth'});}catch(e){window.scrollTo(0,0);}}
   flash(t){clearTimeout(this._t);this.setState({toast:t});this._t=setTimeout(()=>this.setState({toast:''}),2800);}
   ymd(d){const z=n=>String(n).padStart(2,'0');return d.getFullYear()+'-'+z(d.getMonth()+1)+'-'+z(d.getDate());}
   setRange(k,quiet){const t=new Date(),y=this.ymd.bind(this);let f='',to=y(t);
@@ -467,29 +494,33 @@ class Component extends DCLogic {
   earnVals(admin){const s=this.state,E=s.earn||{},R=E.rates||{cv:30,cover:5,linkedin:50,portfolio:100};
     const SV=[['cv','Resume / CV'],['cover','Cover Letter'],['linkedin','LinkedIn Profile'],['portfolio','Portfolio Website']];const SL={};SV.forEach(([k,l])=>SL[k]=l);
     const ex=E.experts||[];const sum=k=>ex.reduce((a,e)=>a+(+e[k]||0),0);const inr=n=>'₹'+Math.round(+n||0).toLocaleString('en-IN');
-    const chip=on=>`white-space:nowrap;border:1px solid ${on?'#042D7C':'#E3E4E8'};border-radius:999px;padding:7px 13px;font-weight:900;font-size:12px;cursor:pointer;background:${on?'#042D7C':'#FFFFFF'};color:${on?'#FFFFFF':'#2C3E50'}`;
+    const chip=on=>`white-space:nowrap;border:1px solid ${on?'#042D7C':'#E1E5EC'};border-radius:999px;padding:7px 13px;font-weight:900;font-size:12px;cursor:pointer;background:${on?'#042D7C':'#FFFFFF'};color:${on?'#FFFFFF':'#4A5363'}`;
+    const seg=on=>`white-space:nowrap;border:0;border-radius:999px;padding:6px 12px;font-weight:900;font-size:12px;cursor:pointer;flex-shrink:0;background:${on?'#FFFFFF':'transparent'};color:${on?'#042D7C':'#5B6470'};box-shadow:${on?'0 1px 3px rgba(16,24,40,.12)':'none'}`;
     const re=(o)=>{this.setState(o);setTimeout(()=>this.refresh(),0);};
     const nowM=new Date().toISOString().slice(0,7),mon=E.monthly||[],thisM=mon.find(m=>m.month===nowM)||{};
     const allT=mon.reduce((a,m)=>a+(+m.total||0),0),allO=mon.reduce((a,m)=>a+(+m.orders||0),0);
     const mname=m=>new Date(m+'-01T00:00:00').toLocaleString('en-GB',{month:'long',year:'numeric'});
-    const stS=st=>'font-size:11px;font-weight:900;letter-spacing:.06em;border-radius:999px;padding:3px 9px;text-transform:uppercase;'+(st==='completed'?'background:#E6F4EA;color:#1E6B34':st==='pending'?'background:#FFF4D6;color:#7A5B12':'background:#F1F3F6;color:#5B6470');
+    const stS=st=>'font-size:10px;font-weight:900;letter-spacing:.06em;border-radius:999px;padding:2px 8px;text-transform:uppercase;flex-shrink:0;'+(st==='completed'?'background:#E6F4EA;color:#1E6B34':st==='pending'?'background:#FFF4D6;color:#7A5B12':'background:#F1F3F6;color:#5B6470');
     const act=(o,p)=>async()=>{try{await SKP.setOrder(o.id,p);this.flash('Order updated');this.refresh();}catch(e){this.flash(e.message);}};
-    const ord=(s.orders||[]).filter(o=>!s.eSt||o.status===s.eSt);
+    const ord=(s.orders||[]).filter(o=>!s.eSt||o.status===s.eSt);const oLim=s.oLim||30;
+    const svMax=Math.max(0,...SV.map(([k])=>sum(k+'_amt')));const monMax=Math.max(1,...mon.map(m=>+m.total||0));
     const L=s.logO||{};const users=(s.users||[]).filter(u=>u.role!=='admin');
     return {
       tabEarnings:s.tab==='earnings',isAdminE:admin,canLogOrder:!admin,ordUpg:!!s.ordUpg,
       svcChips:[['','All services']].concat(SV).map(([k,l])=>({label:l,style:chip((s.eSvc||'')===k),go:()=>re({eSvc:k})})),
       expChips:[{username:'',name:'All experts'}].concat(users).map(u=>({label:u.name,style:chip((s.eUser||'')===u.username),go:()=>re({eUser:u.username})})),
-      stChips:[['','All'],['completed','Completed'],['pending','Pending'],['cancelled','Cancelled'],['rejected','Rejected']].map(([k,l])=>({label:l,style:chip((s.eSt||'')===k),go:()=>this.setState({eSt:k})})),
-      eKpis:[{label:'Completed orders',value:String(sum('orders')),note:'In selected period'},{label:admin?'Incentive payable':'Earned',value:inr(sum('total')),note:'In selected period'},{label:'This month',value:inr(thisM.total),note:(thisM.orders||0)+' orders'},{label:'All time',value:inr(allT),note:allO+' orders'}],
-      svcCards:SV.map(([k,l])=>({label:l,count:String(sum(k)),rate:inr(R[k])+' per order',amount:inr(sum(k+'_amt'))})),
+      stChips:[['','All'],['completed','Completed'],['pending','Pending'],['cancelled','Cancelled'],['rejected','Rejected']].map(([k,l])=>({label:l,style:seg((s.eSt||'')===k),go:()=>this.setState({eSt:k,oLim:30})})),
+      eKpis:[{label:admin?'Incentive payable':'Earned',value:inr(sum('total')),note:'In selected period'},{label:'Completed orders',value:String(sum('orders')),note:'In selected period'},{label:'This month',value:inr(thisM.total),note:(thisM.orders||0)+' orders'},{label:'All time',value:inr(allT),note:allO+' orders'}],
+      svcCards:SV.map(([k,l])=>({label:l,count:String(sum(k)),rate:inr(R[k])+' each',amount:inr(sum(k+'_amt')),bar:'width:'+(svMax?Math.round(sum(k+'_amt')/svMax*100):0)+'%'})),svcNote:'In selected period',
+      ordersNote:ord.length?(ord.length+' order'+(ord.length===1?'':'s')+(s.eSt?' · '+s.eSt:'')):'',
       payable:inr(sum('total')),
       expRows:ex.map(e=>({name:e.name,username:e.username,cv:e.cv||0,cvAmt:inr(e.cv_amt),cover:e.cover||0,coverAmt:inr(e.cover_amt),linkedin:e.linkedin||0,linkedinAmt:inr(e.linkedin_amt),portfolio:e.portfolio||0,portfolioAmt:inr(e.portfolio_amt),orders:e.orders||0,total:inr(e.total),open:()=>re({eUser:e.username})})),
       noExpRows:!ex.length,
       histTitle:admin?(s.eUser?'Earnings history':'Monthly incentive history'):'My earnings history',
-      months:mon.map(m=>({label:mname(m.month),total:inr(m.total),orders:m.orders||0,mix:`CV ${m.cv||0} · Cover ${m.cover||0} · LinkedIn ${m.linkedin||0} · Portfolio ${m.portfolio||0}`})),noMonths:!mon.length,
-      orderRows:ord.slice(0,200).map(o=>{const st=o.status;const acts=!admin?[]:st==='completed'?[{label:'Reassign',go:()=>this.setState({rs:o})},{label:'Reopen',go:act(o,{status:'pending'})},{label:'Cancel',go:act(o,{status:'cancelled'})},{label:'Reject',go:act(o,{status:'rejected'})}]:st==='pending'?[{label:'Mark completed',go:act(o,{status:'completed'})},{label:'Cancel',go:act(o,{status:'cancelled'})}]:[{label:'Restore',go:act(o,{status:'completed'})}];
-        return {customer:o.customer||'Customer',status:st,stStyle:stS(st),svc:SL[o.service]||o.service,ref:o.ref,when:this.fmt(o.completed_at||o.created_at),by:o.expert_name||o.completed_by||'—',amount:st==='completed'?inr(o.rate):'—',acts,hasActs:acts.length>0};}),
+      months:mon.map(m=>({label:mname(m.month),total:inr(m.total),orders:m.orders||0,bar:'width:'+Math.round((+m.total||0)/monMax*100)+'%',mix:[['CV',m.cv],['Cover',m.cover],['LinkedIn',m.linkedin],['Portfolio',m.portfolio]].filter(x=>+x[1]).map(x=>x[0]+' '+x[1]).join(' · ').replace(/^./,x=>' · '+x)})),noMonths:!mon.length,
+      moreOrders:ord.length>oLim,moreOrdersLabel:'Show more ('+(ord.length-oLim)+' more)',showMoreOrders:()=>this.setState({oLim:oLim+30}),
+      orderRows:ord.slice(0,oLim).map(o=>{const st=o.status;const acts=!admin?[]:st==='completed'?[{label:'Reassign',go:()=>this.setState({rs:o})},{label:'Reopen',go:act(o,{status:'pending'})},{label:'Cancel',go:act(o,{status:'cancelled'})},{label:'Reject',go:act(o,{status:'rejected'})}]:st==='pending'?[{label:'Mark completed',go:act(o,{status:'completed'})},{label:'Cancel',go:act(o,{status:'cancelled'})}]:[{label:'Restore',go:act(o,{status:'completed'})}];
+        return {ini:String(o.customer||'C').split(/\s+/).map(w=>w[0]||'').join('').slice(0,2).toUpperCase(),customer:o.customer||'Customer',status:st,stStyle:stS(st),svc:SL[o.service]||o.service,ref:o.ref,when:this.fmt(o.completed_at||o.created_at),by:o.expert_name||o.completed_by||'—',amount:st==='completed'?inr(o.rate):'—',acts,hasActs:acts.length>0};}),
       noOrders:!ord.length,
       exportCsv:()=>{const q=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"';const per=s.rk==='all'?'All time':((s.from||'start')+' to '+(s.to||'today'));
         const rows=[['Skilleaze expert salary report',per],[],['Expert','Username','Resume/CV orders','Resume/CV ₹','Cover letter orders','Cover letter ₹','LinkedIn orders','LinkedIn ₹','Portfolio orders','Portfolio ₹','Total orders','Total incentive ₹']].concat(ex.map(e=>[e.name,e.username,e.cv,e.cv_amt,e.cover,e.cover_amt,e.linkedin,e.linkedin_amt,e.portfolio,e.portfolio_amt,e.orders,e.total])).concat([[],['Combined payable','','','','','','','','','',sum('orders'),sum('total')]]);
@@ -513,14 +544,17 @@ class Component extends DCLogic {
       this.setState({logO:null});this.flash('Order logged · '+ref);this.refresh();}
     catch(e){const m=String(e.message||e);const dup=/^DUPLICATE/.test(m);this.setState({logO:Object.assign({},L,{busy:false,dup,err:dup?m.replace(/^DUPLICATE:\s*/,'')+' If this is a separate order, log it anyway.':m})});}}
   renderVals(){const s=this.state,me=s.me,admin=!!me&&me.role==='admin';
-    const names={};(s.users||[]).forEach(u=>names[u.username]=u.name);((s.report&&s.report.experts)||[]).forEach(u=>names[u.username]=u.name);const nm=u=>names[u]||u||'—';
+    const names={};(s.users||[]).forEach(u=>names[u.username]=u.name);((s.report&&s.report.experts)||[]).forEach(u=>names[u.username]=u.name);const pretty=u=>String(u).split(/[._-]+/).filter(Boolean).map((w,i)=>i&&w.length===1?w.toUpperCase()+'.':w.charAt(0).toUpperCase()+w.slice(1)).join(' ');
+    const nm=u=>names[u]||(me&&u===me.username?me.name:'')||(u?pretty(u):'—');
     const R=s.report||{},T=R.totals||{};
     const pill=(on,dark)=>`border:0;border-radius:999px;padding:9px 16px;font-weight:900;font-size:13px;cursor:pointer;white-space:nowrap;flex-shrink:0;background:${on?'#042D7C':'transparent'};color:${on?'#FFFFFF':'#2C3E50'}`;
-    const chip=on=>`white-space:nowrap;border:1px solid ${on?'#042D7C':'#E3E4E8'};border-radius:999px;padding:7px 13px;font-weight:900;font-size:12px;cursor:pointer;background:${on?'#042D7C':'#FFFFFF'};color:${on?'#FFFFFF':'#2C3E50'}`;
-    const kindStyle=k=>'font-size:11px;font-weight:900;letter-spacing:.06em;border-radius:999px;padding:4px 10px;'+(k==='europass'?'background:#FFF4D6;color:#7A5B12':'background:#042D7C;color:#FFFFFF');
+    const chip=on=>`white-space:nowrap;border:1px solid ${on?'#042D7C':'#E1E5EC'};border-radius:999px;padding:7px 13px;font-weight:900;font-size:12px;cursor:pointer;background:${on?'#042D7C':'#FFFFFF'};color:${on?'#FFFFFF':'#4A5363'}`;
+    const seg=on=>`white-space:nowrap;border:0;border-radius:999px;padding:7px 13px;font-weight:900;font-size:12.5px;cursor:pointer;flex-shrink:0;background:${on?'#FFFFFF':'transparent'};color:${on?'#042D7C':'#5B6470'};box-shadow:${on?'0 1px 3px rgba(16,24,40,.12)':'none'}`;
+    const kindStyle=k=>'font-size:10px;font-weight:900;letter-spacing:.06em;border-radius:999px;padding:2px 7px;margin-left:4px;vertical-align:1px;'+(k==='europass'?'background:#FFF4D6;color:#7A5B12':'background:#EEF2FA;color:#042D7C');
     const CLEAN=/skilleaze\.com$|vercel\.app$/i.test(location.hostname);const href=r=>(r.kind==='europass'?(CLEAN?'./europass-cv-builder':'./Skilleaze%20Europass%20CV%20Builder.dc.html'):(CLEAN?'./ats-cv-builder':'./Skilleaze%20CV%20Builder.dc.html'))+'?code='+encodeURIComponent(r.code)+(admin?'&view=1':'');
-    const card=r=>({no:this.no(r.serial),code:r.code,customer:r.customer||'(no name yet)',phone:r.phone||'No phone',kindLabel:r.kind==='europass'?'EUROPASS':'ATS',kindStyle:kindStyle(r.kind),
-      createdBy:nm(r.created_by),created:this.fmt(r.created_at),time:this.dur(r.time_spent)+' worked',dl:(r.downloads||0)+' download'+(r.downloads===1?'':'s'),href:href(r),info:()=>this.openCv(r)});
+    const ini=v=>String(v||'').trim().split(/\s+/).map(w=>w[0]||'').join('').slice(0,2).toUpperCase()||'?';
+    const card=r=>({ini:ini(r.customer),mob:this.no(r.serial)+' · '+(r.kind==='europass'?'Europass':'ATS')+' · '+this.fmt(r.created_at,false),no:this.no(r.serial),code:r.code,customer:r.customer||'(no name yet)',phone:r.phone||'No phone',kindLabel:r.kind==='europass'?'EUROPASS':'ATS',kindStyle:kindStyle(r.kind),
+      createdBy:nm(r.created_by),created:this.fmt(r.created_at),time:this.dur(r.time_spent)+' worked',createdShort:this.fmt(r.created_at,false),dl:(r.downloads||0)+' download'+(r.downloads===1?'':'s'),href:href(r),info:()=>this.openCv(r)});
     const ACT={created:['✦','created CV for','#042D7C'],edited:['✎','edited CV for','#053BA0'],download_pdf:['↓','downloaded PDF of','#1E7A4C'],download_docx:['↓','downloaded Word of','#1E7A4C'],viewed:['◉','viewed CV of','#7A5B12'],imported:['⇪','imported CV for','#053BA0'],deleted:['✕','deleted CV for','#B3261E'],user_created:['+','added CV expert','#042D7C'],user_deleted:['✕','removed CV expert','#B3261E'],user_disabled:['⏸','disabled CV expert','#7A5B12'],user_enabled:['▶','enabled CV expert','#1E7A4C']};
     const actRow=a=>{const m=ACT[a.action]||['•',a.action,'#5B6470'];return {icon:m[0],dotStyle:`width:32px;height:32px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;color:#FFFFFF;background:${m[2]}`,
       who:nm(a.username),what:m[1],customer:a.customer||a.detail||a.code,no:this.no(a.serial),code:a.code,sec:a.seconds>=60?' · '+this.dur(a.seconds):'',live:!!a.code&&a.action!=='deleted'&&a.serial!=null,meta:!a.code?'Team change':a.action==='deleted'?'CV code '+a.code+' · removed from the portal':[a.serial!=null?this.no(a.serial):'',a.code].filter(Boolean).join(' · ')+(a.seconds>=60?' · '+this.dur(a.seconds):''),at:this.fmt(a.at),
@@ -529,7 +563,8 @@ class Component extends DCLogic {
     const daily=R.daily||[];const mx=Math.max(1,...daily.map(d=>d.n));const step=Math.max(1,Math.ceil(daily.length/8));
     const bars=daily.map((d,i)=>({n:d.n||'',tip:new Date(d.d+'T00:00:00').toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'})+': '+d.n+' CV'+(d.n===1?'':'s'),
       lbl:(i%step===0&&(daily.length-1-i>=Math.ceil(step/2)||i===0)||i===daily.length-1)?new Date(d.d+'T00:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short'}):'',
-      style:`width:100%;max-width:34px;border-radius:8px 8px 3px 3px;background:${d.n?'#042D7C':'#E3E4E8'};height:${d.n?Math.max(6,Math.round(d.n/mx*140)):4}px;transition:height .3s`}));
+      style:`width:100%;max-width:30px;border-radius:6px 6px 2px 2px;background:${!d.n?'#EEF0F4':(d.n===mx||i===daily.length-1)?'#042D7C':'#A9BDE6'};height:${d.n?Math.max(5,Math.round(d.n/mx*150)):3}px;transition:height .3s`}));
+    const chTot=daily.reduce((a,d)=>a+(+d.n||0),0);
     // customers
     const cm={};s.results.forEach(r=>{const k=this.custKey(r);(cm[k]=cm[k]||{key:k,name:r.customer||'(no name)',phone:r.phone||'—',email:r.email||'',list:[],last:r.updated_at}).list.push(r);if(r.updated_at>cm[k].last)cm[k].last=r.updated_at;if(!cm[k].email&&r.email)cm[k].email=r.email;});
     const custs=Object.values(cm).sort((a,b)=>String(b.last).localeCompare(String(a.last)));
@@ -554,7 +589,9 @@ class Component extends DCLogic {
         toggle:async()=>{try{await SKP.updateUser(u.username,{active:u.active===false});this.setState({dr:null});this.refresh();}catch(e){this.flash(e.message);}},
         del:async()=>{if(!confirm('Permanently delete '+u.name+' (@'+u.username+')?\n\nTheir login is removed and the username becomes free again. CVs they made stay in the portal.'))return;try{await SKP.deleteUser(u.username);this.setState({dr:null});this.flash(u.name+' deleted');this.refresh();}catch(e){this.flash(e.message);}},
         hasCvs:L.length>0,cvsTitle:'CVs by '+String(u.name).split(' ')[0],cvs:L.map(card),hasAct:(d.act||[]).length>0,act:(d.act||[]).map(actRow),loading:d.loading};}}
-    const avg=T.cvs?this.dur(T.seconds/T.cvs):'—';
+    const avg=T.cvs?this.dur(T.seconds/T.cvs):'—';const cvLim=s.cvLim||50;
+    const bMax=Math.max(1,...exps.slice(0,6).map(e=>e.cvs||0));
+    const myE=(((s.earn&&s.earn.experts)||[]).filter(e=>!me||e.username===me.username||((s.earn.experts||[]).length===1))).reduce((a,e)=>({total:a.total+(+e.total||0),orders:a.orders+(+e.orders||0)}),{total:0,orders:0});
     const tab=s.tab;
     return {
       urlAts:(/skilleaze\.com$|vercel\.app$/i.test(location.hostname)?'/ats-cv-builder':'./Skilleaze%20CV%20Builder.dc.html'),urlEp:(/skilleaze\.com$|vercel\.app$/i.test(location.hostname)?'/europass-cv-builder':'./Skilleaze%20Europass%20CV%20Builder.dc.html'),needsUpgrade:!!s.upg&&admin,showLogin:s.ready&&!me,showApp:s.ready&&!!me,preview:window.SKP?!SKP.remote:false,
@@ -565,33 +602,36 @@ class Component extends DCLogic {
       today:new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'}),
       heroTitle:admin?'Portal overview':'Hey '+(me?String(me.name).split(' ')[0]:'')+', ready to build?',
       heroSub:admin?'Every CV, customer and expert in one place. Pick a period to see the numbers.':'Start a new CV, upload an existing one, or find any CV the team has made.',
-      ...this.earnVals(admin),tabs:tabsDef.map(([k,l])=>({label:l,style:pill(tab===k),go:()=>this.setState({tab:k})})),
-      tabOverview:tab==='overview',notOverview:tab!=='overview',tabKicker:admin?'Admin':'Team',tabTitle:({cvs:'All CVs',customers:'Customers',experts:'CV experts',activity:'Activity log',earnings:admin?'Orders & salary':'My earnings'})[tab]||'',tabCvs:tab==='cvs',tabCustomers:tab==='customers',tabExperts:tab==='experts'&&admin,tabActivity:tab==='activity'&&admin,
+      ...this.earnVals(admin),tabs:tabsDef.map(([k,l])=>({label:l,style:pill(tab===k),go:()=>this.go(k)})),
+      tabOverview:tab==='overview',notOverview:tab!=='overview',tabSub:({cvs:admin?'Every CV the team has made. Search by name, phone, CV number or code.':'Every CV the team has made. Search, open and continue any of them.',customers:'Everyone we have made a CV for, grouped by phone or name.',experts:'Your team. Open anyone to see their CVs, time and activity.',activity:'Everything that happened in the portal, newest first.',earnings:admin?'Completed orders and incentive payable for each expert.':'Orders you completed and what you earned for them.'})[tab]||'',tabTitle:({cvs:'All CVs',customers:'Customers',experts:'CV experts',activity:'Activity log',earnings:admin?'Orders & salary':'My earnings'})[tab]||'',tabCvs:tab==='cvs',tabCustomers:tab==='customers',tabExperts:tab==='experts'&&admin,tabActivity:tab==='activity'&&admin,
       showSearch:tab==='cvs'||tab==='customers',showKind:tab==='cvs',showBy:tab==='cvs'&&admin,
       searchPh:tab==='customers'?'Search customer by name, phone or email':'Search by customer name, phone, CV number or code',
-      goCvs:()=>this.setState({tab:'cvs'}),goExperts:()=>this.setState({tab:'experts'}),
-      ranges:rangeDef.map(([k,l])=>({label:l,style:chip(s.rk===k),go:()=>this.setRange(k)})),
+      goCvs:()=>this.go('cvs'),goExperts:()=>this.go('experts'),
+      ranges:rangeDef.map(([k,l])=>({label:l,style:seg(s.rk===k),go:()=>this.setRange(k)})),
       fromVal:s.from,toVal:s.to,
       setFrom:e=>{this.setState({from:e.target.value,rk:'custom'});setTimeout(()=>this.refresh(),0);},
       setTo:e=>{this.setState({to:e.target.value,rk:'custom'});setTimeout(()=>this.refresh(),0);},
-      kpis:[
-        {label:admin?'CVs created':'My CVs',value:T.cvs??'–',note:(T.ats??0)+' ATS · '+(T.europass??0)+' Europass'},
+      kpis:admin?[
+        {label:'CVs created',value:T.cvs??'–',note:(T.ats??0)+' ATS · '+(T.europass??0)+' Europass'},
         {label:'Customers',value:T.customers??'–',note:'Unique by phone or name'},
-        {label:'Avg time / CV',value:avg,note:'Active editing time'},
-        {label:'Time worked',value:this.dur(T.seconds),note:'Across all CVs in period'},
+        {label:'Time worked',value:this.dur(T.seconds),note:'Avg '+avg+' per CV'},
+        {label:'Downloads',value:T.downloads??'–',note:'PDF + Word'}]:[
+        {label:'My CVs',value:T.cvs??'–',note:(T.ats??0)+' ATS · '+(T.europass??0)+' Europass'},
+        {label:'Time worked',value:this.dur(T.seconds),note:'Avg '+avg+' per CV'},
         {label:'Downloads',value:T.downloads??'–',note:'PDF + Word'},
-        admin?{label:'CV experts',value:exps.length,note:exps.filter(e=>e.active!==false).length+' active'}:{label:'Team CVs found',value:s.results.length,note:'In this period'}],
-      chartNote:periodLbl+(daily.length>=90?' (last 90 days shown)':''),bars,
-      board:exps.slice(0,6).map((e,i)=>({rank:i+1,name:e.name,line:(e.cvs||0)+' CVs · '+this.dur(e.seconds)+' · '+(e.downloads||0)+' dl',open:expOpen(e),
-        rankStyle:`width:36px;height:36px;border-radius:12px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:15px;${i===0?'background:#042D7C;color:#FFFFFF':'background:#E9EEF8;color:#042D7C'}`})),
+        {label:'Earned',value:'₹'+Math.round(myE.total).toLocaleString('en-IN'),note:myE.orders+' completed order'+(myE.orders===1?'':'s')}],
+      chartNote:periodLbl.charAt(0).toUpperCase()+periodLbl.slice(1)+(daily.length>=90?' · last 90 days shown':''),bars,chartTotal:String(chTot),chartAvg:daily.length?(Math.round(chTot/daily.length*10)/10).toLocaleString('en-GB'):'0',chartBest:String(daily.length?mx===1&&!chTot?0:mx:0),
+      boardNote:exps.length+' expert'+(exps.length===1?'':'s')+' · '+exps.filter(e=>e.active!==false).length+' active',
+      board:exps.slice(0,6).map((e,i)=>({rank:i+1,name:e.name,cvs:String(e.cvs||0),bar:'width:'+Math.round((e.cvs||0)/bMax*100)+'%',line:this.dur(e.seconds)+' worked · '+(e.downloads||0)+' download'+(e.downloads===1?'':'s'),open:expOpen(e),
+        rankStyle:`width:28px;height:28px;border-radius:9px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:12px;${i===0?'background:#042D7C;color:#FFFFFF':'background:#EEF2FA;color:#042D7C'}`})),
       noBoard:admin&&exps.length===0,
-      recent:s.results.slice(0,6).map(card),noRecent:s.ready&&!!me&&s.results.length===0,
+      recent:s.results.slice(0,6).map(card),noRecent:s.ready&&!!me&&s.results.length===0,hasRecent:s.results.length>0,recentNote:s.results.length?('Newest of '+s.results.length+' in '+periodLbl):'',
       emptyText:s.q?'Nothing matches “'+s.q+'” in this period. Try “All time”, or search by phone or CV number.':(admin?'No CVs in this period yet.':'No CVs in this period. Start one with the buttons above.'),
-      q:s.q,setQ:e=>{this.setState({q:e.target.value});this.search();},
+      q:s.q,setQ:e=>{this.setState({q:e.target.value,cvLim:50});this.search();},
       kindTabs:[[null,'All'],['ats','ATS'],['europass','Europass']].map(([k,l])=>({label:l,style:pill(s.kind===k),go:()=>{this.setState({kind:k});this.search();}})),
       byVal:s.by,byOpts:exps.map(u=>({v:u.username,l:u.name})),setBy:e=>{this.setState({by:e.target.value});this.search();},
       resultNote:tab==='customers'?custs.length+' customer'+(custs.length===1?'':'s'):s.results.length+' CV'+(s.results.length===1?'':'s'),
-      results:s.results.map(card),noResults:s.ready&&!!me&&s.results.length===0,openLabel:admin?'View':'Open',
+      results:s.results.slice(0,cvLim).map(card),hasResults:s.results.length>0,moreCvs:s.results.length>cvLim,moreCvsLabel:'Show more ('+(s.results.length-cvLim)+' more)',showMoreCvs:()=>this.setState({cvLim:cvLim+50}),noResults:s.ready&&!!me&&s.results.length===0,openLabel:admin?'View':'Open',
       customers:custs.map(c=>({name:c.name,phone:c.phone,email:c.email||'No email',ini:String(c.name).split(/\s+/).map(w=>w[0]||'').join('').slice(0,2).toUpperCase()||'?',count:c.list.length+' CV'+(c.list.length===1?'':'s'),last:'Updated '+this.fmt(c.last,false),open:()=>this.openCust(c)})),
       noCustomers:custs.length===0,
       experts:exps.map(e=>{const u=Object.assign({},uById[e.username]||{},e);return {name:u.name,username:u.username,initial:String(u.name||u.username).charAt(0).toUpperCase(),cvs:u.cvs||0,time:this.dur(u.seconds),dl:u.downloads||0,

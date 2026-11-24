@@ -1,5 +1,5 @@
 /* Skilleaze auto-update + self-heal. Loaded first on every editor page. */
-(function(){var BUILD='20261124.7';window.SK_BUILD=BUILD;
+(function(){var BUILD='20261124.8';window.SK_BUILD=BUILD;
 var NEED=[['SKCV','render'],['SKRT','unwrap'],['SKRT','plain'],['SKRT','toEdit']];
 function stamp(v){try{var u=new URL(location.href);u.searchParams.set('_v',v);return u.toString();}catch(e){return location.href;}}
 function hard(v,why){var k='sk_upd_'+v;try{if(sessionStorage.getItem(k))return false;sessionStorage.setItem(k,why||'1');}catch(e){}
