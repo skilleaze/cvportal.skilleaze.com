@@ -160,5 +160,20 @@ function photoPng(src,shape){return new Promise(ok=>{if(!src)return ok(null);con
   const m=Math.min(img.width,img.height),sx=(img.width-m)/2,sy=(img.height-m)*.15;x.drawImage(img,sx,sy,m,m,0,0,S,S);
   c.toBlob(b=>{if(!b)return ok(null);b.arrayBuffer().then(a=>ok(new Uint8Array(a)));},'image/png');};img.onerror=()=>ok(null);img.src=src;});}
 
-window.SKRT={__full:true,unwrap,fixAmp,clean,isRich,plain,html,toEdit,fromEdit,show,hide,runs,paras,align,numbering,photoPng};
+
+// Join lines that were hard-wrapped by a PDF / Word copy-paste ("...with practical\nsingle-engine...") back into one paragraph,
+// so the text fills the width and alignment/justify works. Blank lines and bullet lines are kept.
+// mode 'para' (summary): join any wrapped line; mode 'bullets': only join continuation lines that start in lower case.
+function reflow(v,mode){v=String(v??'');if(!/\n|<br\s*\/?>/i.test(v))return v;
+  const parts=v.split(/(\n|<br\s*\/?>)/i);const segs=[],brk=[];for(let i=0;i<parts.length;i+=2){segs.push(parts[i]);if(i+1<parts.length)brk.push(parts[i+1]);}
+  const P=t=>String(t).replace(/<[^>]+>/g,'').replace(/&nbsp;/g,' ').replace(/&amp;/g,'&').trim();
+  const full=segs.slice(0,-1).map(P).filter(Boolean);if(full.length<2)return v;
+  const avg=full.reduce((a,t)=>a+t.length,0)/full.length;if(avg<45)return v; // short lines = written that way on purpose
+  const BUL=/^([•·▪‣◦●○■□➢➤►\-\*–—]|\d{1,2}[.)]\s)/;
+  let out=segs[0];
+  for(let i=1;i<segs.length;i++){const a=P(segs[i-1]),b=P(segs[i]);
+    const join=a&&b&&!BUL.test(b)&&a.length>=35&&(mode==='bullets'?(/^[a-z(]/.test(b)&&!/[.!?;:]$/.test(a)):(/^[a-z(0-9]/.test(b)||!/[.!?:]$/.test(a)));
+    out=join?out.replace(/\s+$/,'')+' '+segs[i].replace(/^\s+/,''):out+brk[i-1]+segs[i];}
+  return out;}
+window.SKRT={__full:true,reflow,unwrap,fixAmp,clean,isRich,plain,html,toEdit,fromEdit,show,hide,runs,paras,align,numbering,photoPng};
 })();
