@@ -28,9 +28,9 @@ function parse(text){
  var HW='PROFESSIONAL SUMMARY|CAREER SUMMARY|SUMMARY|PROFILE|CAREER OBJECTIVE|OBJECTIVE|ABOUT ME|CORE SKILLS|KEY SKILLS|TECHNICAL SKILLS|CORE COMPETENCIES|SKILLS|AREAS OF EXPERTISE|EXPERTISE|PROFESSIONAL EXPERIENCE|WORK EXPERIENCE|EMPLOYMENT HISTORY|WORK HISTORY|EXPERIENCE|EDUCATION|ACADEMIC QUALIFICATIONS|QUALIFICATIONS|CERTIFICATIONS|CERTIFICATES|LICENSES|PROJECTS|KEY PROJECTS|AWARDS|ACHIEVEMENTS|KEY ACHIEVEMENTS|LANGUAGES|INTERESTS|HOBBIES|REFERENCES|DECLARATION|PERSONAL DETAILS';
  var src=String(text||'').replace(/\r/g,'').replace(/\t/g,' ').replace(new RegExp('(^|[^A-Za-z])('+HW+')(?=\\s*[:：]?\\s+[A-Z0-9•●▪\\-])','g'),function(m,a,h,off,str){var before=str.slice(Math.max(0,off-40),off+a.length),after=str.slice(off+m.length,off+m.length+24);if(/^\s*[:：]?\s*(?:LLC|L\.L\.C|LTD|LIMITED|PVT|PRIVATE|CO\b|COMPANY|W\.L\.L|WLL|FZE|FZCO|FZ-LLC|GROUP|INC|&\s*[A-Z])/.test(after))return m;if(h.indexOf(' ')<0&&/[A-Z]{2,}[ ]$/.test(before)&&!/\n[ ]*$/.test(before))return m;return a+'\n'+h+'\n';}).replace(/\s+([•●▪■➢➤►✓✔])\s*/g,'\n$1 ').replace(/(Visa|Availability|Nationality|Notice period)\s*:/g,'\n$1:');
  var raw=src.split('\n').map(clean).filter(Boolean);
- var out={name:'',title:'',sub:'',location:'',phone:'',email:'',website:'',linkedin:'',summary:'',skills:[],exp:[],edu:[],langs:'',extra:[]};
+ var out={name:'',title:'',sub:'',location:'',phone:'',email:'',email2:'',website:'',linkedin:'',summary:'',skills:[],exp:[],edu:[],langs:'',extra:[]};
  var all=raw.join('\n');
- var em=all.match(/[\w.+-]+@[\w-]+\.[\w.-]+/);if(em)out.email=em[0];
+ var ems=(all.match(/[\w.+-]+@[\w-]+\.[\w.-]+/g)||[]).filter(function(e,i,A){return A.map(function(x){return x.toLowerCase();}).indexOf(e.toLowerCase())===i;});if(ems[0])out.email=ems[0];if(ems[1])out.email2=ems[1];
  var li=all.match(/(?:https?:\/\/)?(?:[a-z]{2,3}\.)?linkedin\.com\/in\/[\w%\-]+\/?/i);if(li)out.linkedin=/^https?:\/\//i.test(li[0])?li[0]:'https://'+li[0];
  var ph=all.match(/(?:\+|00)?\d[\d\s\-().]{7,}\d/);if(ph)out.phone=clean(ph[0]);
  var ws=all.match(/(?:https?:\/\/|www\.)[^\s|,]+/ig);if(ws){for(var w=0;w<ws.length;w++)if(!/linkedin/i.test(ws[w])){out.website=ws[w].replace(/^https?:\/\//,'');break;}}
