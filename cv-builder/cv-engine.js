@@ -6,7 +6,18 @@ const SKIT=t=>{let p=SKPL(String(t??'').replace(/<\/(li|p|div)>|<br\s*\/?>/gi,'\
 const LGS=t=>{let s=String(t??'');if(window.SKRT&&typeof window.SKRT.isRich==='function'&&window.SKRT.isRich(s))s=window.SKRT.plain(s);s=s.replace(/\r/g,'').trim();if(!s)return [];let a=/\n/.test(s)?s.split(/\n+/):/[•▪●|;]/.test(s)?s.split(/\s*[•▪●|;]\s*/):(()=>{const o=[];s.split(/\s*,\s*/).forEach(p=>{if(!p)return;if(o.length&&!/^[A-ZÀ-Ý]/.test(p))o[o.length-1]+=', '+p;else o.push(p);});return o;})();return a.map(x=>x.replace(/^[\s•▪●◦\-–*·]+/,'').replace(/[,;]\s*$/,'').trim()).filter(Boolean);};
 const SKNL=c=>!String(c||'').trim()||/^(core|key)?\s*(skills|competenc(ies|y)|core competencies|areas of expertise|skills?\s*(&|and)\s*competencies)\s*:?\s*$/i.test(SKPL(c).trim());
 const SKHD=t=>{const s=String(t||'').trim();return /^#{1,3}\s+\S/.test(SKPL(s))||/^<(b|strong)>(?:(?!<\/?(?:b|strong)>)[\s\S])+<\/\1>$/i.test(s);};
-const PRJ=x=>{if(!x||!Array.isArray(x.items)||!/project/i.test(SKPL(x.title||'')))return x;let prevH=false;const it=x.items.map(t=>{const s=String(t??''),p=SKPL(s).trim();if(SKHD(s)){prevH=true;return s;}if(/^\d{1,2}[.)]\s+\S/.test(p)&&p.length<=140&&!/[.;]$/.test(p)){prevH=true;return '<b>'+s+'</b>';}if(prevH&&p.length<=120&&(/\|/.test(p)||/\b(19|20)\d{2}\b/.test(p))&&!/[.;]$/.test(p)){prevH=false;return '\u200B'+s;}prevH=false;return s;});return Object.assign({},x,{items:it});};
+const SKAH=(items,title)=>{/* auto sub-headings: "Project Management Coursework | RMIT University" followed by its description lines stays one bold line, not a bullet */
+ const T=SKPL(title||'');if(/skill|competenc|technical|tools|technolog|expertise|language|interest|hobb|reference/i.test(T))return items;
+ const P=t=>SKPL(String(t??'')).replace(/^[\s•▪●◦‣\-–*·]+/,'').trim();
+ const desc=t=>{const p=P(t);return !!p&&!SKHD(t)&&(p.length>=55||/[.!]$/.test(p));};
+ const cand=(t,k)=>{const s=String(t??''),p=P(s);if(!p||SKHD(s)||s.charAt(0)==='​'||/^[\s]*[•▪●◦‣\-–*]/.test(SKPL(s)))return false;if(p.length<3||p.length>110||/[.;:,!]$/.test(p)||/^[a-z]/.test(p))return false;
+   const w=p.split(/\s+/)[0];if(/(ed|ing)$/i.test(w)&&!/\|/.test(p))return false;
+   const sep=/\s[|·]\s|\s[–—]\s/.test(p);if(!sep&&(p.split(/\s+/).length>9))return false;
+   let n=k+1;if(items[n]!=null&&/[|·]|\b(19|20)\d{2}\b/.test(P(items[n]))&&!desc(items[n]))n++;return desc(items[n]);};
+ const hs=items.map(cand);const cnt=hs.filter(Boolean).length;if(!cnt)return items;
+ let prevH=false;return items.map((t,k)=>{const s=String(t??''),p=P(s);if(prevH&&!desc(s)&&p.length<=120&&(/[|·]/.test(p)||/\b(19|20)\d{2}\b/.test(p))){prevH=false;return '​'+s.trim();}if(hs[k]){prevH=true;return '## '+p;}prevH=false;return s;});};
+window.SKAH=SKAH;
+const PRJ=x=>{if(!x||!Array.isArray(x.items))return x;if(!/project/i.test(SKPL(x.title||'')))return Object.assign({},x,{items:SKAH(x.items,x.title)});let prevH=false;const it=x.items.map(t=>{const s=String(t??''),p=SKPL(s).trim();if(SKHD(s)){prevH=true;return s;}if(/^\d{1,2}[.)]\s+\S/.test(p)&&p.length<=140&&!/[.;]$/.test(p)){prevH=true;return '<b>'+s+'</b>';}if(prevH&&p.length<=120&&(/\|/.test(p)||/\b(19|20)\d{2}\b/.test(p))&&!/[.;]$/.test(p)){prevH=false;return '\u200B'+s;}prevH=false;return s;});return Object.assign({},x,{items:SKAH(it,x.title)});};
 const SKLB=t=>{const m=SKPL(t).match(/^([^:•]{2,42}):\s+(.+)$/);return m&&!/https?$/i.test(m[1])?m:null;};
 const cv=document.createElement('canvas').getContext('2d');
 function lines(segs,w){if(window.SKRT)segs=segs.map(([t,f])=>[window.SKRT.plain(t),f]);if(segs.length===1&&/\n/.test(segs[0][0]))return String(segs[0][0]).split('\n').reduce((a,p)=>a+lines([[p,segs[0][1]]],w),0);let n=1,x=0;for(const [t,f] of segs){cv.font=f;for(const wd of String(t).split(/\s+/).filter(Boolean)){const ww=cv.measureText(wd+' ').width,sw=cv.measureText(wd).width;if(x>0&&x+sw>w){n++;x=0;}if(sw>w&&w>0){const k=Math.ceil(sw/w);n+=k-1;x=ww-(k-1)*w;continue;}x+=ww;}}return n;}
